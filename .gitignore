@@ -14,6 +14,8 @@ node_modules
 # .wrangler/deploy redirect the Base44 publish reads; every build regenerates
 # all of them.
 dist
+.output
+.vercel
 .wrangler
 .tanstack
 .dev.vars*

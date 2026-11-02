@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 
 // Every runtime dependency is pre-bundled at startup so a package first imported mid-session
@@ -27,6 +28,7 @@ export default defineConfig({
   optimizeDeps: { include: PREBUNDLE },
   plugins: [
     tanstackStart({ srcDirectory: "src" }),
+    nitro(),
     react(),
   ],
 });
