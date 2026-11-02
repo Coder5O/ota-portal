@@ -131,29 +131,62 @@ export function createEntityService(entityName) {
         constraints.push(firestoreLimit(options.limit));
       }
 
-      const q = query(colRef, ...constraints);
-      const snap = await getDocs(q);
-      let items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      let items = [];
+      let inMemorySortNeeded = false;
+
+      try {
+        const q = query(colRef, ...constraints);
+        const snap = await getDocs(q);
+        items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      } catch (err) {
+        // If Firestore throws "failed-precondition" (missing composite index),
+        // fallback gracefully: query by where clauses only, then sort and limit in memory.
+        if (
+          (err?.code === "failed-precondition" || String(err?.message || "").includes("requires an index")) &&
+          options.sort
+        ) {
+          console.warn(`[FirestoreAdapter] Missing composite index for ${colName}. Falling back to in-memory sort/limit:`, err.message);
+          const whereOnly = [];
+          for (const [key, val] of Object.entries(filterObj)) {
+            if (val === undefined || val === null || val === "") continue;
+            if (typeof val === "object" && val !== null) {
+              if (val.$in && Array.isArray(val.$in) && val.$in.length > 0) {
+                whereOnly.push(where(key, "in", val.$in.slice(0, 30)));
+              }
+            } else {
+              whereOnly.push(where(key, "==", val));
+            }
+          }
+          const fallbackQ = query(colRef, ...whereOnly);
+          const fallbackSnap = await getDocs(fallbackQ);
+          items = fallbackSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          inMemorySortNeeded = true;
+        } else {
+          throw err;
+        }
+      }
 
       // Apply in-memory filters (e.g. for regex search)
       if (inMemoryFilters.length > 0) {
         items = items.filter((item) => inMemoryFilters.every((fn) => fn(item)));
+      }
 
-        if (options.sort) {
-          const isDesc = options.sort.startsWith("-");
-          const sortField = isDesc ? options.sort.slice(1) : options.sort;
-          items.sort((a, b) => {
-            const valA = a[sortField] ?? "";
-            const valB = b[sortField] ?? "";
-            if (valA < valB) return isDesc ? 1 : -1;
-            if (valA > valB) return isDesc ? -1 : 1;
-            return 0;
-          });
-        }
+      // Sort in memory if needed
+      if (options.sort && (inMemoryFilters.length > 0 || inMemorySortNeeded)) {
+        const isDesc = options.sort.startsWith("-");
+        const sortField = isDesc ? options.sort.slice(1) : options.sort;
+        items.sort((a, b) => {
+          const valA = a[sortField] ?? "";
+          const valB = b[sortField] ?? "";
+          if (valA < valB) return isDesc ? 1 : -1;
+          if (valA > valB) return isDesc ? -1 : 1;
+          return 0;
+        });
+      }
 
-        if (options.limit) {
-          items = items.slice(0, options.limit);
-        }
+      // Limit in memory if needed
+      if (options.limit && (inMemoryFilters.length > 0 || inMemorySortNeeded)) {
+        items = items.slice(0, options.limit);
       }
 
       return { items };
