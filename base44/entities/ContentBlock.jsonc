@@ -1,0 +1,79 @@
+{
+  "name": "ContentBlock",
+  "type": "object",
+  "properties": {
+    "page_slug": {
+      "type": "string",
+      "description": "about, culture, diaspora, projects, ogf, top-22-page, privacy, etc."
+    },
+    "heading": {
+      "type": "string"
+    },
+    "tag": {
+      "type": "string",
+      "description": "Optional label: location, project status, period"
+    },
+    "body": {
+      "type": "string",
+      "description": "Long text, paragraphs separated by blank lines"
+    },
+    "bullets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published"
+      ],
+      "default": "draft"
+    },
+    "sort_order": {
+      "type": "number",
+      "default": 0
+    },
+    "is_demo": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "page_slug",
+    "heading"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "published"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

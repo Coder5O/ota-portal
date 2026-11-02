@@ -1,0 +1,119 @@
+{
+  "name": "Meeting",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "institution_slug": {
+      "type": "string"
+    },
+    "meeting_type": {
+      "type": "string",
+      "enum": [
+        "Ordinary",
+        "Extraordinary",
+        "Special",
+        "Ceremonial"
+      ],
+      "default": "Ordinary"
+    },
+    "starts_at": {
+      "type": "string",
+      "description": "ISO date-time"
+    },
+    "venue": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Scheduled",
+        "Concluded",
+        "Cancelled"
+      ],
+      "default": "Scheduled"
+    },
+    "agenda": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "minutes": {
+      "type": "string"
+    },
+    "attendance": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "apologies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "proxies": {
+      "type": "string",
+      "description": "Only where the governance rules permit"
+    },
+    "quorum_note": {
+      "type": "string",
+      "description": "Recorded quorum basis; rules are configured, never assumed"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "internal",
+        "public"
+      ],
+      "default": "internal"
+    }
+  },
+  "required": [
+    "title",
+    "institution_slug",
+    "starts_at"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "$and": [
+            {
+              "data.visibility": "public"
+            },
+            {
+              "data.status": "Concluded"
+            }
+          ]
+        },
+        {
+          "data.institution_slug": "{{user.data.institution_slug}}"
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "recipient_email": {
+      "type": "string"
+    },
+    "recipient_name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Application",
+        "Membership",
+        "Meeting",
+        "Announcement",
+        "Document",
+        "System"
+      ],
+      "default": "System"
+    },
+    "link": {
+      "type": "string"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "recipient_email",
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.recipient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "$or": [
+        {
+          "data.recipient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

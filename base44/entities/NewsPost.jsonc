@@ -1,0 +1,83 @@
+{
+  "name": "NewsPost",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "excerpt": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Announcement",
+        "Press Release",
+        "Speech",
+        "Statement",
+        "Culture",
+        "Diaspora",
+        "Notice"
+      ]
+    },
+    "author": {
+      "type": "string",
+      "description": "Publishing office or officer"
+    },
+    "published_date": {
+      "type": "string",
+      "description": "ISO date"
+    },
+    "cover_image": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "is_demo": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "published"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

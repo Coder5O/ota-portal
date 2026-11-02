@@ -1,0 +1,77 @@
+{
+  "name": "ApplicationEvent",
+  "type": "object",
+  "properties": {
+    "application_id": {
+      "type": "string"
+    },
+    "application_reference": {
+      "type": "string"
+    },
+    "applicant_email": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string",
+      "description": "submitted, confirmation_issued, under_review, information_requested, document_verified, document_rejected, document_clarification, approved, rejected, suspended, archived, reactivated"
+    },
+    "from_status": {
+      "type": "string"
+    },
+    "to_status": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "actor_email": {
+      "type": "string"
+    },
+    "actor_role": {
+      "type": "string"
+    },
+    "authority": {
+      "type": "string",
+      "description": "Approval authority exercising the action, where configured"
+    },
+    "document_name": {
+      "type": "string"
+    },
+    "document_status": {
+      "type": "string",
+      "enum": [
+        "",
+        "Verified",
+        "Rejected",
+        "Awaiting clarification"
+      ],
+      "default": ""
+    }
+  },
+  "required": [
+    "application_id",
+    "action"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

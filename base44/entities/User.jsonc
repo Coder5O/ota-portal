@@ -1,0 +1,28 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "institution_slug": {
+      "type": "string",
+      "description": "Institutional structure the officer serves in (assigned by the administrator)",
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
+    },
+    "officer_title": {
+      "type": "string",
+      "description": "Portfolio or office held (assigned by the administrator)",
+      "rls": {
+        "update": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
+    }
+  }
+}

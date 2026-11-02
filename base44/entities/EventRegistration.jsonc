@@ -1,0 +1,56 @@
+{
+  "name": "EventRegistration",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string"
+    },
+    "event_title": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "organisation": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Registered",
+        "Attended",
+        "Cancelled"
+      ],
+      "default": "Registered"
+    }
+  },
+  "required": [
+    "event_id",
+    "name",
+    "email"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

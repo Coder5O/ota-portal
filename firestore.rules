@@ -1,0 +1,216 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Helper Functions ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.role == 'admin' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         getUserData().role == 'admin')
+      );
+    }
+
+    function isOfficerFor(institutionSlug) {
+      return isSignedIn() && (
+        isAdmin() ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         getUserData().institution_slug == institutionSlug)
+      );
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- 1. User Profiles ---
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      // Users can only create their own profile and CANNOT self-assign admin role
+      allow create: if isOwner(userId) && (
+        !request.resource.data.keys().hasAny(['role']) ||
+        request.resource.data.role == 'user'
+      );
+      // Users cannot elevate their role or change governance attributes
+      allow update: if isAdmin() || (
+        isOwner(userId) &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'role', 'institution_slug', 'officer_title', 'approval_authority'
+        ])
+      );
+      allow delete: if isAdmin();
+    }
+
+    // --- 2. Public / Content Collections ---
+    // Institutions, Traditional Communities, Officeholders, Events, News, Constitution, Content Blocks, Site Config
+    match /institutions/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /traditional_communities/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /officeholders/{id} {
+      allow read: if resource.data.status == 'active' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /events/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /news_posts/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /constitution_articles/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /content_blocks/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /site_config/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- 3. Institutional Governance Records ---
+    match /meetings/{id} {
+      allow read: if resource.data.visibility == 'public' || isOfficerFor(resource.data.institution_slug);
+      allow create, update: if isOfficerFor(request.resource.data.institution_slug);
+      allow delete: if isAdmin();
+    }
+
+    match /resolutions/{id} {
+      allow read: if resource.data.visibility == 'public' || isOfficerFor(resource.data.institution_slug);
+      allow create, update: if isOfficerFor(request.resource.data.institution_slug);
+      allow delete: if isAdmin();
+    }
+
+    match /task_items/{id} {
+      allow read: if isOfficerFor(resource.data.institution_slug);
+      allow create, update: if isOfficerFor(request.resource.data.institution_slug);
+      allow delete: if isAdmin();
+    }
+
+    match /institution_reports/{id} {
+      allow read: if resource.data.visibility == 'public' || isOfficerFor(resource.data.institution_slug);
+      allow create, update: if isOfficerFor(request.resource.data.institution_slug);
+      allow delete: if isAdmin();
+    }
+
+    match /documents/{id} {
+      allow read: if resource.data.visibility == 'public' ||
+                     (resource.data.visibility == 'internal' && isSignedIn()) ||
+                     isOfficerFor(resource.data.institution_slug);
+      allow create, update: if isOfficerFor(request.resource.data.institution_slug);
+      allow delete: if isAdmin();
+    }
+
+    match /governance_rules/{id} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /approval_rules/{id} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // --- 4. Membership & Applications ---
+    match /members/{id} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.email == request.auth.token.email);
+      allow create, delete: if isAdmin();
+      // Members can only update contact details, not status or membership number
+      allow update: if isAdmin() || (
+        isSignedIn() &&
+        resource.data.email == request.auth.token.email &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          'membership_number', 'status', 'status_reason', 'category', 'joined_date',
+          'review_date', 'approval_authority', 'approval_date'
+        ])
+      );
+    }
+
+    match /member_applications/{id} {
+      // Public intake can submit applications
+      allow create: if true;
+      allow read: if isAdmin() || (isSignedIn() && (
+        resource.data.email == request.auth.token.email ||
+        resource.data.created_by_id == request.auth.uid
+      ));
+      allow update, delete: if isAdmin();
+    }
+
+    match /application_events/{id} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.applicant_email == request.auth.token.email);
+      allow create: if isSignedIn() || isAdmin();
+      allow update, delete: if false; // Immutable audit log
+    }
+
+    // --- 5. Enquiries & Event Registrations ---
+    match /enquiries/{id} {
+      allow create: if true;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.email == request.auth.token.email);
+      allow update, delete: if isAdmin();
+    }
+
+    match /event_registrations/{id} {
+      allow create: if true;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.email == request.auth.token.email);
+      allow update, delete: if isAdmin();
+    }
+
+    // --- 6. Notifications ---
+    match /notifications/{id} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.recipient_email == request.auth.token.email);
+      allow create: if true;
+      allow update: if isAdmin() || (isSignedIn() && resource.data.recipient_email == request.auth.token.email);
+      allow delete: if isAdmin();
+    }
+
+    // --- 7. Audit Logs ---
+    match /audit_logs/{id} {
+      allow read: if isAdmin();
+      allow create: if isSignedIn();
+      allow update, delete: if false; // Immutable audit log
+    }
+
+    // --- 8. Assets, Disciplinary & Submissions ---
+    match /assets/{id} {
+      allow read: if isAdmin() || isOfficerFor("ota-executive");
+      allow write: if isAdmin();
+    }
+
+    match /disciplinary_records/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /heritage_submissions/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

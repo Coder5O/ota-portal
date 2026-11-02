@@ -1,0 +1,94 @@
+{
+  "name": "GovernanceRule",
+  "type": "object",
+  "properties": {
+    "institution_slug": {
+      "type": "string",
+      "description": "Structure the rule governs"
+    },
+    "record_type": {
+      "type": "string",
+      "enum": [
+        "Meetings",
+        "Resolutions",
+        "Reports",
+        "Publications",
+        "Tasks"
+      ]
+    },
+    "approving_authority": {
+      "type": "string",
+      "description": "Office or structure that may approve records of this type"
+    },
+    "submitter_role": {
+      "type": "string",
+      "enum": [
+        "Structure officer",
+        "Structure head",
+        "Secretariat"
+      ],
+      "default": "Structure officer"
+    },
+    "approval_required": {
+      "type": "boolean",
+      "default": true,
+      "description": "Records of this type require an approval step before they are final"
+    },
+    "requires_confirmation": {
+      "type": "boolean",
+      "default": true,
+      "description": "The applicable constitutional provision is unresolved until a governance administrator confirms the rule"
+    },
+    "confirmed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Set only after formal confirmation of the applicable rule"
+    },
+    "confirmed_by": {
+      "type": "string"
+    },
+    "confirmed_at": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "institution_slug",
+    "record_type"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.institution_slug": "{{user.data.institution_slug}}"
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

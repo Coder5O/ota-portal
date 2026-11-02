@@ -1,0 +1,62 @@
+{
+  "name": "ApprovalRule",
+  "type": "object",
+  "properties": {
+    "registration_type": {
+      "type": "string",
+      "description": "Membership category this rule governs, e.g. traditional_leader"
+    },
+    "authority_name": {
+      "type": "string",
+      "description": "Institution or office that holds the approval authority for this registration type"
+    },
+    "approver_title": {
+      "type": "string",
+      "description": "Office that signs the decision, as configured by the Authority"
+    },
+    "requires_documents": {
+      "type": "boolean",
+      "default": false,
+      "description": "An application of this type cannot be approved without at least one supporting document"
+    },
+    "enforce_authority": {
+      "type": "boolean",
+      "default": false,
+      "description": "When on, an officer assigned to a different authority may not decide applications of this type"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal guidance shown to reviewers"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "registration_type",
+    "authority_name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

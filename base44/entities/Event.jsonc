@@ -1,0 +1,88 @@
+{
+  "name": "Event",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "starts_at": {
+      "type": "string",
+      "description": "ISO date-time"
+    },
+    "ends_at": {
+      "type": "string"
+    },
+    "venue": {
+      "type": "string"
+    },
+    "town": {
+      "type": "string"
+    },
+    "audience": {
+      "type": "string",
+      "enum": [
+        "Open to the public",
+        "Delegates",
+        "Invitation only"
+      ],
+      "default": "Open to the public"
+    },
+    "organising_structure": {
+      "type": "string"
+    },
+    "registration_open": {
+      "type": "boolean",
+      "default": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "cancelled",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "is_demo": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "title",
+    "starts_at"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "published"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

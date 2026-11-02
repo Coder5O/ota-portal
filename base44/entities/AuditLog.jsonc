@@ -1,0 +1,59 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "description": "e.g. application.approved, member.suspended, content.published"
+    },
+    "actor_email": {
+      "type": "string"
+    },
+    "actor_role": {
+      "type": "string"
+    },
+    "target_type": {
+      "type": "string"
+    },
+    "target_id": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "success",
+        "refused",
+        "failed"
+      ],
+      "default": "success"
+    }
+  },
+  "required": [
+    "action"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

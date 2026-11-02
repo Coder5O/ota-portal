@@ -1,0 +1,156 @@
+{
+  "name": "Resolution",
+  "type": "object",
+  "properties": {
+    "meeting_id": {
+      "type": "string"
+    },
+    "institution_slug": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "responsible_officer": {
+      "type": "string"
+    },
+    "deadline": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Submitted",
+        "Returned",
+        "Approved",
+        "Implemented",
+        "Superseded"
+      ],
+      "default": "Draft"
+    },
+    "approval_authority": {
+      "type": "string"
+    },
+    "approval_date": {
+      "type": "string"
+    },
+    "submitted_by": {
+      "type": "string"
+    },
+    "submitted_date": {
+      "type": "string"
+    },
+    "decision_note": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "versions": {
+      "type": "array",
+      "description": "Controlled record of each finalized version, with its approving authority and date",
+      "items": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "approval_authority": {
+            "type": "string"
+          },
+          "approval_date": {
+            "type": "string"
+          },
+          "recorded_by": {
+            "type": "string"
+          },
+          "recorded_at": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "internal",
+        "public"
+      ],
+      "default": "internal"
+    },
+    "implementation_note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "institution_slug"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "$and": [
+            {
+              "data.visibility": "public"
+            },
+            {
+              "data.status": "Approved"
+            }
+          ]
+        },
+        {
+          "data.institution_slug": "{{user.data.institution_slug}}"
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.institution_slug": "{{user.data.institution_slug}}"
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.institution_slug": "{{user.data.institution_slug}}"
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

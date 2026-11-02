@@ -1,0 +1,92 @@
+{
+  "name": "TraditionalCommunity",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "native_name": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "Traditional community",
+        "Diaspora chapter"
+      ],
+      "default": "Traditional community"
+    },
+    "region": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string",
+      "default": "Namibia"
+    },
+    "leader_name": {
+      "type": "string"
+    },
+    "leader_title": {
+      "type": "string"
+    },
+    "recognition_status": {
+      "type": "string",
+      "enum": [
+        "Recognised",
+        "Pending verification",
+        "Not stated"
+      ],
+      "default": "Not stated"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "public_contact": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published"
+      ],
+      "default": "draft"
+    },
+    "is_demo": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "published"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

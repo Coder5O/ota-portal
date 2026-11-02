@@ -1,0 +1,105 @@
+{
+  "name": "Member",
+  "type": "object",
+  "properties": {
+    "membership_number": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "community_name": {
+      "type": "string"
+    },
+    "institution_slug": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "application_reference": {
+      "type": "string"
+    },
+    "joined_date": {
+      "type": "string"
+    },
+    "review_date": {
+      "type": "string",
+      "description": "Membership renewal or review date"
+    },
+    "approval_authority": {
+      "type": "string",
+      "description": "Authority that approved the membership"
+    },
+    "approval_date": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Active",
+        "Suspended",
+        "Archived"
+      ],
+      "default": "Active"
+    },
+    "status_reason": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "membership_number",
+    "full_name",
+    "email"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

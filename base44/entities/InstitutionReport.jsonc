@@ -1,0 +1,118 @@
+{
+  "name": "InstitutionReport",
+  "type": "object",
+  "properties": {
+    "institution_slug": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "period": {
+      "type": "string",
+      "description": "Reporting period, e.g. Q3 2026"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "progress": {
+      "type": "number",
+      "default": 0,
+      "description": "Reported progress in percent"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Submitted",
+        "Approved",
+        "Returned"
+      ],
+      "default": "Draft"
+    },
+    "submitted_by": {
+      "type": "string"
+    },
+    "submitted_date": {
+      "type": "string"
+    },
+    "decided_by": {
+      "type": "string"
+    },
+    "decision_note": {
+      "type": "string"
+    },
+    "approval_authority": {
+      "type": "string",
+      "description": "Authority that approved the report, resolved from the configured governance rule"
+    },
+    "approval_date": {
+      "type": "string"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "internal",
+        "public"
+      ],
+      "default": "internal"
+    }
+  },
+  "required": [
+    "institution_slug",
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.institution_slug": "{{user.data.institution_slug}}"
+        },
+        {
+          "$and": [
+            {
+              "data.visibility": "public"
+            },
+            {
+              "data.status": "Approved"
+            }
+          ]
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.institution_slug": "{{user.data.institution_slug}}"
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.institution_slug": "{{user.data.institution_slug}}"
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "name": "MemberApplication",
+  "type": "object",
+  "properties": {
+    "reference": {
+      "type": "string",
+      "description": "Unique application reference"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "preferred_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string",
+      "description": "Namibian region or international region"
+    },
+    "community_name": {
+      "type": "string",
+      "description": "Traditional community, chapter, constituency or approved structure"
+    },
+    "diaspora_chapter": {
+      "type": "string"
+    },
+    "purpose": {
+      "type": "string",
+      "description": "Applicant's stated purpose"
+    },
+    "title": {
+      "type": "string",
+      "description": "Customary title, for leaders and officeholders"
+    },
+    "jurisdiction": {
+      "type": "string"
+    },
+    "appointment_basis": {
+      "type": "string",
+      "description": "How appointed or elected"
+    },
+    "term_start": {
+      "type": "string"
+    },
+    "term_end": {
+      "type": "string"
+    },
+    "document_uris": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Private storage URIs of supporting documents"
+    },
+    "documents": {
+      "type": "array",
+      "description": "Supporting documents with the verification decision taken on each",
+      "items": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "reviewed_by": {
+            "type": "string"
+          },
+          "reviewed_at": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "consent": {
+      "type": "boolean",
+      "default": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Submitted",
+        "Under Review",
+        "More Information Required",
+        "Approved",
+        "Rejected",
+        "Suspended",
+        "Archived"
+      ],
+      "default": "Submitted"
+    },
+    "review_notes": {
+      "type": "string"
+    },
+    "decision_reason": {
+      "type": "string"
+    },
+    "decided_by": {
+      "type": "string"
+    },
+    "decided_date": {
+      "type": "string"
+    },
+    "approval_authority": {
+      "type": "string",
+      "description": "Authority that held the decision, resolved from the configured approval rule"
+    },
+    "information_request": {
+      "type": "string"
+    },
+    "is_demo": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "reference",
+    "full_name",
+    "email",
+    "category"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "data.email": "{{user.email}}"
+        },
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

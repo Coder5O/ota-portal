@@ -1,0 +1,122 @@
+{
+  "name": "Document",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Constitution",
+        "Governance",
+        "Meeting paper",
+        "Minutes",
+        "Resolution",
+        "Report",
+        "Policy",
+        "Notice"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "file_uri": {
+      "type": "string",
+      "description": "Private storage URI"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "Public storage URL where the document is approved for release"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "effective_date": {
+      "type": "string"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "public",
+        "internal",
+        "confidential"
+      ],
+      "default": "internal"
+    },
+    "institution_slug": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "superseded",
+        "archived"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.visibility": "public"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "$and": [
+            {
+              "data.institution_slug": "{{user.data.institution_slug}}"
+            },
+            {
+              "data.visibility": {
+                "$ne": "confidential"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.institution_slug": "{{user.data.institution_slug}}"
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "data.institution_slug": "{{user.data.institution_slug}}"
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
