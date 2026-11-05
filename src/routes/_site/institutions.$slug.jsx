@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
+import { INSTITUTIONS } from "@/lib/institutions";
 import { PageHero } from "@/components/site/PageHero";
 import { Section, EmptyNote } from "@/components/site/PageParts";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
@@ -13,17 +14,38 @@ export const Route = createFileRoute("/_site/institutions/$slug")({
     ],
   }),
   loader: async ({ params }) => {
-    const page = await base44.entities.Institution.filter({ slug: params.slug }, { limit: 1 });
-    const institution = page.items?.[0];
-    if (!institution) throw notFound();
+    const constitutionalDef = INSTITUTIONS.find((i) => i.slug === params.slug);
 
-    const [officeholders, resolutions] = await Promise.all([
-      base44.entities.Officeholder.filter({ institution_slug: params.slug, status: "published" }, { sort: "sort_order", limit: 50 }),
+    const [page, officeholders, resolutions] = await Promise.all([
+      base44.entities.Institution.filter({ slug: params.slug }, { limit: 1 }),
+      base44.entities.Officeholder.filter(
+        { institution_slug: params.slug, status: "published" },
+        { sort: "sort_order", limit: 50 },
+      ),
       base44.entities.Resolution.filter(
         { institution_slug: params.slug, visibility: "public", status: "Approved" },
         { sort: "-approval_date", limit: 10 },
       ),
     ]);
+
+    const liveRecord = page?.items?.[0];
+
+    // If it exists neither in Firestore nor in the constitutional framework, 404
+    if (!liveRecord && !constitutionalDef) {
+      throw notFound();
+    }
+
+    const institution = {
+      slug: params.slug,
+      name: liveRecord?.name || constitutionalDef?.name || "Traditional Institution",
+      native_name: liveRecord?.native_name || constitutionalDef?.native || "",
+      summary: liveRecord?.summary || constitutionalDef?.summary || "An institutional structure of the Ovaherero Traditional Authority.",
+      mandate: liveRecord?.mandate || constitutionalDef?.mandate || "",
+      responsibilities: liveRecord?.responsibilities || constitutionalDef?.responsibilities || [],
+      reporting_line: liveRecord?.reporting_line || constitutionalDef?.reporting_line || "",
+      is_demo: liveRecord ? Boolean(liveRecord.is_demo) : false,
+      ...liveRecord,
+    };
 
     return { institution, officeholders: officeholders.items || [], resolutions: resolutions.items || [] };
   },

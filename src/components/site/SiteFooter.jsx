@@ -14,7 +14,10 @@ const COLUMNS = [
   },
   {
     title: "Institutions",
-    links: INSTITUTIONS.slice(0, 5).map((inst) => ({ to: `/institutions/${inst.slug}`, label: inst.name })),
+    links: [
+      { to: "/institutions", label: "All Institutions" },
+      ...INSTITUTIONS.slice(0, 5).map((inst) => ({ to: `/institutions/${inst.slug}`, label: inst.name })),
+    ],
   },
   {
     title: "Community",

@@ -25,10 +25,13 @@ const PRIMARY = [
   },
   {
     label: "Institutions",
-    children: INSTITUTIONS.slice(0, 9).map((inst) => ({
-      to: `/institutions/${inst.slug}`,
-      label: inst.name,
-    })),
+    children: [
+      { to: "/institutions", label: "Overview: All Institutions" },
+      ...INSTITUTIONS.slice(0, 9).map((inst) => ({
+        to: `/institutions/${inst.slug}`,
+        label: inst.name,
+      })),
+    ],
   },
   { to: "/news", label: "News & Media" },
   { to: "/events", label: "Events" },
