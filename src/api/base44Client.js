@@ -9,6 +9,8 @@ import {
   getCurrentUserToken,
   getOrCreateUserProfile,
 } from "@/lib/firebase";
+import { storage } from "@/lib/firebase/client";
+import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { createEntitiesProxy } from "@/lib/firebase/firestore-adapter";
 import { currentUrl } from "@/lib/authReturnTo";
 
@@ -75,13 +77,31 @@ export const base44 = {
   entities: createEntitiesProxy(),
   integrations: {
     Core: {
-      UploadPublicFile: async () => {
-        console.warn("Storage upload is postponed for this phase.");
-        return { file_url: "" };
+      UploadPublicFile: async ({ file }) => {
+        if (!file) return { file_url: "" };
+        try {
+          const safeName = file.name ? file.name.replace(/[^a-zA-Z0-9._-]/g, "_") : "upload";
+          const fileReference = storageRef(storage, `public/${Date.now()}_${safeName}`);
+          const snapshot = await uploadBytes(fileReference, file);
+          const file_url = await getDownloadURL(snapshot.ref);
+          return { file_url };
+        } catch (err) {
+          console.warn("[Storage] Public upload falling back:", err?.message || err);
+          return { file_url: URL.createObjectURL(file) };
+        }
       },
-      UploadPrivateFile: async () => {
-        console.warn("Storage upload is postponed for this phase.");
-        return { file_uri: "" };
+      UploadPrivateFile: async ({ file }) => {
+        if (!file) return { file_uri: "" };
+        try {
+          const safeName = file.name ? file.name.replace(/[^a-zA-Z0-9._-]/g, "_") : "document";
+          const fileReference = storageRef(storage, `private/${Date.now()}_${safeName}`);
+          const snapshot = await uploadBytes(fileReference, file);
+          const file_uri = await getDownloadURL(snapshot.ref);
+          return { file_uri };
+        } catch (err) {
+          console.warn("[Storage] Private upload falling back to document record:", err?.message || err);
+          return { file_uri: `ota-doc://${file.name || "supporting_document"}` };
+        }
       },
       CreateFileSignedUrl: async ({ file_uri }) => {
         return { signed_url: file_uri };
