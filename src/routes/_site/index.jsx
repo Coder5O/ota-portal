@@ -6,6 +6,7 @@ import { Image } from "@/components/ui/image";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
 import { EmptyNote } from "@/components/site/PageParts";
 import { dayMonth, fmtDate } from "@/lib/format";
+import { INSTITUTIONS } from "@/lib/institutions";
 
 const HERO_IMAGE =
   "https://media.base44.com/images/public/6ae34c9a19c15fe652c019e1/934e2f759_generated_image.png";
@@ -33,10 +34,22 @@ export const Route = createFileRoute("/_site/")({
         { sort: "sort_order", limit: 1 },
       ),
     ]);
+
+    const liveInstitutions = institutions.items || [];
+    const institutionsList = liveInstitutions.length > 0
+      ? liveInstitutions
+      : INSTITUTIONS.slice(0, 6).map((inst) => ({
+          id: inst.slug,
+          slug: inst.slug,
+          name: inst.name,
+          native_name: inst.native,
+          summary: inst.summary,
+        }));
+
     return {
       news: news.items || [],
       events: events.items || [],
-      institutions: institutions.items || [],
+      institutions: institutionsList,
       welcome: welcome.items?.[0] || null,
     };
   },

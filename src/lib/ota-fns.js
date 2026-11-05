@@ -218,6 +218,35 @@ export const submitEnquiry = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const registerForEvent = createServerFn({ method: "POST" })
+  .validator(
+    z.object({
+      event_id: z.string().min(1).max(100),
+      event_title: z.string().max(200).optional(),
+      name: z.string().min(2).max(120),
+      email: z.string().email().max(160),
+      phone: optionalText(40),
+      organisation: optionalText(160),
+    }),
+  )
+  .handler(async ({ data, context }) => {
+    const service = context.getBase44().asServiceRole;
+    const record = await service.entities.EventRegistration.create({
+      ...data,
+      email: data.email.trim().toLowerCase(),
+      name: data.name.trim(),
+      created_date: new Date().toISOString(),
+      status: "Confirmed",
+    });
+    await audit(service, {
+      action: "event.registered",
+      target_type: "EventRegistration",
+      target_id: record.id,
+      detail: `${data.name} registered for ${data.event_title || data.event_id}`,
+    });
+    return { ok: true, id: record.id };
+  });
+
 const decisionSchema = z.object({
   id: z.string().min(1).max(80),
   action: z.enum(["approve", "reject", "request_info", "under_review", "suspend", "archive", "reactivate"]),

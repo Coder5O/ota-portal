@@ -4,6 +4,7 @@ import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { PageHero } from "@/components/site/PageHero";
 import { ProseBlocks, Section, EmptyNote } from "@/components/site/PageParts";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
+import { INSTITUTIONS } from "@/lib/institutions";
 
 export const Route = createFileRoute("/_site/about")({
   head: () => ({
@@ -17,7 +18,19 @@ export const Route = createFileRoute("/_site/about")({
       base44.entities.ContentBlock.filter({ page_slug: "about", status: "published" }, { sort: "sort_order", limit: 50 }),
       base44.entities.Institution.filter({ status: "published" }, { sort: "sort_order", limit: 20 }),
     ]);
-    return { blocks: blocks.items || [], institutions: institutions.items || [] };
+
+    const liveItems = institutions.items || [];
+    const list = liveItems.length > 0
+      ? liveItems
+      : INSTITUTIONS.slice(0, 9).map((inst) => ({
+          id: inst.slug,
+          slug: inst.slug,
+          name: inst.name,
+          native_name: inst.native,
+          summary: inst.summary,
+        }));
+
+    return { blocks: blocks.items || [], institutions: list };
   },
   component: AboutPage,
 });

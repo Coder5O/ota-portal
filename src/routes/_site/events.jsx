@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
+import { registerForEvent } from "@/lib/ota-fns";
 import { PageHero } from "@/components/site/PageHero";
 import { Section, EmptyNote } from "@/components/site/PageParts";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
@@ -39,13 +40,15 @@ function EventsPage() {
     }
     setSubmitting(true);
     try {
-      await base44.entities.EventRegistration.create({
-        event_id: selected.id,
-        event_title: selected.title,
-        name: form.name.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        organisation: form.organisation.trim(),
+      await registerForEvent({
+        data: {
+          event_id: selected.id,
+          event_title: selected.title,
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          organisation: form.organisation.trim(),
+        },
       });
       setDone(true);
     } catch (error) {

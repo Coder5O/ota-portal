@@ -66,12 +66,15 @@ function ConstitutionPage() {
   }, [articles, term, selectedChapter]);
 
   const openDocument = () => {
-    if (!document) return;
+    if (!document) {
+      window.print();
+      return;
+    }
     if (document.file_url) {
       window.open(document.file_url, "_blank", "noopener");
       return;
     }
-    toast.info("Authorised PDF document is available from the OTA Secretariat.");
+    toast.info("Authorised official PDF document is being prepared. You can print or save this page as PDF via your browser.");
   };
 
   return (
