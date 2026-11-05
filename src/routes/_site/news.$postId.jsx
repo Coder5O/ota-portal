@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_site/news/$postId")({
       return { post };
     } catch (error) {
       if (error?.status === 404) throw notFound();
-      throw error;
+      throw notFound();
     }
   },
   component: NewsArticle,
