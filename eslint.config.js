@@ -4,7 +4,7 @@ import globals from "globals";
 
 export default [
   {
-    ignores: ["node_modules", "dist", ".wrangler", ".tanstack", "src/routeTree.gen.ts", "src/components/ui/**"],
+    ignores: ["node_modules", "dist", ".wrangler", ".tanstack", ".output", ".vercel", "src/routeTree.gen.ts", "src/components/ui/**"],
   },
   pluginJs.configs.recommended,
   {

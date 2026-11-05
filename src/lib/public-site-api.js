@@ -49,13 +49,18 @@ const readPublicContent = createServerFn({ method: "POST" })
       }
     }
 
-    if (data.op === "list") {
-      const page = await entity.list(data.options || {});
-      return { items: page?.items || [] };
-    }
+    try {
+      if (data.op === "list") {
+        const page = await entity.list(data.options || {});
+        return { items: page?.items || [] };
+      }
 
-    const page = await entity.filter(data.filter || {}, data.options || {});
-    return { items: page?.items || [] };
+      const page = await entity.filter(data.filter || {}, data.options || {});
+      return { items: page?.items || [] };
+    } catch (error) {
+      console.warn(`[publicSiteApi] Error reading ${data.entity} (op: ${data.op}):`, error?.message || error);
+      return { items: [] };
+    }
   });
 
 const collection = (entity) => ({

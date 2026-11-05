@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { PageHero } from "@/components/site/PageHero";
 import { Section } from "@/components/site/PageParts";
 import { Button } from "@/components/ui/button";

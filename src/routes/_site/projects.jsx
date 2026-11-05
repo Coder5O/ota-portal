@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { base44 } from "@/api/base44Client";
+import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { PageHero } from "@/components/site/PageHero";
 import { ProseBlocks, Section } from "@/components/site/PageParts";
 

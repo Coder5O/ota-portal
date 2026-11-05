@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { Section } from "@/components/site/PageParts";
 import { Image } from "@/components/ui/image";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";

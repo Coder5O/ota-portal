@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircle, Download, Search } from "lucide-react";
-import { base44 } from "@/api/base44Client";
+import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { PageHero } from "@/components/site/PageHero";
 import { Section, EmptyNote } from "@/components/site/PageParts";
 import { Input } from "@/components/ui/input";

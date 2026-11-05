@@ -67,7 +67,7 @@ service cloud.firestore {
     }
 
     match /officeholders/{id} {
-      allow read: if resource.data.status == 'active' || isAdmin();
+      allow read: if resource.data.status == 'published' || resource.data.status == 'active' || isAdmin();
       allow write: if isAdmin();
     }
 
