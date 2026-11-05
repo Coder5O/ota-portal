@@ -22,17 +22,22 @@ export const Route = createFileRoute("/_site/constitution")({
     ],
   }),
   loader: async () => {
-    const [articles, docs] = await Promise.all([
-      base44.entities.ConstitutionArticle.filter(
-        { status: "published" },
-        { sort: "sort_order", limit: 250 },
-      ),
-      base44.entities.Document.filter(
-        { category: "Constitution", visibility: "public" },
-        { limit: 10 },
-      ),
-    ]);
-    return { articles: articles.items || [], document: docs.items?.[0] || null };
+    try {
+      const [articles, docs] = await Promise.all([
+        base44.entities.ConstitutionArticle.filter(
+          { status: "published" },
+          { sort: "sort_order", limit: 250 },
+        ),
+        base44.entities.Document.filter(
+          { category: "Constitution", visibility: "public" },
+          { limit: 10 },
+        ),
+      ]);
+      return { articles: articles?.items || [], document: docs?.items?.[0] || null };
+    } catch (err) {
+      console.warn("Constitution loader failed:", err?.message || err);
+      return { articles: [], document: null };
+    }
   },
   component: ConstitutionPage,
 });

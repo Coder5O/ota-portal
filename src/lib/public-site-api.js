@@ -28,7 +28,7 @@ const ReadInput = z.object({
   options: z
     .object({
       sort: z.string().max(60).optional(),
-      limit: z.number().int().min(1).max(200).optional(),
+      limit: z.number().int().min(1).max(1000).optional(),
       cursor: z.string().optional(),
     })
     .optional(),
