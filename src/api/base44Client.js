@@ -17,11 +17,24 @@ import { currentUrl } from "@/lib/authReturnTo";
 /**
  * Converts a file (specifically an image) to an optimized, compressed Base64 Data URL.
  * Downscales images over 1400px so they easily fit in Firestore documents without quality loss.
+ * Guarantees resolution with a strict safety timeout so it never hangs.
  */
 async function fileToDataUrl(file, maxWidth = 1400, maxHeight = 1400, quality = 0.82) {
   if (!file) return "";
   return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      try {
+        const fallbackReader = new FileReader();
+        fallbackReader.onload = () => resolve(String(fallbackReader.result || ""));
+        fallbackReader.onerror = () => resolve("");
+        fallbackReader.readAsDataURL(file);
+      } catch {
+        resolve("");
+      }
+    }, 3500);
+
     if (typeof window === "undefined" || !window.FileReader) {
+      clearTimeout(timer);
       resolve("");
       return;
     }
@@ -29,46 +42,64 @@ async function fileToDataUrl(file, maxWidth = 1400, maxHeight = 1400, quality = 
     // For non-images or SVGs, read as data URL directly without canvas compression
     if (!file.type || !file.type.startsWith("image/") || file.type.includes("svg")) {
       const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result || ""));
-      reader.onerror = () => resolve("");
+      reader.onload = () => {
+        clearTimeout(timer);
+        resolve(String(reader.result || ""));
+      };
+      reader.onerror = () => {
+        clearTimeout(timer);
+        resolve("");
+      };
       reader.readAsDataURL(file);
       return;
     }
 
     const reader = new FileReader();
     reader.onload = (e) => {
+      const resultStr = String(e.target?.result || "");
       const img = new Image();
       img.onload = () => {
-        let width = img.width;
-        let height = img.height;
+        clearTimeout(timer);
+        try {
+          let width = img.width;
+          let height = img.height;
 
-        if (width > maxWidth || height > maxHeight) {
-          if (width > height) {
-            height = Math.round((height * maxWidth) / width);
-            width = maxWidth;
-          } else {
-            width = Math.round((width * maxHeight) / height);
-            height = maxHeight;
+          if (width > maxWidth || height > maxHeight) {
+            if (width > height) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            } else {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
           }
-        }
 
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.drawImage(img, 0, 0, width, height);
-          const mime = file.type === "image/png" ? "image/png" : "image/jpeg";
-          const dataUrl = canvas.toDataURL(mime, quality);
-          resolve(dataUrl);
-          return;
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const mime = file.type === "image/png" ? "image/png" : "image/jpeg";
+            const dataUrl = canvas.toDataURL(mime, quality);
+            resolve(dataUrl);
+            return;
+          }
+          resolve(resultStr);
+        } catch {
+          resolve(resultStr);
         }
-        resolve(String(e.target?.result || ""));
       };
-      img.onerror = () => resolve(String(e.target?.result || ""));
-      img.src = String(e.target?.result || "");
+      img.onerror = () => {
+        clearTimeout(timer);
+        resolve(resultStr);
+      };
+      img.src = resultStr;
     };
-    reader.onerror = () => resolve("");
+    reader.onerror = () => {
+      clearTimeout(timer);
+      resolve("");
+    };
     reader.readAsDataURL(file);
   });
 }
@@ -150,11 +181,17 @@ export const base44 = {
         try {
           const safeName = file.name ? file.name.replace(/[^a-zA-Z0-9._-]/g, "_") : "upload";
           const fileReference = storageRef(storage, `public/${Date.now()}_${safeName}`);
-          const snapshot = await uploadBytes(fileReference, file);
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Firebase Storage timed out after 3s")), 3000),
+          );
+          const snapshot = await Promise.race([
+            uploadBytes(fileReference, file),
+            timeoutPromise,
+          ]);
           const file_url = await getDownloadURL(snapshot.ref);
           return { file_url };
         } catch (err) {
-          console.warn("[Storage] Cloud Storage upload bypassed/failed, optimizing to persistent data URI:", err?.message || err);
+          console.warn("[Storage] Cloud Storage upload timed out or failed, using persistent data URI:", err?.message || err);
           const file_url = await fileToDataUrl(file);
           return { file_url };
         }
@@ -164,11 +201,17 @@ export const base44 = {
         try {
           const safeName = file.name ? file.name.replace(/[^a-zA-Z0-9._-]/g, "_") : "document";
           const fileReference = storageRef(storage, `private/${Date.now()}_${safeName}`);
-          const snapshot = await uploadBytes(fileReference, file);
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Firebase Storage timed out after 3s")), 3000),
+          );
+          const snapshot = await Promise.race([
+            uploadBytes(fileReference, file),
+            timeoutPromise,
+          ]);
           const file_uri = await getDownloadURL(snapshot.ref);
           return { file_uri };
         } catch (err) {
-          console.warn("[Storage] Private Cloud Storage upload bypassed/failed, falling back to data URI:", err?.message || err);
+          console.warn("[Storage] Private Cloud Storage upload timed out or failed, falling back to data URI:", err?.message || err);
           const file_uri = await fileToDataUrl(file);
           return { file_uri: file_uri || `ota-doc://${file.name || "supporting_document"}` };
         }

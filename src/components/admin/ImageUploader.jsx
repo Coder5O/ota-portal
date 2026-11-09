@@ -32,7 +32,7 @@ export function ImageUploader({
       const res = await base44.integrations.Core.UploadPublicFile({ file });
       if (res?.file_url) {
         onChange(res.file_url);
-        toast.success("Image uploaded successfully!");
+        toast.success("Image attached! Click 'Save Image Changes' to publish.");
       } else {
         toast.error("Upload did not return a valid file URL.");
       }
@@ -40,6 +40,11 @@ export function ImageUploader({
       toast.error("Image upload failed: " + (err?.message || "Unknown error"));
     } finally {
       setUploading(false);
+      try {
+        if (e.target) e.target.value = "";
+      } catch {
+        // ignore
+      }
     }
   };
 
