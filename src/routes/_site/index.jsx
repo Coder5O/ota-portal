@@ -1153,36 +1153,39 @@ function HomePage() {
             <EmptyNote>No upcoming ceremonies or meetings scheduled.</EmptyNote>
           ) : (
             <div className="mt-12 grid gap-6 md:grid-cols-3">
-              {events.map((evt) => (
-                <div key={evt.id} className="flex gap-5 border border-border bg-card p-6">
-                  <div className="flex flex-col items-center justify-center border border-gold/40 bg-gold/10 px-3.5 py-2 text-center">
-                    <span className="font-display text-2xl font-bold leading-none text-[hsl(var(--primary))]">
-                      {dayMonth(evt.starts_at).split(" ")[0]}
-                    </span>
-                    <span className="mt-1 text-[9.5px] uppercase tracking-wider text-muted-foreground">
-                      {dayMonth(evt.starts_at).split(" ")[1]}
-                    </span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="bg-primary/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
-                        Official Gathering
+              {events.map((evt) => {
+                const dm = dayMonth(evt.starts_at);
+                return (
+                  <div key={evt.id} className="flex gap-5 border border-border bg-card p-6">
+                    <div className="flex flex-col items-center justify-center border border-gold/40 bg-gold/10 px-3.5 py-2 text-center">
+                      <span className="font-display text-2xl font-bold leading-none text-[hsl(var(--primary))]">
+                        {dm?.day || "—"}
+                      </span>
+                      <span className="mt-1 text-[9.5px] uppercase tracking-wider text-muted-foreground">
+                        {dm?.month || ""}
                       </span>
                     </div>
-                    <h3 className="mt-2 font-display text-lg leading-snug">
-                      <Link to={`/events/${evt.slug || evt.id}`} className="hover:text-[hsl(var(--primary))]">
-                        {evt.title}
-                      </Link>
-                    </h3>
-                    {evt.location ? (
-                      <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-muted-foreground">
-                        <MapPin className="h-3 w-3 shrink-0 text-gold" />
-                        {evt.location}
-                      </p>
-                    ) : null}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="bg-primary/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
+                          Official Gathering
+                        </span>
+                      </div>
+                      <h3 className="mt-2 font-display text-lg leading-snug">
+                        <Link to={`/events/${evt.slug || evt.id}`} className="hover:text-[hsl(var(--primary))]">
+                          {evt.title}
+                        </Link>
+                      </h3>
+                      {evt.location ? (
+                        <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-muted-foreground">
+                          <MapPin className="h-3 w-3 shrink-0 text-gold" />
+                          {evt.location}
+                        </p>
+                      ) : null}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

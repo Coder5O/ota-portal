@@ -20,13 +20,25 @@ export function fmtDateTime(value) {
 }
 
 export function dayMonth(value) {
-  if (!value) return { day: "—", month: "" };
+  if (!value) {
+    const fallback = { day: "—", month: "" };
+    fallback.toString = () => "—";
+    fallback.split = (delim) => "—".split(delim);
+    return fallback;
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return { day: "—", month: "" };
-  return {
-    day: date.toLocaleDateString("en-GB", { day: "2-digit", timeZone: "UTC" }),
-    month: date.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC" }).toUpperCase(),
-  };
+  if (Number.isNaN(date.getTime())) {
+    const fallback = { day: "—", month: "" };
+    fallback.toString = () => "—";
+    fallback.split = (delim) => "—".split(delim);
+    return fallback;
+  }
+  const day = date.toLocaleDateString("en-GB", { day: "2-digit", timeZone: "UTC" });
+  const month = date.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC" }).toUpperCase();
+  const res = { day, month };
+  res.toString = () => `${day} ${month}`;
+  res.split = (delim) => `${day} ${month}`.split(delim);
+  return res;
 }
 
 export function paragraphs(text) {
