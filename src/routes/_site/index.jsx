@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Landmark, ScrollText, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, CalendarDays, Landmark, ScrollText, ShieldCheck, Users } from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { Button } from "@/components/ui/button";
 import { Image } from "@/components/ui/image";
@@ -37,123 +37,158 @@ const LANDSCAPE_SLIDES = [
   },
 ];
 
-/** Full-bleed hero carousel with auto-advance, Ken Burns zoom, and slide controls. */
-function HeroSlideshow({ heroImg }) {
-  // Build slide array: custom/default hero first, then landscape slides
+/**
+ * Full-bleed hero background slideshow.
+ * Images fill the entire hero section behind the text, blending into the
+ * primary maroon colour on all edges. Auto-advances every 6 s with a slow
+ * cross-fade and Ken Burns zoom. Pauses while the user hovers.
+ */
+function HeroSlideshow({ heroImg, children }) {
   const slides = [
     {
       src: heroImg,
       alt: "Ovaherero women united under the Red Flag, Namibia",
       region: "Ovaherero Homeland",
-      caption: "United under the Red Flag, guardians of custom and continuity.",
     },
     ...LANDSCAPE_SLIDES,
   ];
 
   const [current, setCurrent] = useState(0);
-  const [animating, setAnimating] = useState(false);
+  const [prev, setPrev] = useState(null);
   const paused = useRef(false);
-  const intervalRef = useRef(null);
+  const timerRef = useRef(null);
 
   const goTo = useCallback(
     (idx) => {
-      if (animating) return;
-      setAnimating(true);
-      setCurrent((idx + slides.length) % slides.length);
-      setTimeout(() => setAnimating(false), 900);
+      const next = (idx + slides.length) % slides.length;
+      setPrev(current);
+      setCurrent(next);
+      // Clear the "prev" ghost after the crossfade completes
+      setTimeout(() => setPrev(null), 1400);
     },
-    [animating, slides.length],
+    [current, slides.length],
   );
 
-  const next = useCallback(() => goTo(current + 1), [current, goTo]);
-  const prev = useCallback(() => goTo(current - 1), [current, goTo]);
-
-  // Auto-advance every 5.5 s, paused on hover
+  // Auto-advance every 6 s
   useEffect(() => {
-    intervalRef.current = setInterval(() => {
+    timerRef.current = setInterval(() => {
       if (!paused.current) goTo(current + 1);
-    }, 5500);
-    return () => clearInterval(intervalRef.current);
+    }, 6000);
+    return () => clearInterval(timerRef.current);
   }, [current, goTo]);
 
   return (
     <div
       className="relative overflow-hidden"
-      style={{ minHeight: "340px" }}
       onMouseEnter={() => { paused.current = true; }}
       onMouseLeave={() => { paused.current = false; }}
     >
-      {/* Slides */}
-      {slides.map((slide, i) => (
-        <div
-          key={i}
-          aria-hidden={i !== current}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            i === current ? "opacity-100 z-10" : "opacity-0 z-0"
-          }`}
-        >
-          {/* Ken Burns zoom on active slide */}
-          <div
-            className={`absolute inset-0 transition-transform duration-[6s] ease-out ${
-              i === current ? "scale-105" : "scale-100"
-            }`}
-          >
-            <img
-              src={slide.src}
-              alt={slide.alt}
-              className="h-full w-full object-cover"
-              loading={i === 0 ? "eager" : "lazy"}
-            />
-          </div>
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--primary))]/70 via-transparent to-[hsl(var(--primary))]/20 lg:bg-gradient-to-r lg:from-[hsl(var(--primary))]/30 lg:via-transparent lg:to-transparent" />
-          {/* Caption pill */}
-          {i === current && (
-            <div className="absolute bottom-4 left-4 right-16 z-20 flex flex-col gap-1">
-              <span className="inline-block w-fit bg-[hsl(var(--primary))]/80 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.2em] text-primary-foreground/80 backdrop-blur-sm">
-                {slide.region}
-              </span>
-              <p className="max-w-xs text-[11px] leading-snug text-primary-foreground/70 backdrop-blur-[2px]">
-                {slide.caption}
-              </p>
+      {/* Background slide stack */}
+      <div className="absolute inset-0 z-0">
+        {slides.map((slide, i) => {
+          const isActive = i === current;
+          const isLeaving = i === prev;
+          return (
+            <div
+              key={i}
+              aria-hidden={!isActive}
+              style={{
+                position: "absolute",
+                inset: 0,
+                transition: "opacity 1.4s ease-in-out",
+                opacity: isActive ? 1 : isLeaving ? 0 : 0,
+                zIndex: isActive ? 2 : isLeaving ? 1 : 0,
+              }}
+            >
+              {/* Ken Burns zoom — only on active slide */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  transform: isActive ? "scale(1.07)" : "scale(1)",
+                  transition: "transform 7s ease-out",
+                }}
+              >
+                <img
+                  src={slide.src}
+                  alt={slide.alt}
+                  className="h-full w-full object-cover"
+                  loading={i === 0 ? "eager" : "lazy"}
+                />
+              </div>
             </div>
-          )}
-        </div>
-      ))}
+          );
+        })}
 
-      {/* Prev / Next arrows */}
-      <button
-        type="button"
-        onClick={prev}
-        aria-label="Previous slide"
-        className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-none bg-black/30 p-1.5 text-white/80 backdrop-blur-sm transition-colors hover:bg-black/50 hover:text-white"
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </button>
-      <button
-        type="button"
-        onClick={next}
-        aria-label="Next slide"
-        className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-none bg-black/30 p-1.5 text-white/80 backdrop-blur-sm transition-colors hover:bg-black/50 hover:text-white"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </button>
+        {/* Multi-directional blend into the maroon background */}
+        {/* left fade — merges with the text column */}
+        <div
+          className="pointer-events-none absolute inset-0 z-10"
+          style={{
+            background:
+              "linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)/0.82) 22%, hsl(var(--primary)/0.35) 55%, transparent 100%)",
+          }}
+        />
+        {/* top & bottom fade */}
+        <div
+          className="pointer-events-none absolute inset-0 z-10"
+          style={{
+            background:
+              "linear-gradient(to bottom, hsl(var(--primary)/0.60) 0%, transparent 30%, transparent 65%, hsl(var(--primary)/0.70) 100%)",
+          }}
+        />
+        {/* right edge vignette */}
+        <div
+          className="pointer-events-none absolute inset-0 z-10"
+          style={{
+            background:
+              "linear-gradient(to left, hsl(var(--primary)/0.45) 0%, transparent 30%)",
+          }}
+        />
+        {/* global colour tint to unify image hues with the brand */}
+        <div
+          className="pointer-events-none absolute inset-0 z-10"
+          style={{ background: "hsl(var(--primary)/0.18)", mixBlendMode: "multiply" }}
+        />
+      </div>
 
-      {/* Dot indicators */}
-      <div className="absolute bottom-3 right-3 z-20 flex gap-1.5">
+      {/* Foreground content */}
+      <div className="relative z-20">{children}</div>
+
+      {/* Slide indicator dots — bottom-centre */}
+      <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 gap-2">
         {slides.map((_, i) => (
           <button
             key={i}
             type="button"
             onClick={() => goTo(i)}
             aria-label={`Go to slide ${i + 1}`}
-            className={`h-1.5 rounded-none transition-all duration-300 ${
-              i === current
-                ? "w-6 bg-gold"
-                : "w-1.5 bg-white/50 hover:bg-white/80"
-            }`}
+            style={{
+              height: "3px",
+              width: i === current ? "28px" : "8px",
+              background: i === current ? "hsl(var(--gold, 45 85% 60%))" : "rgba(255,255,255,0.45)",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              transition: "width 0.4s ease, background 0.4s ease",
+            }}
           />
         ))}
+      </div>
+
+      {/* Region label — bottom-right corner */}
+      <div className="absolute bottom-10 right-6 z-30 hidden sm:block">
+        <span
+          style={{
+            fontSize: "9px",
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "rgba(255,255,255,0.55)",
+            transition: "opacity 0.6s",
+          }}
+        >
+          {slides[current].region}
+        </span>
       </div>
     </div>
   );
@@ -243,14 +278,15 @@ function HomePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-[hsl(var(--primary))] text-primary-foreground">
-        <div className="grid lg:grid-cols-[1.05fr_1fr]">
-          <div className="px-5 py-16 sm:px-8 sm:py-20 lg:max-w-2xl lg:justify-self-end lg:py-28 lg:pl-12 lg:pr-16">
-            <p className="eyebrow rise">Ovaherero Traditional Authority</p>
-            <h1 className="rise rise-1 mt-5 text-[2.6rem] leading-[1.02] sm:text-[3.4rem] lg:text-[4.1rem]">
+      {/* ── Full-bleed Hero with background slideshow ─────────────────────── */}
+      <HeroSlideshow heroImg={heroImg}>
+        <section className="relative text-primary-foreground">
+          <div className="shell flex min-h-[520px] flex-col justify-center py-24 sm:min-h-[580px] lg:min-h-[680px] lg:max-w-2xl lg:py-36">
+            <p className="eyebrow rise text-primary-foreground/70">Ovaherero Traditional Authority</p>
+            <h1 className="rise rise-1 mt-5 text-[2.6rem] leading-[1.02] drop-shadow-lg sm:text-[3.4rem] lg:text-[4.5rem]">
               United under the Red Flag, guardians of custom and continuity.
             </h1>
-            <p className="rise rise-2 mt-6 max-w-xl text-[0.98rem] leading-relaxed text-primary-foreground/80">
+            <p className="rise rise-2 mt-6 max-w-xl text-[0.98rem] leading-relaxed text-primary-foreground/80 drop-shadow">
               The official digital home of the Ovaherero Traditional Authority — its leadership, institutions,
               constitution, and communities in Namibia and across the diaspora.
             </p>
@@ -263,18 +299,14 @@ function HomePage() {
               <Button
                 asChild
                 variant="outline"
-                className="rounded-none border-primary-foreground/35 bg-transparent px-6 text-[12px] uppercase tracking-[0.16em] text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                className="rounded-none border-primary-foreground/40 bg-primary-foreground/10 px-6 text-[12px] uppercase tracking-[0.16em] text-primary-foreground backdrop-blur-sm hover:bg-primary-foreground/20 hover:text-primary-foreground"
               >
                 <Link to="/constitution">Read the Constitution</Link>
               </Button>
             </div>
           </div>
-          {/* Hero Slideshow — auto-advances through Namibian landscape photography */}
-          <div className="relative min-h-[280px] sm:min-h-[360px] lg:min-h-[600px]">
-            <HeroSlideshow heroImg={heroImg} />
-          </div>
-        </div>
-      </section>
+        </section>
+      </HeroSlideshow>
 
       <section className="border-b border-border bg-card">
         <div className="shell grid divide-y divide-border sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
