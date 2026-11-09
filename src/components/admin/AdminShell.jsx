@@ -55,7 +55,7 @@ export function AdminShell() {
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/40 lg:flex-row">
-      <aside className="bg-[hsl(var(--ink))] text-[hsl(var(--background))] lg:sticky lg:top-0 lg:h-screen lg:w-64 lg:shrink-0">
+      <aside className="bg-[hsl(var(--ink))] text-[hsl(var(--background))] lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:shrink-0 lg:flex-col">
         <div className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
           <span className="grid h-9 w-9 place-items-center border border-gold/60 font-display text-[11px] text-gold">
             OTA
@@ -65,7 +65,19 @@ export function AdminShell() {
             <p className="text-[9.5px] uppercase tracking-[0.2em] text-white/40">Ovaherero Traditional Authority</p>
           </div>
         </div>
-        <nav className="flex gap-1 overflow-x-auto px-2 py-3 lg:flex-col lg:overflow-visible lg:px-3">
+
+        {/* Prominent Quick-Action button to return to public site */}
+        <div className="border-b border-white/10 p-3">
+          <Link
+            to="/"
+            className="flex w-full items-center justify-center gap-2 border border-gold/50 bg-gold/15 py-2 text-[12px] font-medium uppercase tracking-[0.12em] text-gold transition-colors hover:bg-gold/25"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Public Site
+          </Link>
+        </div>
+
+        <nav className="flex gap-1 overflow-x-auto px-2 py-3 lg:flex-1 lg:flex-col lg:overflow-y-auto lg:px-3">
           {NAV.map((item) => {
             const Icon = item.icon;
             return (
@@ -81,6 +93,7 @@ export function AdminShell() {
             );
           })}
         </nav>
+
         <div className="hidden border-t border-white/10 px-4 py-4 lg:block">
           <p className="truncate text-[11px] text-white/50">{user?.email}</p>
           <p className="mt-0.5 text-[9.5px] uppercase tracking-[0.18em] text-gold">Super Administrator</p>
@@ -98,17 +111,47 @@ export function AdminShell() {
           </div>
         </div>
       </aside>
+
       <div className="min-w-0 flex-1">
-        <div className="border-b border-border bg-background px-5 py-3 lg:hidden">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2 text-[12px] text-muted-foreground">
-              <Landmark className="h-4 w-4" /> Public website
+        {/* Sticky top bar for all screen sizes */}
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur sm:px-6">
+          <div className="flex items-center gap-3">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 border border-gold/60 bg-gold/10 px-3 py-1.5 text-[12px] font-medium tracking-wide text-foreground shadow-sm transition-colors hover:bg-gold/20 hover:text-[hsl(var(--primary))]"
+            >
+              <ArrowLeft className="h-4 w-4 text-gold" />
+              <span>Back to Public Website</span>
             </Link>
-            <button type="button" onClick={() => navigate({ to: "/portal" })} className="text-[12px] text-muted-foreground">
-              Member portal
+            <span className="hidden text-muted-foreground/40 sm:inline">|</span>
+            <span className="hidden text-[11.5px] uppercase tracking-wider text-muted-foreground md:inline">
+              OTA Governance Portal
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3 text-[12px]">
+            <Link
+              to="/portal"
+              className="hidden text-muted-foreground transition-colors hover:text-foreground sm:inline"
+            >
+              Member Portal
+            </Link>
+            <span className="hidden h-3.5 w-px bg-border sm:inline" />
+            <span className="truncate text-foreground/80 font-medium max-w-[180px]">
+              {user?.email}
+            </span>
+            <button
+              type="button"
+              onClick={() => logout()}
+              className="inline-flex items-center gap-1 text-[11.5px] text-muted-foreground hover:text-destructive"
+              title="Sign out"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Sign out</span>
             </button>
           </div>
-        </div>
+        </header>
+
         <main className="mx-auto w-full max-w-6xl px-4 py-7 sm:px-6 lg:px-10 lg:py-10">
           <Outlet />
         </main>
