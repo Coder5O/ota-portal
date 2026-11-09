@@ -1,5 +1,6 @@
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CalendarDays, Landmark, ScrollText, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Landmark, ScrollText, ShieldCheck, Users } from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { Button } from "@/components/ui/button";
 import { Image } from "@/components/ui/image";
@@ -12,6 +13,176 @@ const HERO_IMAGE =
   "https://media.base44.com/images/public/6ae34c9a19c15fe652c019e1/934e2f759_generated_image.png";
 const DETAIL_IMAGE =
   "https://media.base44.com/images/public/6ae34c9a19c15fe652c019e1/a4f4fd11b_generated_image.png";
+
+// Namibian landscape slides shown in the hero carousel after the main hero image.
+// The first slide (index 0) is always the admin-configurable hero image.
+const LANDSCAPE_SLIDES = [
+  {
+    src: "/images/slides/spitzkoppe-sunset.jpg",
+    alt: "Spitzkoppe granite peaks at sunset, Erongo Region",
+    region: "Erongo Region",
+    caption: "The ancient granite peaks of the Spitzkoppe — sacred Ovaherero ancestral land.",
+  },
+  {
+    src: "/images/slides/oryx-dunes.jpg",
+    alt: "Oryx standing on red Kalahari dunes, Namibia",
+    region: "Kalahari, Namibia",
+    caption: "The Oryx — guardian of the red dunes, emblem of Namibian identity.",
+  },
+  {
+    src: "/images/slides/namibia-acacia.jpg",
+    alt: "Lone camelthorn acacia tree on the Etosha pan",
+    region: "Etosha, Namibia",
+    caption: "Solitary beneath the endless sky — the camelthorn witnesses centuries of Ovaherero life.",
+  },
+];
+
+/** Full-bleed hero carousel with auto-advance, Ken Burns zoom, and slide controls. */
+function HeroSlideshow({ heroImg }) {
+  // Build slide array: custom/default hero first, then landscape slides
+  const slides = [
+    {
+      src: heroImg,
+      alt: "Ovaherero women united under the Red Flag, Namibia",
+      region: "Ovaherero Homeland",
+      caption: "United under the Red Flag, guardians of custom and continuity.",
+    },
+    ...LANDSCAPE_SLIDES,
+  ];
+
+  const [current, setCurrent] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const paused = useRef(false);
+  const intervalRef = useRef(null);
+
+  const goTo = useCallback(
+    (idx) => {
+      if (animating) return;
+      setAnimating(true);
+      setCurrent((idx + slides.length) % slides.length);
+      setTimeout(() => setAnimating(false), 900);
+    },
+    [animating, slides.length],
+  );
+
+  const next = useCallback(() => goTo(current + 1), [current, goTo]);
+  const prev = useCallback(() => goTo(current - 1), [current, goTo]);
+
+  // Auto-advance every 5.5 s, paused on hover
+  useEffect(() => {
+    intervalRef.current = setInterval(() => {
+      if (!paused.current) goTo(current + 1);
+    }, 5500);
+    return () => clearInterval(intervalRef.current);
+  }, [current, goTo]);
+
+  return (
+    <div
+      className="relative overflow-hidden"
+      style={{ minHeight: "340px" }}
+      onMouseEnter={() => { paused.current = true; }}
+      onMouseLeave={() => { paused.current = false; }}
+    >
+      {/* Slides */}
+      {slides.map((slide, i) => (
+        <div
+          key={i}
+          aria-hidden={i !== current}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            i === current ? "opacity-100 z-10" : "opacity-0 z-0"
+          }`}
+        >
+          {/* Ken Burns zoom on active slide */}
+          <div
+            className={`absolute inset-0 transition-transform duration-[6s] ease-out ${
+              i === current ? "scale-105" : "scale-100"
+            }`}
+          >
+            <img
+              src={slide.src}
+              alt={slide.alt}
+              className="h-full w-full object-cover"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+          </div>
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--primary))]/70 via-transparent to-[hsl(var(--primary))]/20 lg:bg-gradient-to-r lg:from-[hsl(var(--primary))]/30 lg:via-transparent lg:to-transparent" />
+          {/* Caption pill */}
+          {i === current && (
+            <div className="absolute bottom-4 left-4 right-16 z-20 flex flex-col gap-1">
+              <span className="inline-block w-fit bg-[hsl(var(--primary))]/80 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.2em] text-primary-foreground/80 backdrop-blur-sm">
+                {slide.region}
+              </span>
+              <p className="max-w-xs text-[11px] leading-snug text-primary-foreground/70 backdrop-blur-[2px]">
+                {slide.caption}
+              </p>
+            </div>
+          )}
+        </div>
+      ))}
+
+      {/* Prev / Next arrows */}
+      <button
+        type="button"
+        onClick={prev}
+        aria-label="Previous slide"
+        className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-none bg-black/30 p-1.5 text-white/80 backdrop-blur-sm transition-colors hover:bg-black/50 hover:text-white"
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        onClick={next}
+        aria-label="Next slide"
+        className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-none bg-black/30 p-1.5 text-white/80 backdrop-blur-sm transition-colors hover:bg-black/50 hover:text-white"
+      >
+        <ChevronRight className="h-4 w-4" />
+      </button>
+
+      {/* Dot indicators */}
+      <div className="absolute bottom-3 right-3 z-20 flex gap-1.5">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => goTo(i)}
+            aria-label={`Go to slide ${i + 1}`}
+            className={`h-1.5 rounded-none transition-all duration-300 ${
+              i === current
+                ? "w-6 bg-gold"
+                : "w-1.5 bg-white/50 hover:bg-white/80"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Interactive Namibian Heritage Showcase gallery section */
+const HERITAGE_CARDS = [
+  {
+    src: "/images/slides/spitzkoppe-sunset.jpg",
+    alt: "Spitzkoppe peaks at sunset",
+    region: "Erongo Region",
+    title: "Sacred Granite Peaks",
+    desc: "The Spitzkoppe have watched over Ovaherero communities across generations — ancient landmarks of the ancestral homeland.",
+  },
+  {
+    src: "/images/slides/oryx-dunes.jpg",
+    alt: "Oryx on Kalahari red dunes",
+    region: "Kalahari",
+    title: "Guardians of the Dunes",
+    desc: "The Oryx, emblem of resilience, roams the red Kalahari dunes — lands held in custodianship by the Ovaherero people.",
+  },
+  {
+    src: "/images/slides/namibia-acacia.jpg",
+    alt: "Lone acacia under the Etosha sky",
+    region: "Etosha, Namibia",
+    title: "The Lone Witness",
+    desc: "Camelthorn acacias have stood sentinel over the Etosha pan since before the recorded history of the Ovaherero kingdom.",
+  },
+];
 
 export const Route = createFileRoute("/_site/")({
   head: () => ({
@@ -98,14 +269,9 @@ function HomePage() {
               </Button>
             </div>
           </div>
+          {/* Hero Slideshow — auto-advances through Namibian landscape photography */}
           <div className="relative min-h-[280px] sm:min-h-[360px] lg:min-h-[600px]">
-            <Image
-              src={heroImg}
-              alt="Ovaherero community gathering at golden hour"
-              fittingType="fill"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--primary))] via-transparent to-[hsl(var(--primary))]/30 lg:bg-gradient-to-r lg:from-[hsl(var(--primary))] lg:via-[hsl(var(--primary))]/20 lg:to-transparent" />
+            <HeroSlideshow heroImg={heroImg} />
           </div>
         </div>
       </section>
@@ -236,6 +402,61 @@ function HomePage() {
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* ── Namibian Heritage & Sacred Lands Showcase ────────────────────── */}
+      <section className="py-20 lg:py-24">
+        <div className="shell">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <p className="eyebrow">Custodians of sacred lands &amp; living heritage</p>
+              <h2 className="mt-3 text-[2rem] leading-tight sm:text-[2.5rem]">
+                The landscapes of the Ovaherero homeland
+              </h2>
+            </div>
+            <Link
+              to="/culture"
+              className="group inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.16em] text-[hsl(var(--primary))]"
+            >
+              Culture &amp; Heritage
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-3">
+            {HERITAGE_CARDS.map((card) => (
+              <div
+                key={card.title}
+                className="group relative overflow-hidden border border-border bg-card"
+              >
+                {/* Image with hover zoom */}
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img
+                    src={card.src}
+                    alt={card.alt}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  {/* Dark gradient on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-80" />
+                  {/* Region badge */}
+                  <span className="absolute left-3 top-3 bg-[hsl(var(--primary))]/85 px-2 py-1 text-[9px] uppercase tracking-[0.2em] text-primary-foreground backdrop-blur-sm">
+                    {card.region}
+                  </span>
+                </div>
+                {/* Text */}
+                <div className="p-5">
+                  <h3 className="font-display text-[1.2rem] leading-snug text-foreground group-hover:text-[hsl(var(--primary))] transition-colors">
+                    {card.title}
+                  </h3>
+                  <p className="mt-2 text-[13px] leading-relaxed text-foreground/65">{card.desc}</p>
+                </div>
+                {/* Gold bottom border on hover */}
+                <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gold transition-all duration-500 group-hover:w-full" />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
