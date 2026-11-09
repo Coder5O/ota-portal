@@ -3,11 +3,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { PageHead } from "@/components/admin/AdminShell";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Building2, Eye, ImageIcon, Info, Megaphone, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authed/admin/settings")({
@@ -16,6 +19,14 @@ export const Route = createFileRoute("/_authed/admin/settings")({
 
 const EMPTY = {
   organisation_name: "Ovaherero Traditional Authority",
+  tagline: "Republic of Namibia",
+  monogram_text: "OTA",
+  logo_url: "",
+  favicon_url: "",
+  home_hero_image: "",
+  home_detail_image: "",
+  culture_hero_image: "",
+  oggf_hero_image: "",
   contact_email: "",
   contact_phone: "",
   office_address: "",
@@ -68,9 +79,9 @@ function SettingsPage() {
     onSuccess: (saved) => {
       if (saved?.id) setRecordId(saved.id);
       queryClient.invalidateQueries({ queryKey: ["site-config"] });
-      toast.success("Institutional settings saved.");
+      toast.success("Institutional customization & settings saved successfully.");
     },
-    onError: () => toast.error("The settings could not be saved."),
+    onError: (err) => toast.error("Settings could not be saved: " + (err?.message || "Unknown error")),
   });
 
   const set = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
@@ -78,83 +89,324 @@ function SettingsPage() {
   return (
     <>
       <PageHead
-        title="Institutional settings"
-        description="Contact details, the site-wide notice and maintenance controls used across the public website."
+        title="Website Customization & Settings"
+        description="Easily customize logos, page banner images, institutional identity, contact info and public announcements."
         action={
-          <Button className="rounded-none bg-[hsl(var(--primary))]" disabled={save.isPending} onClick={() => save.mutate()}>
-            {save.isPending ? "Saving…" : "Save settings"}
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              className="rounded-none bg-gold px-6 text-[12px] uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90"
+              disabled={save.isPending}
+              onClick={() => save.mutate()}
+            >
+              {save.isPending ? "Saving..." : "Save all changes"}
+            </Button>
+          </div>
         }
       />
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <section className="space-y-4 border border-border bg-card p-5">
-          <h2 className="font-display text-xl">Identity & contact</h2>
-          <Field label="Organisation name">
-            <Input value={form.organisation_name || ""} onChange={(e) => set("organisation_name", e.target.value)} className="rounded-none text-[13px]" />
-          </Field>
-          <Field label="Official email">
-            <Input value={form.contact_email || ""} onChange={(e) => set("contact_email", e.target.value)} className="rounded-none text-[13px]" />
-          </Field>
-          <Field label="Telephone">
-            <Input value={form.contact_phone || ""} onChange={(e) => set("contact_phone", e.target.value)} className="rounded-none text-[13px]" />
-          </Field>
-          <Field label="Office address">
-            <Textarea value={form.office_address || ""} rows={2} onChange={(e) => set("office_address", e.target.value)} className="rounded-none text-[13px]" />
-          </Field>
-          <Field label="Office hours">
-            <Input value={form.office_hours || ""} onChange={(e) => set("office_hours", e.target.value)} className="rounded-none text-[13px]" />
-          </Field>
-        </section>
+      <Tabs defaultValue="branding" className="w-full">
+        <TabsList className="mb-6 h-auto w-full justify-start gap-2 overflow-x-auto rounded-none border border-border bg-card p-1.5">
+          <TabsTrigger
+            value="branding"
+            className="rounded-none data-[state=active]:bg-[hsl(var(--primary))] data-[state=active]:text-primary-foreground text-[12px] uppercase tracking-wider"
+          >
+            <ShieldCheck className="mr-1.5 h-3.5 w-3.5" />
+            Logo & Identity
+          </TabsTrigger>
+          <TabsTrigger
+            value="images"
+            className="rounded-none data-[state=active]:bg-[hsl(var(--primary))] data-[state=active]:text-primary-foreground text-[12px] uppercase tracking-wider"
+          >
+            <ImageIcon className="mr-1.5 h-3.5 w-3.5" />
+            Page Images & Banners
+          </TabsTrigger>
+          <TabsTrigger
+            value="contact"
+            className="rounded-none data-[state=active]:bg-[hsl(var(--primary))] data-[state=active]:text-primary-foreground text-[12px] uppercase tracking-wider"
+          >
+            <Building2 className="mr-1.5 h-3.5 w-3.5" />
+            Contact & Operations
+          </TabsTrigger>
+          <TabsTrigger
+            value="notices"
+            className="rounded-none data-[state=active]:bg-[hsl(var(--primary))] data-[state=active]:text-primary-foreground text-[12px] uppercase tracking-wider"
+          >
+            <Megaphone className="mr-1.5 h-3.5 w-3.5" />
+            Notices & System
+          </TabsTrigger>
+        </TabsList>
 
-        <section className="space-y-4 border border-border bg-card p-5">
-          <h2 className="font-display text-xl">Website notice & footer</h2>
-          <Field label="Site-wide notice" hint="Displayed above the public pages. Leave empty to hide.">
-            <Textarea value={form.notice || ""} rows={3} onChange={(e) => set("notice", e.target.value)} className="rounded-none text-[13px]" />
-          </Field>
-          <Field label="Footer note">
-            <Textarea value={form.footer_note || ""} rows={3} onChange={(e) => set("footer_note", e.target.value)} className="rounded-none text-[13px]" />
-          </Field>
-          <div className="flex items-center justify-between border border-border px-3 py-2.5">
-            <div>
-              <p className="text-[12.5px]">Membership card</p>
-              <p className="text-[11px] text-muted-foreground">Shows a printable membership card in the member portal.</p>
-            </div>
-            <Switch checked={!!form.membership_card_enabled} onCheckedChange={(v) => set("membership_card_enabled", v)} />
+        {/* Tab 1: Logo & Branding */}
+        <TabsContent value="branding" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <section className="space-y-5 border border-border bg-card p-6">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <ShieldCheck className="h-5 w-5 text-gold" />
+                <h2 className="font-display text-xl">Official Logo & Emblem</h2>
+              </div>
+
+              <ImageUploader
+                label="Official OTA Crest / Logo"
+                value={form.logo_url}
+                onChange={(url) => set("logo_url", url)}
+                hint="Displayed in the site header and footer. Supports PNG with transparent background or SVG."
+                aspect="square"
+              />
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Monogram Letters" hint="Fallback text if no logo image is uploaded.">
+                  <Input
+                    value={form.monogram_text || "OTA"}
+                    onChange={(e) => set("monogram_text", e.target.value)}
+                    placeholder="OTA"
+                    className="rounded-none font-display text-[14px]"
+                  />
+                </Field>
+                <Field label="Jurisdiction / Tagline" hint="Appears below authority title.">
+                  <Input
+                    value={form.tagline || "Republic of Namibia"}
+                    onChange={(e) => set("tagline", e.target.value)}
+                    placeholder="Republic of Namibia"
+                    className="rounded-none text-[13px]"
+                  />
+                </Field>
+              </div>
+
+              <Field label="Official Authority Title">
+                <Input
+                  value={form.organisation_name || "Ovaherero Traditional Authority"}
+                  onChange={(e) => set("organisation_name", e.target.value)}
+                  className="rounded-none font-display text-[14px]"
+                />
+              </Field>
+            </section>
+
+            <section className="space-y-5 border border-border bg-card p-6">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <Eye className="h-5 w-5 text-gold" />
+                <h2 className="font-display text-xl">Header & Footer Live Preview</h2>
+              </div>
+
+              <div className="space-y-4">
+                <p className="text-[12px] text-muted-foreground">Header display preview:</p>
+                <div className="flex items-center gap-3 border border-border bg-background p-4">
+                  {form.logo_url ? (
+                    <img src={form.logo_url} alt="Logo" className="h-11 w-11 object-contain" />
+                  ) : (
+                    <span className="grid h-11 w-11 shrink-0 place-items-center border border-gold/50 bg-[hsl(var(--primary))] text-primary-foreground">
+                      <span className="font-display text-[0.95rem]">{form.monogram_text || "OTA"}</span>
+                    </span>
+                  )}
+                  <div className="leading-tight">
+                    <span className="block font-display text-[1.05rem] text-foreground">
+                      {form.organisation_name || "Ovaherero Traditional Authority"}
+                    </span>
+                    <span className="block text-[9.5px] uppercase tracking-[0.24em] text-muted-foreground">
+                      {form.tagline || "Republic of Namibia"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="rounded border border-gold/30 bg-gold/5 p-4 text-[12px] text-foreground/80">
+                  <p className="font-medium text-foreground">Tip:</p>
+                  <p className="mt-1">
+                    When you upload an official emblem here, it is automatically saved to Firebase Storage and
+                    replaces the default square box on both the desktop and mobile headers.
+                  </p>
+                </div>
+              </div>
+            </section>
           </div>
-        </section>
+        </TabsContent>
 
-        <section className="space-y-4 border border-border bg-card p-5">
-          <h2 className="font-display text-xl">Maintenance</h2>
-          <div className="flex items-center justify-between border border-border px-3 py-2.5">
-            <div>
-              <p className="text-[12.5px]">Maintenance mode</p>
-              <p className="text-[11px] text-muted-foreground">Displays a maintenance notice on the public website.</p>
-            </div>
-            <Switch checked={!!form.maintenance_mode} onCheckedChange={(v) => set("maintenance_mode", v)} />
+        {/* Tab 2: Page Images & Banners */}
+        <TabsContent value="images" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <section className="space-y-5 border border-border bg-card p-6">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <ImageIcon className="h-5 w-5 text-gold" />
+                <h2 className="font-display text-xl">Homepage Imagery</h2>
+              </div>
+
+              <ImageUploader
+                label="Home Hero Banner Image"
+                value={form.home_hero_image}
+                onChange={(url) => set("home_hero_image", url)}
+                hint="Large panoramic image displayed beside the homepage hero title. Recommended: 1600x900px."
+                aspect="banner"
+                previewHeight="h-44"
+              />
+
+              <ImageUploader
+                label="Home Featured Cultural Image"
+                value={form.home_detail_image}
+                onChange={(url) => set("home_detail_image", url)}
+                hint="Secondary cultural / assembly image featured on the homepage."
+                aspect="banner"
+                previewHeight="h-40"
+              />
+            </section>
+
+            <section className="space-y-5 border border-border bg-card p-6">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <ImageIcon className="h-5 w-5 text-gold" />
+                <h2 className="font-display text-xl">Inner Page Feature Banners</h2>
+              </div>
+
+              <ImageUploader
+                label="Culture & Heritage Feature Banner"
+                value={form.culture_hero_image}
+                onChange={(url) => set("culture_hero_image", url)}
+                hint="Displayed on the Culture & Customary Heritage section."
+                aspect="banner"
+                previewHeight="h-40"
+              />
+
+              <ImageUploader
+                label="Ovaherero Global Genocide Foundation (OGGF) Banner"
+                value={form.oggf_hero_image}
+                onChange={(url) => set("oggf_hero_image", url)}
+                hint="Displayed on the OGGF restorative justice public portal."
+                aspect="banner"
+                previewHeight="h-40"
+              />
+            </section>
           </div>
-          <Field label="Maintenance message">
-            <Textarea value={form.maintenance_message || ""} rows={3} onChange={(e) => set("maintenance_message", e.target.value)} className="rounded-none text-[13px]" />
-          </Field>
-        </section>
+        </TabsContent>
 
-        <section className="space-y-3 border border-border bg-card p-5 text-[12.5px] leading-relaxed text-foreground/75">
-          <h2 className="font-display text-xl text-foreground">Governance & access</h2>
-          <p>
-            This console is reserved for the OTA Super Administrator. Technical access does not confer constitutional
-            authority: approvals, suspensions and publication decisions must follow the governance process.
-          </p>
-          <p>
-            Records are archived rather than deleted: suspension keeps the membership record, its history and audit
-            trail intact. Disciplinary matters, property registers and financial records are deliberately not exposed
-            in this console and remain under separate authorised administration.
-          </p>
-          <p>
-            Officer accounts see only the meetings, resolutions and tasks of the structure assigned to them. Assign
-            offices from the Members screen.
-          </p>
-        </section>
-      </div>
+        {/* Tab 3: Contact & Operations */}
+        <TabsContent value="contact" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <section className="space-y-4 border border-border bg-card p-6">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <Building2 className="h-5 w-5 text-gold" />
+                <h2 className="font-display text-xl">Public Contact Information</h2>
+              </div>
+
+              <Field label="Official Contact Email" hint="Displayed on public contact pages and footer.">
+                <Input
+                  value={form.contact_email || ""}
+                  onChange={(e) => set("contact_email", e.target.value)}
+                  placeholder="info@ota.gov.na"
+                  className="rounded-none text-[13px]"
+                />
+              </Field>
+
+              <Field label="Telephone / Contact Line">
+                <Input
+                  value={form.contact_phone || ""}
+                  onChange={(e) => set("contact_phone", e.target.value)}
+                  placeholder="+264 (0) 61 ..."
+                  className="rounded-none text-[13px]"
+                />
+              </Field>
+
+              <Field label="Physical Headquarters Address">
+                <Textarea
+                  value={form.office_address || ""}
+                  rows={3}
+                  onChange={(e) => set("office_address", e.target.value)}
+                  placeholder="Okahandja / Windhoek, Republic of Namibia"
+                  className="rounded-none text-[13px]"
+                />
+              </Field>
+
+              <Field label="Operating Office Hours">
+                <Input
+                  value={form.office_hours || ""}
+                  onChange={(e) => set("office_hours", e.target.value)}
+                  placeholder="Monday to Friday: 08:00 – 17:00"
+                  className="rounded-none text-[13px]"
+                />
+              </Field>
+            </section>
+
+            <section className="space-y-4 border border-border bg-card p-6">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <Info className="h-5 w-5 text-gold" />
+                <h2 className="font-display text-xl">Footer Statement & Notice</h2>
+              </div>
+
+              <Field label="Footer Description" hint="Shown in the left column of the footer across all public pages.">
+                <Textarea
+                  value={form.footer_note || ""}
+                  rows={4}
+                  onChange={(e) => set("footer_note", e.target.value)}
+                  placeholder="The official digital home of the Ovaherero Traditional Authority..."
+                  className="rounded-none text-[13px]"
+                />
+              </Field>
+
+              <div className="mt-4 border-t border-border pt-4">
+                <div className="flex items-center justify-between border border-border p-3">
+                  <div>
+                    <p className="text-[12.5px] font-medium">Digital Membership Cards</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      Allows approved members to view and print their cards in the portal.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={!!form.membership_card_enabled}
+                    onCheckedChange={(v) => set("membership_card_enabled", v)}
+                  />
+                </div>
+              </div>
+            </section>
+          </div>
+        </TabsContent>
+
+        {/* Tab 4: Notices & System */}
+        <TabsContent value="notices" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <section className="space-y-4 border border-border bg-card p-6">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <Megaphone className="h-5 w-5 text-gold" />
+                <h2 className="font-display text-xl">Site-Wide Announcement Banner</h2>
+              </div>
+
+              <Field
+                label="Urgent Public Notice"
+                hint="Displayed as an announcement ribbon at the top of every page. Leave empty to disable."
+              >
+                <Textarea
+                  value={form.notice || ""}
+                  rows={4}
+                  onChange={(e) => set("notice", e.target.value)}
+                  placeholder="e.g. Notice regarding the upcoming Commemoration Assembly..."
+                  className="rounded-none text-[13px]"
+                />
+              </Field>
+            </section>
+
+            <section className="space-y-4 border border-border bg-card p-6">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <Info className="h-5 w-5 text-gold" />
+                <h2 className="font-display text-xl">Maintenance Controls</h2>
+              </div>
+
+              <div className="flex items-center justify-between border border-border p-3">
+                <div>
+                  <p className="text-[12.5px] font-medium">Maintenance Mode</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    Shows a maintenance ribbon to public visitors while allowing administrators access.
+                  </p>
+                </div>
+                <Switch checked={!!form.maintenance_mode} onCheckedChange={(v) => set("maintenance_mode", v)} />
+              </div>
+
+              <Field label="Maintenance Message">
+                <Textarea
+                  value={form.maintenance_message || ""}
+                  rows={3}
+                  onChange={(e) => set("maintenance_message", e.target.value)}
+                  placeholder="The portal is undergoing scheduled maintenance."
+                  className="rounded-none text-[13px]"
+                />
+              </Field>
+            </section>
+          </div>
+        </TabsContent>
+      </Tabs>
     </>
   );
 }
