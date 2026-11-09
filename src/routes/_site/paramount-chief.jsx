@@ -44,27 +44,20 @@ function ParamountChiefPage() {
         eyebrow="Ombara Otjitambi"
         title="The Paramount Chief"
         intro="The Office of the Paramount Chief is the constitutional centre of the Ovaherero Traditional Authority. Only approved biographical information, statements and engagements are published here."
+        image="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+        imageAlt="Paramount Chief ceremonial attire"
       />
 
       <Section>
         {principal ? (
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
-              {principal.photo_url ? (
-                <Image
-                  src={principal.photo_url}
-                  alt={principal.name}
-                  className="aspect-[4/5] w-full object-cover"
-                  fittingType="fill"
-                />
-              ) : (
-                <div className="flex aspect-[4/5] w-full flex-col items-center justify-center border border-dashed border-border bg-card px-6 text-center">
-                  <span className="font-display text-4xl text-gold">OTA</span>
-                  <p className="mt-4 text-[11.5px] leading-relaxed text-muted-foreground">
-                    No official portrait has been authorised for publication.
-                  </p>
-                </div>
-              )}
+              <Image
+                src={principal.photo_url || "/images/heritage/paramount-chief-ceremonial-dress.jpg"}
+                alt={principal.name || "Office of the Paramount Chief"}
+                className="aspect-[4/5] w-full object-cover shadow-md"
+                fittingType="fill"
+              />
               {principal.is_demo ? (
                 <div className="mt-3">
                   <IllustrativeBadge />

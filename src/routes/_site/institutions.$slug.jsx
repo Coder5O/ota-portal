@@ -61,6 +61,8 @@ function InstitutionPage() {
         eyebrow={institution.native_name || "Institutional structure"}
         title={institution.name}
         intro={institution.summary}
+        image={institution.banner_url || "/images/slides/spitzkoppe-sunset.jpg"}
+        imageAlt={institution.name}
       >
         {institution.is_demo ? <IllustrativeBadge className="bg-white/90" /> : null}
       </PageHero>

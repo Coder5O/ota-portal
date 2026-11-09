@@ -255,9 +255,11 @@ function CulturePage() {
   return (
     <>
       <PageHero
-        eyebrow="Culture & heritage"
+        eyebrow="Culture &amp; heritage"
         title="Otjiherero, custom and the living memory of our people."
         intro="Language, oral histories, traditional knowledge, ceremony and approved symbols are preserved by communities. The Authority approves and maintains this official heritage register."
+        image="/images/heritage/ovaherero-women-red-flag.jpg"
+        imageAlt="Ovaherero living cultural heritage and Red Flag gathering"
       >
         <Button
           onClick={() => setDialogOpen(true)}
@@ -266,6 +268,37 @@ function CulturePage() {
           <Sparkles className="mr-2 h-4 w-4" /> Contribute to the heritage record
         </Button>
       </PageHero>
+
+      {/* Living Cultural Traditions Visual Gallery */}
+      <section className="border-b border-border bg-card">
+        <div className="shell grid gap-10 py-12 lg:grid-cols-2 lg:items-center">
+          <div className="relative overflow-hidden border border-border shadow-md">
+            <img
+              src="/images/heritage/ovaherero-women-red-flag.jpg"
+              alt="Otjiserandu Red Flag gathering"
+              className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
+            />
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-5 text-white">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Sacred Emblems</span>
+              <p className="mt-1 font-display text-lg text-white">The Otjiserandu (Red Flag) &amp; Traditional Attire</p>
+              <p className="mt-1 text-[12px] text-white/80">Commemorating collective identity, dignified cattle horns headdress (otjikaiva), and customary unity.</p>
+            </div>
+          </div>
+
+          <div className="relative overflow-hidden border border-border shadow-md">
+            <img
+              src="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+              alt="Ceremonial Regalia & Hands of the Chiefs"
+              className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
+            />
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-5 text-white">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Customary Authority</span>
+              <p className="mt-1 font-display text-lg text-white">Ancestral Continuity &amp; Royal Embroidery</p>
+              <p className="mt-1 text-[12px] text-white/80">Hand-embroidered gold braid and beaded regalia passed across generations of leadership.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Published Cultural Blocks */}
       <Section>

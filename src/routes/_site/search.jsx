@@ -102,6 +102,8 @@ function SearchPage() {
         eyebrow="Site search"
         title="Search the Authority's website."
         intro="Find news, events, institutions, communities, documents and articles of the Constitution."
+        image="/images/slides/spitzkoppe-sunset.jpg"
+        imageAlt="Search the Ovaherero Traditional Authority portal"
       >
         <form
           className="flex max-w-xl gap-2"

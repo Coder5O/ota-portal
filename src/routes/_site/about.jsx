@@ -44,7 +44,46 @@ function AboutPage() {
         eyebrow="About OTA"
         title="An institution of custom, continuity and service."
         intro="The Ovaherero Traditional Authority is constituted to preserve the customs, heritage and governance of the Ovaherero people, and to serve its communities in Namibia and across the diaspora."
+        image="/images/slides/spitzkoppe-sunset.jpg"
+        imageAlt="Ancestral homeland landscape, Namibia"
       />
+
+      {/* Visual Narrative Feature Banner */}
+      <section className="border-b border-border bg-card">
+        <div className="shell grid gap-10 py-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
+              <p className="eyebrow text-gold">Customary Foundation</p>
+            </div>
+            <h2 className="mt-3 font-display text-2xl sm:text-3xl">
+              Custodians of the Red Flag &amp; the Sacred Fire
+            </h2>
+            <p className="mt-4 text-[13.5px] leading-relaxed text-foreground/80">
+              The Ovaherero Traditional Authority derives its mandate from centuries of customary leadership,
+              ratified by traditional assemblies and formalized under the Traditional Authorities Act (Act No. 25 of 2000).
+              It oversees customary law, land administration, cultural commemorations, and community representation across
+              all recognized communities.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-4 text-[11px] uppercase tracking-wider text-muted-foreground">
+              <span className="border border-border bg-secondary/40 px-3 py-1">Est. Okahandja</span>
+              <span className="border border-border bg-secondary/40 px-3 py-1">Customary Jurisdiction</span>
+              <span className="border border-border bg-secondary/40 px-3 py-1">Otjiserandu Heritage</span>
+            </div>
+          </div>
+          <div className="relative overflow-hidden border border-border shadow-md">
+            <img
+              src="/images/heritage/ovaherero-women-red-flag.jpg"
+              alt="Ovaherero women united under the Red Flag"
+              className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
+            />
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 text-white">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Historic Assembly</p>
+              <p className="mt-0.5 text-[12px] text-white/90">Otjiserandu Convocations &amp; Living Tradition</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <Section>
         <ProseBlocks

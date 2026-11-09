@@ -49,9 +49,11 @@ function PrivacyPage() {
   return (
     <>
       <PageHero
-        eyebrow="Privacy & data protection"
+        eyebrow="Privacy &amp; data protection"
         title="Your information, handled with care and accountability."
         intro="This notice explains what the Ovaherero Traditional Authority collects through this platform, why it is collected, who can access it and how requests are handled."
+        image="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+        imageAlt="Ovaherero Traditional Authority data protection &amp; privacy"
       />
 
       <Section>

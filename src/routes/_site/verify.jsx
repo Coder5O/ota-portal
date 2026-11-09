@@ -53,6 +53,8 @@ function VerifyPage() {
         eyebrow="Card verification"
         title="Verify a membership card."
         intro="Scanning the code on a membership card opens this page. It confirms only the number, name, category and current validity."
+        image="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+        imageAlt="Ovaherero Traditional Authority card verification"
       />
 
       <Section>

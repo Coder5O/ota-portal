@@ -59,6 +59,8 @@ function ContactPage() {
         eyebrow="Contact"
         title="Write to the Authority."
         intro="Enquiries, membership questions, document requests and media enquiries are received by the office and referred to the responsible structure."
+        image="/images/slides/spitzkoppe-sunset.jpg"
+        imageAlt="Ovaherero Traditional Authority Secretariat"
       />
 
       <Section>

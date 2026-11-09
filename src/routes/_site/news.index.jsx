@@ -33,9 +33,11 @@ function NewsPage() {
   return (
     <>
       <PageHero
-        eyebrow="News & media"
+        eyebrow="News &amp; media"
         title="Official communications of the Authority."
         intro="Announcements, press releases, speeches and statements published by the Office of the Paramount Chief and the institutions of the OTA."
+        image="/images/slides/spitzkoppe-sunset.jpg"
+        imageAlt="Official communications &amp; media"
       />
 
       <Section>

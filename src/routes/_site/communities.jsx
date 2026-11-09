@@ -31,7 +31,31 @@ function CommunitiesPage() {
         eyebrow="Traditional communities"
         title="Communities and chapters of the Authority."
         intro="Recognised traditional communities, their authorised leadership and, where applicable, their diaspora chapters."
+        image="/images/slides/namibia-acacia.jpg"
+        imageAlt="Customary lands & traditional communities"
       />
+
+      {/* Visual Feature Card */}
+      <section className="border-b border-border bg-card">
+        <div className="shell grid gap-8 py-10 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
+          <div className="overflow-hidden border border-border shadow-sm">
+            <img
+              src="/images/slides/namibia-acacia.jpg"
+              alt="Ancestral pastoral savannas"
+              className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
+            />
+          </div>
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Customary Tenure &amp; Assembly</span>
+            <h2 className="mt-1 font-display text-2xl text-foreground">Communal Land &amp; Local Leadership</h2>
+            <p className="mt-2 text-[13px] leading-relaxed text-foreground/75">
+              Traditional communities form the living pillars of the Ovaherero nation. Led by recognized Chiefs,
+              Senior Councillors, and village headmen, each community administers customary land, resolves family disputes,
+              and preserves ancestral lineage records under the authority of the Chiefs Council.
+            </p>
+          </div>
+        </div>
+      </section>
 
       <Section>
         <ProseBlocks

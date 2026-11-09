@@ -208,6 +208,8 @@ function ConstitutionPage() {
         eyebrow="Governing text &amp; constitutional library"
         title="The Constitution of the Ovaherero Traditional Authority"
         intro="The primary governing charter of the Ovaherero Traditional Authority. Articles are preserved exactly as adopted; searchable by title, number, keyword, or chapter."
+        image="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+        imageAlt="OTA Constitutional Regalia"
       >
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">

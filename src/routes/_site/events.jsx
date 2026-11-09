@@ -64,6 +64,8 @@ function EventsPage() {
         eyebrow="Calendar"
         title="Events, ceremonies and public meetings."
         intro="Commemorations, cultural observances and meetings open to the public. Registration is available for events that accept it."
+        image="/images/heritage/ovaherero-women-red-flag.jpg"
+        imageAlt="Ovaherero Traditional Authority Ceremonial Convocations"
       />
 
       <Section>

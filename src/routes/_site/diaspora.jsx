@@ -237,6 +237,8 @@ function DiasporaPage() {
         eyebrow="Ovaherero diaspora"
         title="One people, across continents."
         intro="Ovaherero communities in Botswana, South Africa, Europe, the Americas and worldwide remain an integral part of our nation. Chapters register voluntarily for official recognition and joint cultural governance."
+        image="/images/slides/oryx-dunes.jpg"
+        imageAlt="Ovaherero diaspora trans-boundary heritage across the Kalahari"
       >
         <div className="flex flex-wrap items-center gap-3">
           <Button
@@ -254,6 +256,29 @@ function DiasporaPage() {
           </Button>
         </div>
       </PageHero>
+
+      {/* Diaspora Trans-boundary Narrative Card */}
+      <section className="border-b border-border bg-card">
+        <div className="shell grid gap-8 py-10 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
+          <div className="overflow-hidden border border-border shadow-sm">
+            <img
+              src="/images/slides/oryx-dunes.jpg"
+              alt="Trans-boundary Kalahari sands"
+              className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
+            />
+          </div>
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Trans-boundary Heritage</span>
+            <h2 className="mt-1 font-display text-2xl text-foreground">A Nation Connected Across Borders</h2>
+            <p className="mt-2 text-[13px] leading-relaxed text-foreground/75">
+              Following the 1904–1908 genocide, Ovaherero families crossed the desert into Botswana, establishing
+              settlements in Mahalapye, Tsabong, and the Ngamiland district. Today, active chapters in Southern Africa,
+              Europe, and North America preserve linguistic purity, observe sacred rituals, and maintain direct representation
+              in the Senate and Chiefs Council.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Published Content Blocks */}
       <Section>

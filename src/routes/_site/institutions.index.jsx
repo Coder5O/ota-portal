@@ -62,6 +62,8 @@ function InstitutionsDirectoryPage() {
         eyebrow="Governance Architecture"
         title="Institutions of the Authority."
         intro="The constitutional structures, councils, foundations and administrative organs established under the Constitution of the Ovaherero Traditional Authority."
+        image="/images/slides/spitzkoppe-sunset.jpg"
+        imageAlt="Institutions of the Ovaherero Traditional Authority"
       />
 
       <Section eyebrow="Institutional Organs" title="Official structures & councils" tone="muted">

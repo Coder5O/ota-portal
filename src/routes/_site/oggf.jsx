@@ -61,6 +61,8 @@ function OGGFPage() {
         eyebrow="Truth · Justice · Restitution"
         title="Ovaherero Global Genocide Foundation"
         intro="The dedicated institutional body of the Ovaherero Traditional Authority mandated with research, international advocacy, restorative justice, and the return of ancestral remains and sacred artefacts."
+        image="/images/slides/spitzkoppe-sunset.jpg"
+        imageAlt="Sacred lands &amp; Ovaherero Genocide Foundation memorial"
       >
         <div className="flex flex-wrap items-center gap-3">
           <Button
@@ -78,6 +80,29 @@ function OGGFPage() {
           </Button>
         </div>
       </PageHero>
+
+      {/* Historical Remembrance & Reparation Feature */}
+      <section className="border-b border-border bg-card">
+        <div className="shell grid gap-8 py-10 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
+          <div className="overflow-hidden border border-border shadow-sm">
+            <img
+              src="/images/slides/spitzkoppe-sunset.jpg"
+              alt="Ancestral granite peaks of the Ovaherero homeland"
+              className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
+            />
+          </div>
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Sacred Memory &amp; Legal Mandate</span>
+            <h2 className="mt-1 font-display text-2xl text-foreground">A Century of Unbroken Struggle for Restitution</h2>
+            <p className="mt-2 text-[13px] leading-relaxed text-foreground/75">
+              The 1904–1908 genocide remains the darkest chapter in Ovaherero history, resulting in the extermination
+              of over 80% of our people and total confiscation of ancestral cattle and lands. OGGF stands as the official
+              instrument of the Authority to demand comprehensive apologies, unconditional reparations, and the repatriation
+              of human remains held in foreign museums.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Core Mandate Pillars */}
       <Section eyebrow="Strategic Pillars" title="Pillars of Restorative Justice">
