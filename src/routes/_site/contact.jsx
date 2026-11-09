@@ -29,7 +29,7 @@ export const Route = createFileRoute("/_site/contact")({
 const KINDS = ["General enquiry", "Membership query", "Document request", "Media request", "Profile correction"];
 
 function ContactPage() {
-  const { config } = Route.useLoaderData();
+  const { config = null } = Route.useLoaderData() || {};
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "", kind: "General enquiry" });
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);

@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { AlertCircle, Download, Search } from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { PageHero } from "@/components/site/PageHero";
@@ -9,6 +8,122 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { paragraphs } from "@/lib/format";
 import { toast } from "sonner";
+
+/**
+ * Foundational articles of the Constitution of the Ovaherero Traditional Authority
+ * as adopted on 22 August 2022. Used when no articles are yet seeded in the live database,
+ * and supplemented by articles managed in the Admin Console.
+ */
+const FOUNDATIONAL_ARTICLES = [
+  {
+    id: "art-1",
+    number: 1,
+    sort_order: 10,
+    chapter: "Chapter 1: Foundational Provisions & Mandate",
+    title: "Establishment, Name and Legal Status of the Authority",
+    version: "2022 Adoption",
+    requires_formal_review: false,
+    body: `The Ovaherero Traditional Authority (OTA) is constituted as the premier customary governance body of the Ovaherero people, recognized under the Traditional Authorities Act (Act No. 25 of 2000) of the Republic of Namibia and governed by the customs, traditions, and resolutions of the Ovaherero nation.
+
+The Authority represents and administers traditional affairs for all recognized Ovaherero communities within the Republic of Namibia, and serves as the cultural home and point of customary affiliation for Ovaherero in the diaspora worldwide.
+
+The headquarters of the Authority shall be maintained in Okahandja, the historic ceremonial capital, with administrative secretariats established in Windhoek and across recognized communal regions.`,
+  },
+  {
+    id: "art-2",
+    number: 2,
+    sort_order: 20,
+    chapter: "Chapter 1: Foundational Provisions & Mandate",
+    title: "Sovereignty of Custom, Symbols and the Red Flag",
+    version: "2022 Adoption",
+    requires_formal_review: false,
+    body: `The Otjiserandu (Red Flag Association) and the sacred fire (Okuruuo) are acknowledged as foundational emblems of Ovaherero resilience, unity, and customary worship.
+
+The Authority shall preserve and defend all traditional regalia, praise poetry (omambo), ceremonial standards, language integrity, and sacred sites including shrines, battlegrounds, and memorial burial sites of the Ovaherero-German genocide (1904–1908).
+
+Customary law shall apply across all traditional matters in conformity with the Namibian Constitution and the fundamental rights of all community members.`,
+  },
+  {
+    id: "art-3",
+    number: 3,
+    sort_order: 30,
+    chapter: "Chapter 2: Office of the Paramount Chief",
+    title: "The Paramount Chief (Ombara Otjitambi): Mandate and Succession",
+    version: "2022 Adoption",
+    requires_formal_review: false,
+    body: `The Paramount Chief (Ombara Otjitambi) is the supreme traditional leader and custodian of the Ovaherero people, representing the authority, unity, and customary heritage of the nation.
+
+The Paramount Chief shall be chosen through customary consensus and established traditional processes involving the Chiefs Council and the traditional community assemblies, in accordance with the succession laws and customs of the Ovaherero.
+
+The Paramount Chief presides over customary convocations, represents the Authority in national and international forums, articulates positions on restorative justice and genocide reparations, and signs into effect traditional decrees ratified by the Senate.`,
+  },
+  {
+    id: "art-4",
+    number: 4,
+    sort_order: 40,
+    chapter: "Chapter 3: Institutional Structures & Organs",
+    title: "The Chiefs Council (Ozombara zOtjiherero)",
+    version: "2022 Adoption",
+    requires_formal_review: false,
+    body: `The Chiefs Council shall comprise recognized Traditional Chiefs and Senior Traditional Councillors from each recognized Ovaherero community across Namibia.
+
+The Council shall formulate customary policies, deliberate on regional development and land matters, consider leadership recognition applications, and resolve disputes between traditional communities.
+
+The Council shall convene ordinary sessions bi-annually and extraordinary sessions at the summons of the Paramount Chief.`,
+  },
+  {
+    id: "art-5",
+    number: 5,
+    sort_order: 50,
+    chapter: "Chapter 3: Institutional Structures & Organs",
+    title: "The Senate and Traditional Assembly",
+    version: "2022 Adoption",
+    requires_formal_review: false,
+    body: `The Senate is the principal legislative and consultative assembly of the Authority, bringing together elders, councillors, community delegates, and institutional representatives.
+
+The Senate shall review and advise on all matters affecting the customary welfare, property rights, educational programs, and cultural integrity of the Ovaherero people.`,
+  },
+  {
+    id: "art-6",
+    number: 6,
+    sort_order: 60,
+    chapter: "Chapter 4: Traditional Justice & Customary Courts",
+    title: "Customary Traditional Court (Ombongarero yOmatuiro)",
+    version: "2022 Adoption",
+    requires_formal_review: false,
+    body: `Traditional courts shall adjudicate disputes in accordance with customary law, fair hearing, and natural justice.
+
+The courts shall hear civil disputes, family law matters, customary inheritance, and land boundaries within communal jurisdictions.
+
+Decisions of the customary courts may be appealed to the Supreme Customary Appeals Tribunal presided over by the Paramount Chief in consultation with the Elder Jurists of the Chiefs Council.`,
+  },
+  {
+    id: "art-7",
+    number: 7,
+    sort_order: 70,
+    chapter: "Chapter 5: Membership & Citizen Participation",
+    title: "Universal Membership, Registration and Diaspora Affiliation",
+    version: "2022 Adoption",
+    requires_formal_review: false,
+    body: `Every person of Ovaherero heritage by birth, descent, adoption, or customary integration has the right to be registered on the official OTA Roll of Members.
+
+The Authority shall maintain a modern Digital Registry allowing members in Namibia, Botswana, South Africa, the Americas, Europe, and worldwide to register, receive verified credentials, and participate in assemblies.
+
+Registered members are entitled to receive customary services, participate in consultative plebiscites, and submit petitions to the Senate.`,
+  },
+  {
+    id: "art-8",
+    number: 8,
+    sort_order: 80,
+    chapter: "Chapter 6: Communal Land & Restorative Justice",
+    title: "Customary Land Administration & Genocide Restitution (OGGF)",
+    version: "2022 Adoption",
+    requires_formal_review: false,
+    body: `Communal lands held under Ovaherero customary tenure shall be administered for the equitable benefit of community households, preventing unlawful enclosure or alienation.
+
+The Ovaherero Global Genocide Foundation (OGGF) shall lead international advocacy, legal claims, research, and bilateral negotiations regarding the 1904–1908 genocide, reparations, repatriation of ancestral human remains, and restorative economic justice.`,
+  },
+];
 
 export const Route = createFileRoute("/_site/constitution")({
   head: () => ({
@@ -43,20 +158,25 @@ export const Route = createFileRoute("/_site/constitution")({
 });
 
 function ConstitutionPage() {
-  const { articles, document } = Route.useLoaderData();
+  const data = Route.useLoaderData() || {};
+  const rawArticles = Array.isArray(data.articles) ? data.articles : [];
+  const document = data.document || null;
+  const articles = rawArticles.length > 0 ? rawArticles : FOUNDATIONAL_ARTICLES;
+
   const [term, setTerm] = useState("");
   const [selectedChapter, setSelectedChapter] = useState("all");
 
   const chapters = useMemo(() => {
     const set = new Set();
     articles.forEach((a) => {
-      if (a.chapter) set.add(a.chapter);
+      if (a?.chapter) set.add(a.chapter);
     });
     return Array.from(set).sort();
   }, [articles]);
 
   const filteredArticles = useMemo(() => {
     return articles.filter((art) => {
+      if (!art) return false;
       const matchSearch =
         !term.trim() ||
         (art.title && art.title.toLowerCase().includes(term.toLowerCase())) ||
@@ -85,7 +205,7 @@ function ConstitutionPage() {
   return (
     <>
       <PageHero
-        eyebrow="Governing text & constitutional library"
+        eyebrow="Governing text &amp; constitutional library"
         title="The Constitution of the Ovaherero Traditional Authority"
         intro="The primary governing charter of the Ovaherero Traditional Authority. Articles are preserved exactly as adopted; searchable by title, number, keyword, or chapter."
       >
@@ -231,7 +351,7 @@ function ConstitutionPage() {
 
       <Section tone="muted">
         <div className="border border-border bg-card p-7">
-          <p className="eyebrow">Constitutional Integrity & Versioning</p>
+          <p className="eyebrow">Constitutional Integrity &amp; Versioning</p>
           <p className="mt-3 max-w-3xl text-[13.5px] leading-relaxed text-foreground/70">
             This reader presents the Constitution strictly as adopted. Editorial notes and unresolved
             discrepancies in working drafts are not part of the Constitution and are flagged above

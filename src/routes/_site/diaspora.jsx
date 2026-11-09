@@ -228,7 +228,7 @@ function DiasporaRegistrationDialog({ open, onOpenChange }) {
 }
 
 function DiasporaPage() {
-  const { blocks, chapters } = Route.useLoaderData();
+  const { blocks = [], chapters = [] } = Route.useLoaderData() || {};
   const [registerOpen, setRegisterOpen] = useState(false);
 
   return (

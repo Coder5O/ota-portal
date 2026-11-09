@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_site/news/$postId")({
 });
 
 function NewsArticle() {
-  const { post } = Route.useLoaderData();
+  const { post = {} } = Route.useLoaderData() || {};
 
   return (
     <>

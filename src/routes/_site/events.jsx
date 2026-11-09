@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_site/events")({
 });
 
 function EventsPage() {
-  const { events } = Route.useLoaderData();
+  const { events = [] } = Route.useLoaderData() || {};
   const [selected, setSelected] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", organisation: "" });
   const [submitting, setSubmitting] = useState(false);

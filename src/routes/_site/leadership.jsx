@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_site/leadership")({
 });
 
 function LeadershipPage() {
-  const { officeholders, communities } = Route.useLoaderData();
+  const { officeholders = [], communities = [] } = Route.useLoaderData() || {};
   const nameFor = (slug) => INSTITUTIONS.find((i) => i.slug === slug)?.name || slug;
 
   return (

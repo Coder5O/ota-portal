@@ -53,7 +53,7 @@ export const Route = createFileRoute("/_site/institutions/$slug")({
 });
 
 function InstitutionPage() {
-  const { institution, officeholders, resolutions } = Route.useLoaderData();
+  const { institution = {}, officeholders = [], resolutions = [] } = Route.useLoaderData() || {};
 
   return (
     <>

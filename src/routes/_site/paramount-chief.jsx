@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_site/paramount-chief")({
 });
 
 function ParamountChiefPage() {
-  const { officeholders, blocks, statements } = Route.useLoaderData();
+  const { officeholders = [], blocks = [], statements = [] } = Route.useLoaderData() || {};
   const principal = officeholders[0];
 
   return (

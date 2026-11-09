@@ -53,7 +53,7 @@ export const Route = createFileRoute("/_site/oggf")({
 });
 
 function OGGFPage() {
-  const { institution, documents, events } = Route.useLoaderData();
+  const { institution = {}, documents = [], events = [] } = Route.useLoaderData() || {};
 
   return (
     <>

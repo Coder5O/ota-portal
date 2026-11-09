@@ -249,7 +249,7 @@ function ContributionDialog({ open, onOpenChange }) {
 }
 
 function CulturePage() {
-  const { blocks } = Route.useLoaderData();
+  const { blocks = [] } = Route.useLoaderData() || {};
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (

@@ -44,7 +44,7 @@ const SECTIONS = [
 ];
 
 function PrivacyPage() {
-  const { blocks } = Route.useLoaderData();
+  const { blocks = [] } = Route.useLoaderData() || {};
 
   return (
     <>

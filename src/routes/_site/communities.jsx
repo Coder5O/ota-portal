@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_site/communities")({
 });
 
 function CommunitiesPage() {
-  const { communities, blocks } = Route.useLoaderData();
+  const { communities = [], blocks = [] } = Route.useLoaderData() || {};
 
   return (
     <>

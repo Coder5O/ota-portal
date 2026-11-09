@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_site/news/")({
 });
 
 function NewsPage() {
-  const { posts } = Route.useLoaderData();
+  const { posts = [] } = Route.useLoaderData() || {};
   const { category } = Route.useSearch();
 
   return (

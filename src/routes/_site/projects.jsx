@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_site/projects")({
 });
 
 function ProjectsPage() {
-  const { blocks } = Route.useLoaderData();
+  const { blocks = [] } = Route.useLoaderData() || {};
 
   return (
     <>

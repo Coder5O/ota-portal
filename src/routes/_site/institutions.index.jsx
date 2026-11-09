@@ -54,7 +54,7 @@ export const Route = createFileRoute("/_site/institutions/")({
 });
 
 function InstitutionsDirectoryPage() {
-  const { institutions } = Route.useLoaderData();
+  const { institutions = [] } = Route.useLoaderData() || {};
 
   return (
     <>

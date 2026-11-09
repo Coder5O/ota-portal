@@ -36,7 +36,7 @@ export const Route = createFileRoute("/_site/about")({
 });
 
 function AboutPage() {
-  const { blocks, institutions } = Route.useLoaderData();
+  const { blocks = [], institutions = [] } = Route.useLoaderData() || {};
 
   return (
     <>
