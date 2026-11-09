@@ -95,6 +95,25 @@ export function createEntityService(entityName) {
       for (const [key, val] of Object.entries(filterObj)) {
         if (val === undefined || val === null || val === "") continue;
 
+        if (key === "$or" && Array.isArray(val)) {
+          inMemoryFilters.push((item) => {
+            return val.some((subFilter) => {
+              return Object.entries(subFilter).every(([subKey, subVal]) => {
+                if (typeof subVal === "object" && subVal !== null && subVal.$regex) {
+                  try {
+                    const reg = new RegExp(subVal.$regex, subVal.$options || "");
+                    return reg.test(String(item[subKey] || ""));
+                  } catch {
+                    return String(item[subKey] || "").toLowerCase().includes(String(subVal.$regex).toLowerCase());
+                  }
+                }
+                return item[subKey] === subVal;
+              });
+            });
+          });
+          continue;
+        }
+
         if (typeof val === "object" && val !== null) {
           if (val.$in && Array.isArray(val.$in)) {
             if (val.$in.length > 0) {
@@ -195,8 +214,10 @@ export function createEntityService(entityName) {
     create: async (data) => {
       const colRef = collection(db, colName);
       const now = new Date().toISOString();
+      const cleanData = { ...data };
+      delete cleanData.id;
       const payload = {
-        ...data,
+        ...cleanData,
         created_date: data.created_date || now,
         updated_date: now,
       };
@@ -207,8 +228,10 @@ export function createEntityService(entityName) {
     update: async (id, data) => {
       if (!id) throw new Error("ID required for update");
       const ref = doc(db, colName, String(id));
+      const cleanData = { ...data };
+      delete cleanData.id;
       const payload = {
-        ...data,
+        ...cleanData,
         updated_date: new Date().toISOString(),
       };
       await updateDoc(ref, payload);
@@ -224,21 +247,32 @@ export function createEntityService(entityName) {
     },
 
     count: async (filterObj = {}) => {
-      const colRef = collection(db, colName);
-      const constraints = [];
+      try {
+        const colRef = collection(db, colName);
+        const constraints = [];
 
-      for (const [key, val] of Object.entries(filterObj)) {
-        if (val === undefined || val === null || val === "") continue;
-        if (typeof val === "object" && val.$in && Array.isArray(val.$in)) {
-          if (val.$in.length > 0) constraints.push(where(key, "in", val.$in.slice(0, 30)));
-        } else if (typeof val !== "object") {
-          constraints.push(where(key, "==", val));
+        for (const [key, val] of Object.entries(filterObj)) {
+          if (val === undefined || val === null || val === "") continue;
+          if (typeof val === "object" && val.$in && Array.isArray(val.$in)) {
+            if (val.$in.length > 0) constraints.push(where(key, "in", val.$in.slice(0, 30)));
+          } else if (typeof val !== "object") {
+            constraints.push(where(key, "==", val));
+          }
+        }
+
+        const q = query(colRef, ...constraints);
+        const snapshot = await getCountFromServer(q);
+        return snapshot.data().count;
+      } catch (err) {
+        console.warn(`[FirestoreAdapter] count failed for ${colName}, falling back to getDocs:`, err?.message || err);
+        try {
+          const colRef = collection(db, colName);
+          const snap = await getDocs(colRef);
+          return snap.size;
+        } catch {
+          return 0;
         }
       }
-
-      const q = query(colRef, ...constraints);
-      const snapshot = await getCountFromServer(q);
-      return snapshot.data().count;
     },
   };
 }

@@ -133,6 +133,15 @@ export const base44 = {
       return resetPasswordWithCode(resetToken, newPassword);
     },
   },
+  users: {
+    inviteUser: async () => true,
+  },
+  asServiceRole: {
+    entities: createEntitiesProxy(),
+    users: {
+      inviteUser: async () => true,
+    },
+  },
   entities: createEntitiesProxy(),
   integrations: {
     Core: {

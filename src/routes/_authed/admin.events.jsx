@@ -24,6 +24,7 @@ export const Route = createFileRoute("/_authed/admin/events")({
         { name: "audience", label: "Audience", type: "select", options: ["Open to the public", "Delegates", "Invitation only"] },
         { name: "organising_structure", label: "Organising structure", placeholder: "e.g. OWA(Ovaherero Womans Association)" },
         { name: "description", label: "Description", type: "textarea", rows: 5, full: true },
+        { name: "cover_image", label: "Flyer or cover image", type: "file-public", accept: "image/*", full: true, description: "Promotional flyer or cover photo for this event." },
         { name: "registration_open", label: "Accept public registrations", type: "switch" },
         { name: "status", label: "Status", type: "select", options: ["draft", "published", "cancelled", "archived"] },
       ]}
