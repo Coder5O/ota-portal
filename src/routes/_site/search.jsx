@@ -103,6 +103,7 @@ function SearchPage() {
         title="Search the Authority's website."
         intro="Find news, events, institutions, communities, documents and articles of the Constitution."
         image="/images/slides/spitzkoppe-sunset.jpg"
+        imageKey="search_hero_image"
         imageAlt="Search the Ovaherero Traditional Authority portal"
       >
         <form

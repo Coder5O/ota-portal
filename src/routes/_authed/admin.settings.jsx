@@ -10,7 +10,29 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, Eye, ImageIcon, Info, Megaphone, ShieldCheck } from "lucide-react";
+import {
+  Building2,
+  CalendarDays,
+  CheckCircle2,
+  Compass,
+  Eye,
+  FileCheck,
+  Globe2,
+  HeartHandshake,
+  ImageIcon,
+  Info,
+  Landmark,
+  Layers,
+  Mail,
+  Megaphone,
+  Newspaper,
+  ScrollText,
+  Search,
+  ShieldAlert,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export const DEFAULT_HERO_IMAGE =
@@ -31,14 +53,65 @@ const EMPTY = {
   monogram_text: "OTA",
   logo_url: "",
   favicon_url: "",
+
+  // ── Homepage Slideshow & Customary Numbers (4 slides) ─────────────
   home_hero_image: "",
-  home_detail_image: "",
-  // Slideshow slides 2–4 (slide 1 is home_hero_image above)
+  slide_1_image: "",
+  slide_1_number: "36+",
+  slide_1_label: "Recognised Communities",
+  slide_1_title: "United under the Red Flag, guardians of custom and continuity.",
+  slide_1_desc: "The official digital home of the Ovaherero Traditional Authority — its leadership, institutions, constitution, and communities in Namibia and across the diaspora.",
+
   slide_2_image: "",
+  slide_2_number: "8",
+  slide_2_label: "Constitutional Chapters",
+  slide_2_title: "8 Constitutional Chapters: Supreme Customary Law & Governance.",
+  slide_2_desc: "Promulgated 22 August 2022, codifying democratic customary governance, the High Chiefs Council, and communal self-determination.",
+
   slide_3_image: "",
+  slide_3_number: "14",
+  slide_3_label: "Customary Organs",
+  slide_3_title: "14 Customary Organs: Traditional Senate, High Councils & OGGF.",
+  slide_3_desc: "Structured customary governance encompassing the Senate of Chiefs, Council of Traditional Leaders, youth councils, and the Genocide Foundation.",
+
   slide_4_image: "",
+  slide_4_number: "103",
+  slide_4_label: "Years Sacred Memorial",
+  slide_4_title: "103 Years of Sacred Memorial: Okahandja Assembly (1923–2026).",
+  slide_4_desc: "Honouring the eternal covenant of Ombara Samuel Maharero and Ombara Hosea Kutako with annual Red Flag pilgrimage and remembrance.",
+
+  home_detail_image: "",
+
+  // ── Governance & Leadership Tabs ──────────────────────────────────
+  constitution_hero_image: "",
+  leadership_hero_image: "",
+  paramount_chief_hero_image: "",
+  paramount_chief_portrait: "",
+
+  // ── Customary & Community Tabs ────────────────────────────────────
+  about_hero_image: "",
+  about_feature_image: "",
   culture_hero_image: "",
+  culture_gallery_1: "",
+  culture_gallery_2: "",
+  communities_hero_image: "",
+  communities_feature_image: "",
+  diaspora_hero_image: "",
+  diaspora_feature_image: "",
   oggf_hero_image: "",
+  oggf_feature_image: "",
+
+  // ── Public Services & Assembly Tabs ───────────────────────────────
+  events_hero_image: "",
+  news_hero_image: "",
+  membership_hero_image: "",
+  projects_hero_image: "",
+  contact_hero_image: "",
+  verify_hero_image: "",
+  search_hero_image: "",
+  privacy_hero_image: "",
+
+  // ── Operations & General ──────────────────────────────────────────
   contact_email: "",
   contact_phone: "",
   office_address: "",
@@ -104,7 +177,7 @@ function SettingsPage() {
     <>
       <PageHead
         title="Website Customization & Settings"
-        description="Easily customize logos, page banner images, institutional identity, contact info and public announcements."
+        description="Easily customize logos, homepage slideshow, milestone numbers, and banner photos for every tab on the portal."
         action={
           <div className="flex items-center gap-3">
             <Button
@@ -132,7 +205,7 @@ function SettingsPage() {
             className="rounded-none data-[state=active]:bg-[hsl(var(--primary))] data-[state=active]:text-primary-foreground text-[12px] uppercase tracking-wider"
           >
             <ImageIcon className="mr-1.5 h-3.5 w-3.5" />
-            Page Images & Banners
+            All Page Images &amp; Slideshow
           </TabsTrigger>
           <TabsTrigger
             value="contact"
@@ -150,7 +223,7 @@ function SettingsPage() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Tab 1: Logo & Branding */}
+        {/* ── Tab 1: Logo & Branding ─────────────────────────────────────── */}
         <TabsContent value="branding" className="space-y-6">
           <div className="grid gap-6 lg:grid-cols-2">
             <section className="space-y-5 border border-border bg-card p-6">
@@ -160,37 +233,39 @@ function SettingsPage() {
               </div>
 
               <ImageUploader
-                label="Official OTA Crest / Logo"
+                label="Primary Institutional Logo"
                 value={form.logo_url}
                 onChange={(url) => set("logo_url", url)}
-                hint="Displayed in the site header and footer. Supports PNG with transparent background or SVG."
+                hint="Displayed in the main website header and mobile navigation. Recommended format: SVG or transparent PNG."
                 aspect="square"
+                previewHeight="h-32"
               />
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Monogram Letters" hint="Fallback text if no logo image is uploaded.">
-                  <Input
-                    value={form.monogram_text || "OTA"}
-                    onChange={(e) => set("monogram_text", e.target.value)}
-                    placeholder="OTA"
-                    className="rounded-none font-display text-[14px]"
-                  />
-                </Field>
-                <Field label="Jurisdiction / Tagline" hint="Appears below authority title.">
-                  <Input
-                    value={form.tagline || "Republic of Namibia"}
-                    onChange={(e) => set("tagline", e.target.value)}
-                    placeholder="Republic of Namibia"
-                    className="rounded-none text-[13px]"
-                  />
-                </Field>
-              </div>
+              <Field label="Monogram Initials" hint="Shown in the square badge if no logo image is uploaded.">
+                <Input
+                  value={form.monogram_text || "OTA"}
+                  onChange={(e) => set("monogram_text", e.target.value)}
+                  placeholder="OTA"
+                  maxLength={6}
+                  className="rounded-none uppercase tracking-widest text-[13px]"
+                />
+              </Field>
 
-              <Field label="Official Authority Title">
+              <Field label="Full Official Title" hint="Shown in the browser title and public header.">
                 <Input
                   value={form.organisation_name || "Ovaherero Traditional Authority"}
                   onChange={(e) => set("organisation_name", e.target.value)}
-                  className="rounded-none font-display text-[14px]"
+                  placeholder="Ovaherero Traditional Authority"
+                  className="rounded-none text-[13px]"
+                />
+              </Field>
+
+              <Field label="National Subtitle / Tagline">
+                <Input
+                  value={form.tagline || "Republic of Namibia"}
+                  onChange={(e) => set("tagline", e.target.value)}
+                  placeholder="Republic of Namibia"
+                  className="rounded-none text-[13px]"
                 />
               </Field>
             </section>
@@ -233,228 +308,659 @@ function SettingsPage() {
           </div>
         </TabsContent>
 
-        {/* Tab 2: Page Images & Banners */}
-        <TabsContent value="images" className="space-y-6">
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* Prominent Homepage Section Hero & Cultural Feature */}
-            <section className="space-y-6 border-2 border-gold/40 bg-card p-6 lg:col-span-2">
-              <div className="flex flex-col justify-between gap-3 border-b border-border pb-4 sm:flex-row sm:items-center">
-                <div className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 place-items-center bg-gold/15 text-gold">
-                    <ImageIcon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h2 className="font-display text-2xl text-foreground">Homepage Main Photos & Imagery</h2>
-                    <p className="text-[12px] text-muted-foreground">
-                      Customize the primary banner image (the women under the Red Flag) and the Paramount Chief section portrait.
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  className="rounded-none bg-gold px-5 text-[12px] font-medium uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90"
-                  disabled={save.isPending}
-                  onClick={() => save.mutate()}
-                >
-                  {save.isPending ? "Saving..." : "Save Image Changes"}
-                </Button>
+        {/* ── Tab 2: Page Images & Slideshow Manager ─────────────────────── */}
+        <TabsContent value="images" className="space-y-8">
+          {/* Top Sticky Action Bar */}
+          <div className="flex flex-col justify-between gap-4 border border-gold/40 bg-card p-5 sm:flex-row sm:items-center">
+            <div>
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-gold" />
+                <h2 className="font-display text-lg text-foreground">Universal Visual Asset &amp; Slideshow Manager</h2>
               </div>
-
-              <div className="grid gap-6 md:grid-cols-2">
-                {/* 1. Hero Women Banner Image */}
-                <div className="flex flex-col justify-between border border-border bg-background p-5">
-                  <div className="mb-4">
-                    <span className="inline-block rounded-none bg-gold/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold">
-                      Homepage Top Hero Banner
-                    </span>
-                    <h3 className="mt-2 font-display text-lg text-foreground">
-                      Hero Banner Image (Ovaherero Women Under Red Flag)
-                    </h3>
-                    <p className="mt-1 text-[11.5px] leading-relaxed text-muted-foreground">
-                      The large photo displayed on the homepage hero section right beside "United under the Red Flag, guardians of custom and continuity".
-                    </p>
-                  </div>
-
-                  <ImageUploader
-                    label="Current Hero Photo"
-                    value={form.home_hero_image}
-                    fallback={DEFAULT_HERO_IMAGE}
-                    onChange={(url) => set("home_hero_image", url)}
-                    hint="Click Upload to replace this photo with your own file, or paste an image link. Recommended size: 1600x900px."
-                    aspect="banner"
-                    previewHeight="h-52"
-                  />
-                </div>
-
-                {/* 2. Cultural Detail Hands/Ceremonial Dress Image */}
-                <div className="flex flex-col justify-between border border-border bg-background p-5">
-                  <div className="mb-4">
-                    <span className="inline-block rounded-none bg-gold/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold">
-                      Paramount Chief Message Section
-                    </span>
-                    <h3 className="mt-2 font-display text-lg text-foreground">
-                      Cultural Feature Image (Ceremonial Dress & Hands)
-                    </h3>
-                    <p className="mt-1 text-[11.5px] leading-relaxed text-muted-foreground">
-                      The vertical portrait photo featured beside "A house of governance rooted in the dignity of our people" (with the 22 August 2022 badge).
-                    </p>
-                  </div>
-
-                  <ImageUploader
-                    label="Current Section Photo"
-                    value={form.home_detail_image}
-                    fallback={DEFAULT_DETAIL_IMAGE}
-                    onChange={(url) => set("home_detail_image", url)}
-                    hint="Click Upload to replace this photo with your own file, or paste an image link. Recommended ratio: portrait (4:5)."
-                    aspect="portrait"
-                    previewHeight="h-52"
-                  />
-                </div>
-              </div>
-            </section>
-
-            {/* ── Homepage Slideshow ─────────────────────────────────────────── */}
-            <section className="space-y-6 border-2 border-primary/20 bg-card p-6 lg:col-span-2">
-              <div className="flex flex-col justify-between gap-3 border-b border-border pb-4 sm:flex-row sm:items-center">
-                <div className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 place-items-center bg-primary/10 text-[hsl(var(--primary))]">
-                    <ImageIcon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h2 className="font-display text-2xl text-foreground">Homepage Hero Slideshow</h2>
-                    <p className="text-[12px] text-muted-foreground">
-                      Replace any of the 4 background slides that cycle automatically on the homepage hero banner.
-                      Slide 1 is the same as the "Women Under the Red Flag" image above.
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  className="rounded-none bg-gold px-5 text-[12px] font-medium uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90"
-                  disabled={save.isPending}
-                  onClick={() => save.mutate()}
-                >
-                  {save.isPending ? "Saving..." : "Save Slides"}
-                </Button>
-              </div>
-
-              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-                {/* Slide 1 — reuses home_hero_image */}
-                <div className="flex flex-col border border-border bg-background p-4">
-                  <span className="inline-block rounded-none bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
-                    Slide 1
-                  </span>
-                  <h3 className="mt-2 font-display text-base text-foreground">Ovaherero Women</h3>
-                  <p className="mb-3 mt-1 text-[11px] text-muted-foreground">
-                    The opening slide — Ovaherero homeland hero image.
-                  </p>
-                  <ImageUploader
-                    label="Slide 1 Image"
-                    value={form.home_hero_image}
-                    fallback={DEFAULT_HERO_IMAGE}
-                    onChange={(url) => set("home_hero_image", url)}
-                    hint="1600×900 px recommended."
-                    aspect="banner"
-                    previewHeight="h-36"
-                  />
-                </div>
-
-                {/* Slide 2 — Spitzkoppe sunset */}
-                <div className="flex flex-col border border-border bg-background p-4">
-                  <span className="inline-block rounded-none bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
-                    Slide 2
-                  </span>
-                  <h3 className="mt-2 font-display text-base text-foreground">Spitzkoppe Sunset</h3>
-                  <p className="mb-3 mt-1 text-[11px] text-muted-foreground">
-                    Erongo Region granite peaks at sunset. Default: Spitzkoppe.
-                  </p>
-                  <ImageUploader
-                    label="Slide 2 Image"
-                    value={form.slide_2_image}
-                    fallback="/images/slides/spitzkoppe-sunset.jpg"
-                    onChange={(url) => set("slide_2_image", url)}
-                    hint="1600×900 px recommended."
-                    aspect="banner"
-                    previewHeight="h-36"
-                  />
-                </div>
-
-                {/* Slide 3 — Oryx dunes */}
-                <div className="flex flex-col border border-border bg-background p-4">
-                  <span className="inline-block rounded-none bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
-                    Slide 3
-                  </span>
-                  <h3 className="mt-2 font-display text-base text-foreground">Oryx on the Dunes</h3>
-                  <p className="mb-3 mt-1 text-[11px] text-muted-foreground">
-                    Kalahari oryx on red dunes. Default: Oryx photograph.
-                  </p>
-                  <ImageUploader
-                    label="Slide 3 Image"
-                    value={form.slide_3_image}
-                    fallback="/images/slides/oryx-dunes.jpg"
-                    onChange={(url) => set("slide_3_image", url)}
-                    hint="1600×900 px recommended."
-                    aspect="banner"
-                    previewHeight="h-36"
-                  />
-                </div>
-
-                {/* Slide 4 — Namibia acacia */}
-                <div className="flex flex-col border border-border bg-background p-4">
-                  <span className="inline-block rounded-none bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
-                    Slide 4
-                  </span>
-                  <h3 className="mt-2 font-display text-base text-foreground">Camelthorn Acacia</h3>
-                  <p className="mb-3 mt-1 text-[11px] text-muted-foreground">
-                    Lone camelthorn under the Etosha sky. Default: Acacia photograph.
-                  </p>
-                  <ImageUploader
-                    label="Slide 4 Image"
-                    value={form.slide_4_image}
-                    fallback="/images/slides/namibia-acacia.jpg"
-                    onChange={(url) => set("slide_4_image", url)}
-                    hint="1600×900 px recommended."
-                    aspect="banner"
-                    previewHeight="h-36"
-                  />
-                </div>
-              </div>
-            </section>
-
-            {/* Inner Page Feature Banners */}
-            <section className="space-y-5 border border-border bg-card p-6">
-              <div className="flex items-center gap-2 border-b border-border pb-3">
-                <ImageIcon className="h-5 w-5 text-gold" />
-                <h2 className="font-display text-xl">Culture & Heritage Banner</h2>
-              </div>
-
-              <ImageUploader
-                label="Culture & Heritage Feature Banner"
-                value={form.culture_hero_image}
-                onChange={(url) => set("culture_hero_image", url)}
-                hint="Displayed on the Culture & Customary Heritage section."
-                aspect="banner"
-                previewHeight="h-40"
-              />
-            </section>
-
-            <section className="space-y-5 border border-border bg-card p-6">
-              <div className="flex items-center gap-2 border-b border-border pb-3">
-                <ImageIcon className="h-5 w-5 text-gold" />
-                <h2 className="font-display text-xl">OGGF Restorative Justice Banner</h2>
-              </div>
-
-              <ImageUploader
-                label="Ovaherero Global Genocide Foundation (OGGF) Banner"
-                value={form.oggf_hero_image}
-                onChange={(url) => set("oggf_hero_image", url)}
-                hint="Displayed on the OGGF restorative justice public portal."
-                aspect="banner"
-                previewHeight="h-40"
-              />
-            </section>
+              <p className="mt-1 text-[12px] text-muted-foreground">
+                All changes made here are saved directly to Firebase and immediately update the public website.
+              </p>
+            </div>
+            <Button
+              className="rounded-none bg-gold px-6 text-[12px] font-medium uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90"
+              disabled={save.isPending}
+              onClick={() => save.mutate()}
+            >
+              {save.isPending ? "Saving..." : "Save All Visual Changes"}
+            </Button>
           </div>
+
+          {/* 1. HOMEPAGE SLIDESHOW & GOVERNANCE NUMBERS */}
+          <section className="space-y-6 border-2 border-gold/40 bg-card p-6">
+            <div className="border-b border-border pb-4">
+              <div className="flex items-center gap-3">
+                <div className="grid h-10 w-10 place-items-center bg-gold/15 text-gold">
+                  <Layers className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-display text-2xl text-foreground">
+                    Homepage Hero Slideshow &amp; Governance Numbers (4 Interactive Slides)
+                  </h3>
+                  <p className="text-[12px] text-muted-foreground">
+                    Customize each slide's background photo, metric number, label, headline, and narrative. These 4 slides cycle automatically in both the hero and the live metrics bar.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Slide 1 */}
+              <div className="space-y-4 border border-border bg-background p-5">
+                <div className="flex items-center justify-between border-b border-border pb-2.5">
+                  <span className="bg-[hsl(var(--primary))] px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider text-primary-foreground">
+                    Slide 1 · Customary Homeland
+                  </span>
+                  <span className="font-display text-xl text-gold font-bold">{form.slide_1_number || "36+"}</span>
+                </div>
+
+                <ImageUploader
+                  label="Slide 1 Photo (Ovaherero Women Under Red Flag)"
+                  value={form.slide_1_image || form.home_hero_image}
+                  fallback="/images/heritage/ovaherero-women-red-flag.jpg"
+                  onChange={(url) => {
+                    set("slide_1_image", url);
+                    set("home_hero_image", url);
+                  }}
+                  hint="Banner format (1600×900 recommended)"
+                  aspect="banner"
+                  previewHeight="h-40"
+                />
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Metric Number">
+                    <Input
+                      value={form.slide_1_number || "36+"}
+                      onChange={(e) => set("slide_1_number", e.target.value)}
+                      placeholder="36+"
+                      className="rounded-none text-[13px] font-bold"
+                    />
+                  </Field>
+                  <Field label="Metric Label">
+                    <Input
+                      value={form.slide_1_label || "Recognised Communities"}
+                      onChange={(e) => set("slide_1_label", e.target.value)}
+                      placeholder="Recognised Communities"
+                      className="rounded-none text-[13px]"
+                    />
+                  </Field>
+                </div>
+
+                <Field label="Slide Headline">
+                  <Input
+                    value={form.slide_1_title || ""}
+                    onChange={(e) => set("slide_1_title", e.target.value)}
+                    placeholder="United under the Red Flag, guardians of custom and continuity."
+                    className="rounded-none text-[13px]"
+                  />
+                </Field>
+
+                <Field label="Slide Description">
+                  <Textarea
+                    rows={2}
+                    value={form.slide_1_desc || ""}
+                    onChange={(e) => set("slide_1_desc", e.target.value)}
+                    placeholder="The official digital home of the Ovaherero Traditional Authority..."
+                    className="rounded-none text-[12.5px]"
+                  />
+                </Field>
+              </div>
+
+              {/* Slide 2 */}
+              <div className="space-y-4 border border-border bg-background p-5">
+                <div className="flex items-center justify-between border-b border-border pb-2.5">
+                  <span className="bg-[hsl(var(--primary))] px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider text-primary-foreground">
+                    Slide 2 · Constitutional Order
+                  </span>
+                  <span className="font-display text-xl text-gold font-bold">{form.slide_2_number || "8"}</span>
+                </div>
+
+                <ImageUploader
+                  label="Slide 2 Photo (Spitzkoppe Granite Peaks at Sunset)"
+                  value={form.slide_2_image}
+                  fallback="/images/slides/spitzkoppe-sunset.jpg"
+                  onChange={(url) => set("slide_2_image", url)}
+                  hint="Banner format (1600×900 recommended)"
+                  aspect="banner"
+                  previewHeight="h-40"
+                />
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Metric Number">
+                    <Input
+                      value={form.slide_2_number || "8"}
+                      onChange={(e) => set("slide_2_number", e.target.value)}
+                      placeholder="8"
+                      className="rounded-none text-[13px] font-bold"
+                    />
+                  </Field>
+                  <Field label="Metric Label">
+                    <Input
+                      value={form.slide_2_label || "Constitutional Chapters"}
+                      onChange={(e) => set("slide_2_label", e.target.value)}
+                      placeholder="Constitutional Chapters"
+                      className="rounded-none text-[13px]"
+                    />
+                  </Field>
+                </div>
+
+                <Field label="Slide Headline">
+                  <Input
+                    value={form.slide_2_title || ""}
+                    onChange={(e) => set("slide_2_title", e.target.value)}
+                    placeholder="8 Constitutional Chapters: Supreme Customary Law & Governance."
+                    className="rounded-none text-[13px]"
+                  />
+                </Field>
+
+                <Field label="Slide Description">
+                  <Textarea
+                    rows={2}
+                    value={form.slide_2_desc || ""}
+                    onChange={(e) => set("slide_2_desc", e.target.value)}
+                    placeholder="Promulgated 22 August 2022, codifying democratic customary governance..."
+                    className="rounded-none text-[12.5px]"
+                  />
+                </Field>
+              </div>
+
+              {/* Slide 3 */}
+              <div className="space-y-4 border border-border bg-background p-5">
+                <div className="flex items-center justify-between border-b border-border pb-2.5">
+                  <span className="bg-[hsl(var(--primary))] px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider text-primary-foreground">
+                    Slide 3 · Customary Organs &amp; Senate
+                  </span>
+                  <span className="font-display text-xl text-gold font-bold">{form.slide_3_number || "14"}</span>
+                </div>
+
+                <ImageUploader
+                  label="Slide 3 Photo (Oryx on Kalahari Red Dunes)"
+                  value={form.slide_3_image}
+                  fallback="/images/slides/oryx-dunes.jpg"
+                  onChange={(url) => set("slide_3_image", url)}
+                  hint="Banner format (1600×900 recommended)"
+                  aspect="banner"
+                  previewHeight="h-40"
+                />
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Metric Number">
+                    <Input
+                      value={form.slide_3_number || "14"}
+                      onChange={(e) => set("slide_3_number", e.target.value)}
+                      placeholder="14"
+                      className="rounded-none text-[13px] font-bold"
+                    />
+                  </Field>
+                  <Field label="Metric Label">
+                    <Input
+                      value={form.slide_3_label || "Customary Organs"}
+                      onChange={(e) => set("slide_3_label", e.target.value)}
+                      placeholder="Customary Organs"
+                      className="rounded-none text-[13px]"
+                    />
+                  </Field>
+                </div>
+
+                <Field label="Slide Headline">
+                  <Input
+                    value={form.slide_3_title || ""}
+                    onChange={(e) => set("slide_3_title", e.target.value)}
+                    placeholder="14 Customary Organs: Traditional Senate, High Councils & OGGF."
+                    className="rounded-none text-[13px]"
+                  />
+                </Field>
+
+                <Field label="Slide Description">
+                  <Textarea
+                    rows={2}
+                    value={form.slide_3_desc || ""}
+                    onChange={(e) => set("slide_3_desc", e.target.value)}
+                    placeholder="Structured customary governance encompassing the Senate of Chiefs..."
+                    className="rounded-none text-[12.5px]"
+                  />
+                </Field>
+              </div>
+
+              {/* Slide 4 */}
+              <div className="space-y-4 border border-border bg-background p-5">
+                <div className="flex items-center justify-between border-b border-border pb-2.5">
+                  <span className="bg-[hsl(var(--primary))] px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider text-primary-foreground">
+                    Slide 4 · Sacred Memorial &amp; Okahandja
+                  </span>
+                  <span className="font-display text-xl text-gold font-bold">{form.slide_4_number || "103"}</span>
+                </div>
+
+                <ImageUploader
+                  label="Slide 4 Photo (Camelthorn Acacia Under Etosha Sky)"
+                  value={form.slide_4_image}
+                  fallback="/images/slides/namibia-acacia.jpg"
+                  onChange={(url) => set("slide_4_image", url)}
+                  hint="Banner format (1600×900 recommended)"
+                  aspect="banner"
+                  previewHeight="h-40"
+                />
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Metric Number">
+                    <Input
+                      value={form.slide_4_number || "103"}
+                      onChange={(e) => set("slide_4_number", e.target.value)}
+                      placeholder="103"
+                      className="rounded-none text-[13px] font-bold"
+                    />
+                  </Field>
+                  <Field label="Metric Label">
+                    <Input
+                      value={form.slide_4_label || "Years Sacred Memorial"}
+                      onChange={(e) => set("slide_4_label", e.target.value)}
+                      placeholder="Years Sacred Memorial"
+                      className="rounded-none text-[13px]"
+                    />
+                  </Field>
+                </div>
+
+                <Field label="Slide Headline">
+                  <Input
+                    value={form.slide_4_title || ""}
+                    onChange={(e) => set("slide_4_title", e.target.value)}
+                    placeholder="103 Years of Sacred Memorial: Okahandja Assembly (1923–2026)."
+                    className="rounded-none text-[13px]"
+                  />
+                </Field>
+
+                <Field label="Slide Description">
+                  <Textarea
+                    rows={2}
+                    value={form.slide_4_desc || ""}
+                    onChange={(e) => set("slide_4_desc", e.target.value)}
+                    placeholder="Honouring the eternal covenant of Ombara Samuel Maharero and Ombara Hosea Kutako..."
+                    className="rounded-none text-[12.5px]"
+                  />
+                </Field>
+              </div>
+            </div>
+          </section>
+
+          {/* 2. HOMEPAGE CHIEF'S MESSAGE PORTRAIT */}
+          <section className="space-y-5 border border-border bg-card p-6">
+            <div className="flex items-center gap-2 border-b border-border pb-3">
+              <Landmark className="h-5 w-5 text-gold" />
+              <div>
+                <h3 className="font-display text-xl">Homepage Cultural Detail / Paramount Chief Section Portrait</h3>
+                <p className="text-[12px] text-muted-foreground">
+                  The vertical photograph displayed alongside "A house of governance rooted in the dignity of our people" (with the 22 August 2022 seal).
+                </p>
+              </div>
+            </div>
+
+            <ImageUploader
+              label="Cultural Feature Portrait (Ceremonial Dress / Regalia)"
+              value={form.home_detail_image}
+              fallback={DEFAULT_DETAIL_IMAGE}
+              onChange={(url) => set("home_detail_image", url)}
+              hint="Portrait ratio (4:5 recommended)"
+              aspect="portrait"
+              previewHeight="h-48"
+            />
+          </section>
+
+          {/* 3. GOVERNANCE & LEGAL TABS */}
+          <section className="space-y-6 border border-border bg-card p-6">
+            <div className="flex items-center gap-2 border-b border-border pb-3">
+              <ScrollText className="h-5 w-5 text-gold" />
+              <div>
+                <h3 className="font-display text-xl">Governance &amp; Leadership Banners</h3>
+                <p className="text-[12px] text-muted-foreground">
+                  Hero banners for constitutional texts, leadership directories, and the Paramount Chieftaincy.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /constitution</span>
+                <h4 className="mt-1 font-display text-base">The Constitution Banner</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="Constitution Hero"
+                    value={form.constitution_hero_image}
+                    fallback="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+                    onChange={(url) => set("constitution_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /leadership</span>
+                <h4 className="mt-1 font-display text-base">Traditional Leadership Banner</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="Leadership Hero"
+                    value={form.leadership_hero_image}
+                    fallback="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+                    onChange={(url) => set("leadership_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /paramount-chief</span>
+                <h4 className="mt-1 font-display text-base">Paramount Chief Page Banner</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="Paramount Chief Hero"
+                    value={form.paramount_chief_hero_image}
+                    fallback="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+                    onChange={(url) => set("paramount_chief_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Portrait Photo</span>
+                <h4 className="mt-1 font-display text-base">Paramount Chief Official Portrait</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="Official Chieftaincy Portrait"
+                    value={form.paramount_chief_portrait}
+                    fallback="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+                    onChange={(url) => set("paramount_chief_portrait", url)}
+                    aspect="portrait"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 4. CUSTOMARY, HERITAGE & COMMUNITY TABS */}
+          <section className="space-y-6 border border-border bg-card p-6">
+            <div className="flex items-center gap-2 border-b border-border pb-3">
+              <Compass className="h-5 w-5 text-gold" />
+              <div>
+                <h3 className="font-display text-xl">Customary, Community &amp; Heritage Tabs</h3>
+                <p className="text-[12px] text-muted-foreground">
+                  Imagery for About OTA, Customary Heritage, Traditional Communities, Global Diaspora, and the Genocide Foundation.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {/* About Page Hero & Feature */}
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /about</span>
+                <h4 className="mt-1 font-display text-base">About OTA Banner</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="About Hero Banner"
+                    value={form.about_hero_image}
+                    fallback="/images/slides/spitzkoppe-sunset.jpg"
+                    onChange={(url) => set("about_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /about (Feature)</span>
+                <h4 className="mt-1 font-display text-base">About Heritage Story Card</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="Red Flag Assembly Card"
+                    value={form.about_feature_image}
+                    fallback="/images/heritage/ovaherero-women-red-flag.jpg"
+                    onChange={(url) => set("about_feature_image", url)}
+                    aspect="banner"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+
+              {/* Culture & Heritage */}
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /culture</span>
+                <h4 className="mt-1 font-display text-base">Culture &amp; Heritage Banner</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="Culture Hero Banner"
+                    value={form.culture_hero_image}
+                    fallback="/images/heritage/ovaherero-women-red-flag.jpg"
+                    onChange={(url) => set("culture_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /culture (Gallery 1)</span>
+                <h4 className="mt-1 font-display text-base">Culture Gallery 1 (Procession)</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="Otjiserandu Convocations"
+                    value={form.culture_gallery_1}
+                    fallback="/images/heritage/ovaherero-women-red-flag.jpg"
+                    onChange={(url) => set("culture_gallery_1", url)}
+                    aspect="banner"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /culture (Gallery 2)</span>
+                <h4 className="mt-1 font-display text-base">Culture Gallery 2 (Ceremonial)</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="Custodians of Holy Fire"
+                    value={form.culture_gallery_2}
+                    fallback="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+                    onChange={(url) => set("culture_gallery_2", url)}
+                    aspect="banner"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+
+              {/* Communities */}
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /communities</span>
+                <h4 className="mt-1 font-display text-base">Recognised Communities Banner</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="Communities Hero"
+                    value={form.communities_hero_image}
+                    fallback="/images/slides/namibia-acacia.jpg"
+                    onChange={(url) => set("communities_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+
+              {/* Diaspora */}
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /diaspora</span>
+                <h4 className="mt-1 font-display text-base">Global Diaspora Chapters Banner</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="Diaspora Hero"
+                    value={form.diaspora_hero_image}
+                    fallback="/images/slides/oryx-dunes.jpg"
+                    onChange={(url) => set("diaspora_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+
+              {/* OGGF Foundation */}
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /oggf</span>
+                <h4 className="mt-1 font-display text-base">OGGF Restorative Justice Banner</h4>
+                <div className="mt-3">
+                  <ImageUploader
+                    label="OGGF Hero Banner"
+                    value={form.oggf_hero_image}
+                    fallback="/images/slides/spitzkoppe-sunset.jpg"
+                    onChange={(url) => set("oggf_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-32"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 5. PUBLIC SERVICES & ASSEMBLY TABS */}
+          <section className="space-y-6 border border-border bg-card p-6">
+            <div className="flex items-center gap-2 border-b border-border pb-3">
+              <CalendarDays className="h-5 w-5 text-gold" />
+              <div>
+                <h3 className="font-display text-xl">Public Services, Assemblies &amp; Communications Banners</h3>
+                <p className="text-[12px] text-muted-foreground">
+                  Hero banners for events, news communiqués, membership applications, strategic projects, contact, document verification, search, and privacy policy.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /events</span>
+                <h4 className="mt-1 font-display text-sm font-semibold">Events &amp; Commemorations</h4>
+                <div className="mt-2.5">
+                  <ImageUploader
+                    label="Events Banner"
+                    value={form.events_hero_image}
+                    fallback="/images/heritage/ovaherero-women-red-flag.jpg"
+                    onChange={(url) => set("events_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-28"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /news</span>
+                <h4 className="mt-1 font-display text-sm font-semibold">News &amp; Media Statements</h4>
+                <div className="mt-2.5">
+                  <ImageUploader
+                    label="News Banner"
+                    value={form.news_hero_image}
+                    fallback="/images/slides/spitzkoppe-sunset.jpg"
+                    onChange={(url) => set("news_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-28"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /membership</span>
+                <h4 className="mt-1 font-display text-sm font-semibold">Customary Membership</h4>
+                <div className="mt-2.5">
+                  <ImageUploader
+                    label="Membership Banner"
+                    value={form.membership_hero_image}
+                    fallback="/images/heritage/ovaherero-women-red-flag.jpg"
+                    onChange={(url) => set("membership_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-28"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /projects</span>
+                <h4 className="mt-1 font-display text-sm font-semibold">Strategic Projects</h4>
+                <div className="mt-2.5">
+                  <ImageUploader
+                    label="Projects Banner"
+                    value={form.projects_hero_image}
+                    fallback="/images/slides/namibia-acacia.jpg"
+                    onChange={(url) => set("projects_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-28"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /contact</span>
+                <h4 className="mt-1 font-display text-sm font-semibold">Contact Head Office</h4>
+                <div className="mt-2.5">
+                  <ImageUploader
+                    label="Contact Banner"
+                    value={form.contact_hero_image}
+                    fallback="/images/slides/spitzkoppe-sunset.jpg"
+                    onChange={(url) => set("contact_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-28"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /verify</span>
+                <h4 className="mt-1 font-display text-sm font-semibold">Document Verification</h4>
+                <div className="mt-2.5">
+                  <ImageUploader
+                    label="Verify Banner"
+                    value={form.verify_hero_image}
+                    fallback="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+                    onChange={(url) => set("verify_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-28"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /search</span>
+                <h4 className="mt-1 font-display text-sm font-semibold">Universal Search</h4>
+                <div className="mt-2.5">
+                  <ImageUploader
+                    label="Search Banner"
+                    value={form.search_hero_image}
+                    fallback="/images/slides/spitzkoppe-sunset.jpg"
+                    onChange={(url) => set("search_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-28"
+                  />
+                </div>
+              </div>
+
+              <div className="border border-border bg-background p-4">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-gold">Route: /privacy</span>
+                <h4 className="mt-1 font-display text-sm font-semibold">Privacy Policy</h4>
+                <div className="mt-2.5">
+                  <ImageUploader
+                    label="Privacy Banner"
+                    value={form.privacy_hero_image}
+                    fallback="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+                    onChange={(url) => set("privacy_hero_image", url)}
+                    aspect="banner"
+                    previewHeight="h-28"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
         </TabsContent>
 
-        {/* Tab 3: Contact & Operations */}
+        {/* ── Tab 3: Contact & Operations ─────────────────────────────────── */}
         <TabsContent value="contact" className="space-y-6">
           <div className="grid gap-6 lg:grid-cols-2">
             <section className="space-y-4 border border-border bg-card p-6">
@@ -535,7 +1041,7 @@ function SettingsPage() {
           </div>
         </TabsContent>
 
-        {/* Tab 4: Notices & System */}
+        {/* ── Tab 4: Notices & System ─────────────────────────────────────── */}
         <TabsContent value="notices" className="space-y-6">
           <div className="grid gap-6 lg:grid-cols-2">
             <section className="space-y-4 border border-border bg-card p-6">

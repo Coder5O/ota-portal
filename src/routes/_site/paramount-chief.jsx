@@ -5,6 +5,7 @@ import { ProseBlocks, Section, EmptyNote } from "@/components/site/PageParts";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
 import { Image } from "@/components/ui/image";
 import { fmtDate } from "@/lib/format";
+import { useSiteConfig } from "@/lib/useSiteConfig";
 
 export const Route = createFileRoute("/_site/paramount-chief")({
   head: () => ({
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/_site/paramount-chief")({
 function ParamountChiefPage() {
   const { officeholders = [], blocks = [], statements = [] } = Route.useLoaderData() || {};
   const principal = officeholders[0];
+  const config = useSiteConfig();
 
   return (
     <>
@@ -45,6 +47,7 @@ function ParamountChiefPage() {
         title="The Paramount Chief"
         intro="The Office of the Paramount Chief is the constitutional centre of the Ovaherero Traditional Authority. Only approved biographical information, statements and engagements are published here."
         image="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+        imageKey="paramount_chief_hero_image"
         imageAlt="Paramount Chief ceremonial attire"
       />
 
@@ -53,7 +56,7 @@ function ParamountChiefPage() {
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
               <Image
-                src={principal.photo_url || "/images/heritage/paramount-chief-ceremonial-dress.jpg"}
+                src={config?.paramount_chief_portrait || principal.photo_url || "/images/heritage/paramount-chief-ceremonial-dress.jpg"}
                 alt={principal.name || "Office of the Paramount Chief"}
                 className="aspect-[4/5] w-full object-cover shadow-md"
                 fittingType="fill"

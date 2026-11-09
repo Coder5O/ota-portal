@@ -30,6 +30,7 @@ function ProjectsPage() {
         title="Development carried by the community, for the community."
         intro="Approved initiatives of the Authority, its councils and chapters — youth development, women's programmes and community support."
         image="/images/slides/namibia-acacia.jpg"
+        imageKey="projects_hero_image"
         imageAlt="Community and customary development projects"
       />
       <Section>

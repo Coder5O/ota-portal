@@ -36,6 +36,7 @@ function LeadershipPage() {
         title="Traditional leadership, recognised and accountable."
         intro="This directory lists only officeholders and leaders whose appointments and public contact details have been authorised for publication by the Authority."
         image="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+        imageKey="leadership_hero_image"
         imageAlt="Traditional Leadership Regalia"
       />
 

@@ -162,6 +162,7 @@ function MembershipPage() {
         title="Apply for membership or registration."
         intro="Individuals, traditional leaders, communities, councils and diaspora chapters apply here. Every application is reviewed by the administration before any membership or recognition is conferred."
         image="/images/heritage/ovaherero-women-red-flag.jpg"
+        imageKey="membership_hero_image"
         imageAlt="Ovaherero Traditional Authority membership registration"
       />
 

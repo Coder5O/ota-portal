@@ -1,12 +1,24 @@
 import { Image } from "@/components/ui/image";
+import { useSiteConfig } from "@/lib/useSiteConfig";
 
-export function PageHero({ eyebrow, title, intro, image, imageAlt = "", children }) {
+export function PageHero({
+  eyebrow,
+  title,
+  intro,
+  image,
+  imageKey,
+  imageAlt = "",
+  children,
+}) {
+  const config = useSiteConfig();
+  const activeImage = (imageKey && config?.[imageKey]) ? config[imageKey] : image;
+
   return (
     <section className="relative overflow-hidden bg-[hsl(var(--primary))] text-primary-foreground">
-      {image ? (
+      {activeImage ? (
         <>
           <Image
-            src={image}
+            src={activeImage}
             alt={imageAlt}
             fittingType="fill"
             className="absolute inset-0 h-full w-full object-cover opacity-30"

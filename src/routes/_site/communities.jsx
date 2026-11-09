@@ -4,6 +4,7 @@ import { PageHero } from "@/components/site/PageHero";
 import { ProseBlocks, Section, EmptyNote } from "@/components/site/PageParts";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
 import { Button } from "@/components/ui/button";
+import { useSiteConfig } from "@/lib/useSiteConfig";
 
 export const Route = createFileRoute("/_site/communities")({
   head: () => ({
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/_site/communities")({
 
 function CommunitiesPage() {
   const { communities = [], blocks = [] } = Route.useLoaderData() || {};
+  const config = useSiteConfig();
 
   return (
     <>
@@ -32,6 +34,7 @@ function CommunitiesPage() {
         title="Communities and chapters of the Authority."
         intro="Recognised traditional communities, their authorised leadership and, where applicable, their diaspora chapters."
         image="/images/slides/namibia-acacia.jpg"
+        imageKey="communities_hero_image"
         imageAlt="Customary lands & traditional communities"
       />
 
@@ -40,7 +43,7 @@ function CommunitiesPage() {
         <div className="shell grid gap-8 py-10 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
           <div className="overflow-hidden border border-border shadow-sm">
             <img
-              src="/images/slides/namibia-acacia.jpg"
+              src={config?.communities_feature_image || "/images/slides/namibia-acacia.jpg"}
               alt="Ancestral pastoral savannas"
               className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
             />

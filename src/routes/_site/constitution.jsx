@@ -209,6 +209,7 @@ function ConstitutionPage() {
         title="The Constitution of the Ovaherero Traditional Authority"
         intro="The primary governing charter of the Ovaherero Traditional Authority. Articles are preserved exactly as adopted; searchable by title, number, keyword, or chapter."
         image="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+        imageKey="constitution_hero_image"
         imageAlt="OTA Constitutional Regalia"
       >
         <div className="flex flex-wrap items-center gap-3">

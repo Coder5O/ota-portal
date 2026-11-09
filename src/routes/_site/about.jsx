@@ -5,6 +5,7 @@ import { PageHero } from "@/components/site/PageHero";
 import { ProseBlocks, Section, EmptyNote } from "@/components/site/PageParts";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
 import { INSTITUTIONS } from "@/lib/institutions";
+import { useSiteConfig } from "@/lib/useSiteConfig";
 
 export const Route = createFileRoute("/_site/about")({
   head: () => ({
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/_site/about")({
 
 function AboutPage() {
   const { blocks = [], institutions = [] } = Route.useLoaderData() || {};
+  const config = useSiteConfig();
 
   return (
     <>
@@ -45,6 +47,7 @@ function AboutPage() {
         title="An institution of custom, continuity and service."
         intro="The Ovaherero Traditional Authority is constituted to preserve the customs, heritage and governance of the Ovaherero people, and to serve its communities in Namibia and across the diaspora."
         image="/images/slides/spitzkoppe-sunset.jpg"
+        imageKey="about_hero_image"
         imageAlt="Ancestral homeland landscape, Namibia"
       />
 
@@ -73,7 +76,7 @@ function AboutPage() {
           </div>
           <div className="relative overflow-hidden border border-border shadow-md">
             <img
-              src="/images/heritage/ovaherero-women-red-flag.jpg"
+              src={config?.about_feature_image || "/images/heritage/ovaherero-women-red-flag.jpg"}
               alt="Ovaherero women united under the Red Flag"
               className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
             />

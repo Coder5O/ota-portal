@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
+import { useSiteConfig } from "@/lib/useSiteConfig";
 import { PageHero } from "@/components/site/PageHero";
 import { ProseBlocks, Section, EmptyNote } from "@/components/site/PageParts";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
@@ -251,6 +252,7 @@ function ContributionDialog({ open, onOpenChange }) {
 function CulturePage() {
   const { blocks = [] } = Route.useLoaderData() || {};
   const [dialogOpen, setDialogOpen] = useState(false);
+  const config = useSiteConfig();
 
   return (
     <>
@@ -259,6 +261,7 @@ function CulturePage() {
         title="Otjiherero, custom and the living memory of our people."
         intro="Language, oral histories, traditional knowledge, ceremony and approved symbols are preserved by communities. The Authority approves and maintains this official heritage register."
         image="/images/heritage/ovaherero-women-red-flag.jpg"
+        imageKey="culture_hero_image"
         imageAlt="Ovaherero living cultural heritage and Red Flag gathering"
       >
         <Button
@@ -274,7 +277,7 @@ function CulturePage() {
         <div className="shell grid gap-10 py-12 lg:grid-cols-2 lg:items-center">
           <div className="relative overflow-hidden border border-border shadow-md">
             <img
-              src="/images/heritage/ovaherero-women-red-flag.jpg"
+              src={config?.culture_gallery_1 || "/images/heritage/ovaherero-women-red-flag.jpg"}
               alt="Otjiserandu Red Flag gathering"
               className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
             />
@@ -287,7 +290,7 @@ function CulturePage() {
 
           <div className="relative overflow-hidden border border-border shadow-md">
             <img
-              src="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+              src={config?.culture_gallery_2 || "/images/heritage/paramount-chief-ceremonial-dress.jpg"}
               alt="Ceremonial Regalia & Hands of the Chiefs"
               className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
             />

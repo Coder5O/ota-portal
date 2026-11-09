@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
+import { useSiteConfig } from "@/lib/useSiteConfig";
 import { PageHero } from "@/components/site/PageHero";
 import { ProseBlocks, Section, EmptyNote } from "@/components/site/PageParts";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
@@ -230,6 +231,7 @@ function DiasporaRegistrationDialog({ open, onOpenChange }) {
 function DiasporaPage() {
   const { blocks = [], chapters = [] } = Route.useLoaderData() || {};
   const [registerOpen, setRegisterOpen] = useState(false);
+  const config = useSiteConfig();
 
   return (
     <>
@@ -238,6 +240,7 @@ function DiasporaPage() {
         title="One people, across continents."
         intro="Ovaherero communities in Botswana, South Africa, Europe, the Americas and worldwide remain an integral part of our nation. Chapters register voluntarily for official recognition and joint cultural governance."
         image="/images/slides/oryx-dunes.jpg"
+        imageKey="diaspora_hero_image"
         imageAlt="Ovaherero diaspora trans-boundary heritage across the Kalahari"
       >
         <div className="flex flex-wrap items-center gap-3">
@@ -262,7 +265,7 @@ function DiasporaPage() {
         <div className="shell grid gap-8 py-10 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
           <div className="overflow-hidden border border-border shadow-sm">
             <img
-              src="/images/slides/oryx-dunes.jpg"
+              src={config?.diaspora_feature_image || "/images/slides/oryx-dunes.jpg"}
               alt="Trans-boundary Kalahari sands"
               className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
             />

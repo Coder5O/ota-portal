@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
+import { useSiteConfig } from "@/lib/useSiteConfig";
 import { PageHero } from "@/components/site/PageHero";
 import { Section, EmptyNote } from "@/components/site/PageParts";
 import { Button } from "@/components/ui/button";
@@ -54,6 +55,7 @@ export const Route = createFileRoute("/_site/oggf")({
 
 function OGGFPage() {
   const { institution = {}, documents = [], events = [] } = Route.useLoaderData() || {};
+  const config = useSiteConfig();
 
   return (
     <>
@@ -62,6 +64,7 @@ function OGGFPage() {
         title="Ovaherero Global Genocide Foundation"
         intro="The dedicated institutional body of the Ovaherero Traditional Authority mandated with research, international advocacy, restorative justice, and the return of ancestral remains and sacred artefacts."
         image="/images/slides/spitzkoppe-sunset.jpg"
+        imageKey="oggf_hero_image"
         imageAlt="Sacred lands &amp; Ovaherero Genocide Foundation memorial"
       >
         <div className="flex flex-wrap items-center gap-3">
@@ -86,7 +89,7 @@ function OGGFPage() {
         <div className="shell grid gap-8 py-10 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
           <div className="overflow-hidden border border-border shadow-sm">
             <img
-              src="/images/slides/spitzkoppe-sunset.jpg"
+              src={config?.oggf_feature_image || "/images/slides/spitzkoppe-sunset.jpg"}
               alt="Ancestral granite peaks of the Ovaherero homeland"
               className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
             />
