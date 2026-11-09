@@ -12,10 +12,12 @@ import {
   CheckCircle,
   XCircle,
   PauseCircle,
+  ImageIcon,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { PageHead } from "@/components/admin/AdminShell";
 import { StatusPill } from "@/components/admin/StatusPill";
+import { Button } from "@/components/ui/button";
 import { fmtDate, fmtDateTime } from "@/lib/format";
 
 export const Route = createFileRoute("/_authed/admin/")({
@@ -104,6 +106,13 @@ function AdminOverview() {
       <PageHead
         title="Central administration console"
         description="Verified system figures and governance statistics drawn directly from the platform database. Every sensitive administrative action is logged to the immutable audit trail."
+        action={
+          <Button asChild className="rounded-none bg-gold px-4 text-[12px] uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90">
+            <Link to="/admin/settings" search={{ tab: "images" }}>
+              <ImageIcon className="mr-1.5 h-3.5 w-3.5" /> Customize Website Photos
+            </Link>
+          </Button>
+        }
       />
 
       {/* Primary Statistics */}

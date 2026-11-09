@@ -13,7 +13,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2, Eye, ImageIcon, Info, Megaphone, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
+export const DEFAULT_HERO_IMAGE =
+  "https://media.base44.com/images/public/6ae34c9a19c15fe652c019e1/934e2f759_generated_image.png";
+export const DEFAULT_DETAIL_IMAGE =
+  "https://media.base44.com/images/public/6ae34c9a19c15fe652c019e1/a4f4fd11b_generated_image.png";
+
 export const Route = createFileRoute("/_authed/admin/settings")({
+  validateSearch: (search) => ({
+    tab: typeof search?.tab === "string" ? search.tab : "branding",
+  }),
   component: SettingsPage,
 });
 
@@ -49,13 +57,15 @@ function Field({ label, hint, children }) {
 }
 
 function SettingsPage() {
+  const searchParams = Route.useSearch();
+  const [activeTab, setActiveTab] = useState(searchParams?.tab || "branding");
   const [form, setForm] = useState(EMPTY);
   const [recordId, setRecordId] = useState(null);
   const queryClient = useQueryClient();
 
   const config = useQuery({
     queryKey: ["site-config"],
-    queryFn: () => base44.entities.SiteConfig.list({ sort: "-created_date", limit: 1 }),
+    queryFn: () => base44.entities.SiteConfig.list({ sort: "-updated_date", limit: 1 }),
   });
 
   useEffect(() => {
@@ -104,7 +114,7 @@ function SettingsPage() {
         }
       />
 
-      <Tabs defaultValue="branding" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="mb-6 h-auto w-full justify-start gap-2 overflow-x-auto rounded-none border border-border bg-card p-1.5">
           <TabsTrigger
             value="branding"
@@ -222,35 +232,87 @@ function SettingsPage() {
         {/* Tab 2: Page Images & Banners */}
         <TabsContent value="images" className="space-y-6">
           <div className="grid gap-6 lg:grid-cols-2">
-            <section className="space-y-5 border border-border bg-card p-6">
-              <div className="flex items-center gap-2 border-b border-border pb-3">
-                <ImageIcon className="h-5 w-5 text-gold" />
-                <h2 className="font-display text-xl">Homepage Imagery</h2>
+            {/* Prominent Homepage Section Hero & Cultural Feature */}
+            <section className="space-y-6 border-2 border-gold/40 bg-card p-6 lg:col-span-2">
+              <div className="flex flex-col justify-between gap-3 border-b border-border pb-4 sm:flex-row sm:items-center">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-10 w-10 place-items-center bg-gold/15 text-gold">
+                    <ImageIcon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 className="font-display text-2xl text-foreground">Homepage Main Photos & Imagery</h2>
+                    <p className="text-[12px] text-muted-foreground">
+                      Customize the primary banner image (the women under the Red Flag) and the Paramount Chief section portrait.
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  className="rounded-none bg-gold px-5 text-[12px] font-medium uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90"
+                  disabled={save.isPending}
+                  onClick={() => save.mutate()}
+                >
+                  {save.isPending ? "Saving..." : "Save Image Changes"}
+                </Button>
               </div>
 
-              <ImageUploader
-                label="Home Hero Banner Image"
-                value={form.home_hero_image}
-                onChange={(url) => set("home_hero_image", url)}
-                hint="Large panoramic image displayed beside the homepage hero title. Recommended: 1600x900px."
-                aspect="banner"
-                previewHeight="h-44"
-              />
+              <div className="grid gap-6 md:grid-cols-2">
+                {/* 1. Hero Women Banner Image */}
+                <div className="flex flex-col justify-between border border-border bg-background p-5">
+                  <div className="mb-4">
+                    <span className="inline-block rounded-none bg-gold/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold">
+                      Homepage Top Hero Banner
+                    </span>
+                    <h3 className="mt-2 font-display text-lg text-foreground">
+                      Hero Banner Image (Ovaherero Women Under Red Flag)
+                    </h3>
+                    <p className="mt-1 text-[11.5px] leading-relaxed text-muted-foreground">
+                      The large photo displayed on the homepage hero section right beside "United under the Red Flag, guardians of custom and continuity".
+                    </p>
+                  </div>
 
-              <ImageUploader
-                label="Home Featured Cultural Image"
-                value={form.home_detail_image}
-                onChange={(url) => set("home_detail_image", url)}
-                hint="Secondary cultural / assembly image featured on the homepage."
-                aspect="banner"
-                previewHeight="h-40"
-              />
+                  <ImageUploader
+                    label="Current Hero Photo"
+                    value={form.home_hero_image}
+                    fallback={DEFAULT_HERO_IMAGE}
+                    onChange={(url) => set("home_hero_image", url)}
+                    hint="Click Upload to replace this photo with your own file, or paste an image link. Recommended size: 1600x900px."
+                    aspect="banner"
+                    previewHeight="h-52"
+                  />
+                </div>
+
+                {/* 2. Cultural Detail Hands/Ceremonial Dress Image */}
+                <div className="flex flex-col justify-between border border-border bg-background p-5">
+                  <div className="mb-4">
+                    <span className="inline-block rounded-none bg-gold/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold">
+                      Paramount Chief Message Section
+                    </span>
+                    <h3 className="mt-2 font-display text-lg text-foreground">
+                      Cultural Feature Image (Ceremonial Dress & Hands)
+                    </h3>
+                    <p className="mt-1 text-[11.5px] leading-relaxed text-muted-foreground">
+                      The vertical portrait photo featured beside "A house of governance rooted in the dignity of our people" (with the 22 August 2022 badge).
+                    </p>
+                  </div>
+
+                  <ImageUploader
+                    label="Current Section Photo"
+                    value={form.home_detail_image}
+                    fallback={DEFAULT_DETAIL_IMAGE}
+                    onChange={(url) => set("home_detail_image", url)}
+                    hint="Click Upload to replace this photo with your own file, or paste an image link. Recommended ratio: portrait (4:5)."
+                    aspect="portrait"
+                    previewHeight="h-52"
+                  />
+                </div>
+              </div>
             </section>
 
+            {/* Inner Page Feature Banners */}
             <section className="space-y-5 border border-border bg-card p-6">
               <div className="flex items-center gap-2 border-b border-border pb-3">
                 <ImageIcon className="h-5 w-5 text-gold" />
-                <h2 className="font-display text-xl">Inner Page Feature Banners</h2>
+                <h2 className="font-display text-xl">Culture & Heritage Banner</h2>
               </div>
 
               <ImageUploader
@@ -261,6 +323,13 @@ function SettingsPage() {
                 aspect="banner"
                 previewHeight="h-40"
               />
+            </section>
+
+            <section className="space-y-5 border border-border bg-card p-6">
+              <div className="flex items-center gap-2 border-b border-border pb-3">
+                <ImageIcon className="h-5 w-5 text-gold" />
+                <h2 className="font-display text-xl">OGGF Restorative Justice Banner</h2>
+              </div>
 
               <ImageUploader
                 label="Ovaherero Global Genocide Foundation (OGGF) Banner"

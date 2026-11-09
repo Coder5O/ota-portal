@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_site/")({
         { page_slug: "paramount-chief", status: "published" },
         { sort: "sort_order", limit: 1 },
       ),
-      base44.entities.SiteConfig.list({ sort: "-created_date", limit: 1 }),
+      base44.entities.SiteConfig.list({ sort: "-updated_date", limit: 1 }),
     ]);
 
     const liveInstitutions = institutions.items || [];

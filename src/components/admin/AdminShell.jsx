@@ -66,17 +66,6 @@ export function AdminShell() {
           </div>
         </div>
 
-        {/* Prominent Quick-Action button to return to public site */}
-        <div className="border-b border-white/10 p-3">
-          <Link
-            to="/"
-            className="flex w-full items-center justify-center gap-2 border border-gold/50 bg-gold/15 py-2 text-[12px] font-medium uppercase tracking-[0.12em] text-gold transition-colors hover:bg-gold/25"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Public Site
-          </Link>
-        </div>
-
         <nav className="flex gap-1 overflow-x-auto px-2 py-3 lg:flex-1 lg:flex-col lg:overflow-y-auto lg:px-3">
           {NAV.map((item) => {
             const Icon = item.icon;
@@ -98,9 +87,6 @@ export function AdminShell() {
           <p className="truncate text-[11px] text-white/50">{user?.email}</p>
           <p className="mt-0.5 text-[9.5px] uppercase tracking-[0.18em] text-gold">Super Administrator</p>
           <div className="mt-3 flex flex-col gap-1">
-            <Link to="/" className="flex items-center gap-2 py-1 text-[12px] text-white/60 hover:text-gold">
-              <ArrowLeft className="h-3.5 w-3.5" /> Public website
-            </Link>
             <button
               type="button"
               onClick={() => logout()}

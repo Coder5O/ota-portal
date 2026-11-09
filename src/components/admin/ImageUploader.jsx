@@ -10,6 +10,7 @@ export function ImageUploader({
   label,
   value,
   onChange,
+  fallback,
   hint,
   aspect = "banner", // "banner" | "square" | "portrait"
   previewHeight = "h-36",
@@ -46,8 +47,10 @@ export function ImageUploader({
     aspect === "square"
       ? "aspect-square w-36"
       : aspect === "portrait"
-      ? "aspect-[3/4] w-36"
-      : `${previewHeight} w-full`;
+      ? "aspect-[4/5] w-36 sm:w-44"
+      : `${previewHeight} w-full sm:w-72`;
+
+  const activeImage = value || fallback;
 
   return (
     <div className="space-y-2">
@@ -59,7 +62,7 @@ export function ImageUploader({
             onClick={() => onChange("")}
             className="inline-flex items-center gap-1 text-[11px] text-destructive hover:underline"
           >
-            <Trash2 className="h-3 w-3" /> Remove
+            <Trash2 className="h-3 w-3" /> {fallback ? "Reset to original image" : "Remove"}
           </button>
         ) : null}
       </div>
@@ -69,9 +72,9 @@ export function ImageUploader({
         <div
           className={`relative flex shrink-0 items-center justify-center overflow-hidden border border-border bg-secondary/30 ${aspectClass}`}
         >
-          {value ? (
+          {activeImage ? (
             <img
-              src={value}
+              src={activeImage}
               alt={label}
               className="h-full w-full object-cover"
               onError={(e) => {
@@ -83,6 +86,11 @@ export function ImageUploader({
               <ImageIcon className="h-6 w-6 opacity-40" />
               <span className="mt-1 text-[10px] uppercase tracking-wider opacity-60">No image</span>
             </div>
+          )}
+          {activeImage && (
+            <span className="absolute bottom-1.5 left-1.5 rounded-sm bg-black/75 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider text-white backdrop-blur">
+              {value ? "Custom image attached" : "Original live image"}
+            </span>
           )}
           {uploading && (
             <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm">
@@ -97,7 +105,7 @@ export function ImageUploader({
             <Button asChild variant="outline" size="sm" className="rounded-none border-border" disabled={uploading}>
               <label className="cursor-pointer">
                 <Upload className="mr-1.5 h-3.5 w-3.5" />
-                {uploading ? "Uploading..." : value ? "Replace image" : "Upload image file"}
+                {uploading ? "Uploading…" : activeImage ? "Upload new image" : "Upload image file"}
                 <input
                   type="file"
                   className="hidden"
@@ -123,7 +131,7 @@ export function ImageUploader({
               <Input
                 value={value || ""}
                 onChange={(e) => onChange(e.target.value)}
-                placeholder="https://example.com/image.jpg"
+                placeholder="Paste direct image URL (https://...)"
                 className="rounded-none text-[12px]"
               />
             </div>

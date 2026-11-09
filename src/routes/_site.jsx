@@ -4,7 +4,7 @@ import { publicSiteApi as base44 } from "@/lib/public-site-api";
 
 export const Route = createFileRoute("/_site")({
   loader: async () => {
-    const page = await base44.entities.SiteConfig.list({ sort: "-created_date", limit: 1 });
+    const page = await base44.entities.SiteConfig.list({ sort: "-updated_date", limit: 1 });
     return { config: page.items?.[0] || null };
   },
   component: SiteWrapper,

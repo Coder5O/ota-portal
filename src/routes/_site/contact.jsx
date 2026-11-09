@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_site/contact")({
     ],
   }),
   loader: async () => {
-    const page = await base44.entities.SiteConfig.list({ sort: "-created_date", limit: 1 });
+    const page = await base44.entities.SiteConfig.list({ sort: "-updated_date", limit: 1 });
     return { config: page.items?.[0] || null };
   },
   component: ContactPage,
