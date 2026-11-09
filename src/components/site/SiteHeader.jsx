@@ -47,15 +47,24 @@ const MORE = [
   { to: "/privacy", label: "Privacy & Data Protection" },
 ];
 
-function Monogram() {
+function Monogram({ text = "OTA", logoUrl }) {
+  if (logoUrl) {
+    return (
+      <img
+        src={logoUrl}
+        alt="Official Logo"
+        className="h-11 w-11 shrink-0 object-contain"
+      />
+    );
+  }
   return (
     <span className="grid h-11 w-11 shrink-0 place-items-center border border-gold/50 bg-[hsl(var(--primary))] text-primary-foreground">
-      <span className="font-display text-[0.95rem] leading-none tracking-[0.06em]">OTA</span>
+      <span className="font-display text-[0.95rem] leading-none tracking-[0.06em]">{text}</span>
     </span>
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({ config }) {
   const [open, setOpen] = useState(false);
   const { user, isAuthenticated, isLoadingAuth, navigateToLogin } = useAuth();
   const navigate = useNavigate();
@@ -66,7 +75,9 @@ export function SiteHeader() {
     <>
       <div className="hidden bg-[hsl(var(--ink))] text-[hsl(var(--background))] md:block">
         <div className="shell flex h-9 items-center justify-between text-[10.5px] uppercase tracking-[0.18em]">
-          <p className="text-[hsl(var(--background))]/65">Official website · Ovaherero Traditional Authority</p>
+          <p className="text-[hsl(var(--background))]/65">
+            Official website · {config?.organisation_name || "Ovaherero Traditional Authority"}
+          </p>
           <div className="flex items-center gap-5">
             <Link to="/diaspora" className="text-[hsl(var(--background))]/70 transition-colors hover:text-gold">
               Diaspora
@@ -94,13 +105,13 @@ export function SiteHeader() {
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
         <div className="shell flex h-[74px] items-center justify-between gap-6">
           <Link to="/" className="flex items-center gap-3" aria-label="Ovaherero Traditional Authority home">
-            <Monogram />
+            <Monogram text={config?.monogram_text || "OTA"} logoUrl={config?.logo_url} />
             <span className="leading-tight">
               <span className="block font-display text-[1.05rem] tracking-tight text-foreground sm:text-[1.2rem]">
-                Ovaherero Traditional Authority
+                {config?.organisation_name || "Ovaherero Traditional Authority"}
               </span>
               <span className="block text-[9.5px] uppercase tracking-[0.26em] text-muted-foreground">
-                Republic of Namibia
+                {config?.tagline || "Republic of Namibia"}
               </span>
             </span>
           </Link>

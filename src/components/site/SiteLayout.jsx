@@ -12,7 +12,7 @@ export function SiteLayout({ config }) {
       >
         Skip to content
       </a>
-      <SiteHeader />
+      <SiteHeader config={config} />
       {config?.notice ? (
         <div className="border-b border-gold/30 bg-gold/10">
           <div className="shell flex items-start gap-3 py-2.5">
@@ -31,7 +31,7 @@ export function SiteLayout({ config }) {
       <main id="main" className="flex-1">
         <Outlet />
       </main>
-      <SiteFooter />
+      <SiteFooter config={config} />
     </div>
   );
 }

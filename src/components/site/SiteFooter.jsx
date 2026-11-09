@@ -41,24 +41,32 @@ const COLUMNS = [
   },
 ];
 
-export function SiteFooter() {
+export function SiteFooter({ config }) {
   return (
     <footer className="mt-24 bg-[hsl(var(--ink))] text-[hsl(var(--background))]">
       <div className="shell grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-6">
         <div className="lg:col-span-2">
           <div className="flex items-center gap-3">
-            <span className="grid h-11 w-11 place-items-center border border-gold/60">
-              <span className="font-display text-[0.95rem] tracking-[0.06em] text-gold">OTA</span>
-            </span>
+            {config?.logo_url ? (
+              <img
+                src={config.logo_url}
+                alt="Logo"
+                className="h-11 w-11 object-contain"
+              />
+            ) : (
+              <span className="grid h-11 w-11 place-items-center border border-gold/60">
+                <span className="font-display text-[0.95rem] tracking-[0.06em] text-gold">
+                  {config?.monogram_text || "OTA"}
+                </span>
+              </span>
+            )}
             <span className="font-display text-xl leading-tight">
-              Ovaherero
-              <br />
-              Traditional Authority
+              {config?.organisation_name || "Ovaherero Traditional Authority"}
             </span>
           </div>
           <p className="mt-5 max-w-xs text-[13px] leading-relaxed text-[hsl(var(--background))]/60">
-            The official digital home of the Ovaherero Traditional Authority: its leadership, institutions,
-            constitution, culture and communities in Namibia and across the diaspora.
+            {config?.footer_note ||
+              "The official digital home of the Ovaherero Traditional Authority: its leadership, institutions, constitution, culture and communities in Namibia and across the diaspora."}
           </p>
           <p className="mt-5 text-[11px] uppercase tracking-[0.18em] text-[hsl(var(--background))]/40">
             Records marked “Illustrative” await official verification and publication.

@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_site/")({
     ],
   }),
   loader: async () => {
-    const [news, events, institutions, welcome] = await Promise.all([
+    const [news, events, institutions, welcome, configRes] = await Promise.all([
       base44.entities.NewsPost.filter({ status: "published" }, { sort: "-published_date", limit: 3 }),
       base44.entities.Event.filter({ status: "published" }, { sort: "starts_at", limit: 3 }),
       base44.entities.Institution.filter({ status: "published" }, { sort: "sort_order", limit: 6 }),
@@ -33,6 +33,7 @@ export const Route = createFileRoute("/_site/")({
         { page_slug: "paramount-chief", status: "published" },
         { sort: "sort_order", limit: 1 },
       ),
+      base44.entities.SiteConfig.list({ sort: "-created_date", limit: 1 }),
     ]);
 
     const liveInstitutions = institutions.items || [];
@@ -51,6 +52,7 @@ export const Route = createFileRoute("/_site/")({
       events: events.items || [],
       institutions: institutionsList,
       welcome: welcome.items?.[0] || null,
+      config: configRes.items?.[0] || null,
     };
   },
   component: HomePage,
@@ -64,7 +66,9 @@ const QUICK_LINKS = [
 ];
 
 function HomePage() {
-  const { news, events, institutions, welcome } = Route.useLoaderData();
+  const { news, events, institutions, welcome, config } = Route.useLoaderData();
+  const heroImg = config?.home_hero_image || HERO_IMAGE;
+  const detailImg = config?.home_detail_image || DETAIL_IMAGE;
 
   return (
     <>
@@ -96,7 +100,7 @@ function HomePage() {
           </div>
           <div className="relative min-h-[280px] sm:min-h-[360px] lg:min-h-[600px]">
             <Image
-              src={HERO_IMAGE}
+              src={heroImg}
               alt="Ovaherero community gathering at golden hour"
               fittingType="fill"
               className="absolute inset-0 h-full w-full object-cover"
@@ -134,7 +138,7 @@ function HomePage() {
       <section className="shell grid gap-12 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:py-28">
         <div className="relative">
           <Image
-            src={DETAIL_IMAGE}
+            src={detailImg}
             alt="Detail of Ovaherero ceremonial dress"
             className="aspect-[4/5] w-full object-cover"
             fittingType="fill"
