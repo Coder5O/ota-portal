@@ -1,0 +1,23 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // 1. Public assets (news images, logos, banners, site graphics)
+    // Anyone can read public assets; authenticated users can write/upload.
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // 2. Private documents (application identity proof, membership verification attachments)
+    // Only authenticated users can read or write documents.
+    match /private/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Default deny for all other storage paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

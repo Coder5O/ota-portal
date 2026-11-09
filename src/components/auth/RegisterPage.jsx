@@ -117,7 +117,7 @@ export function RegisterPage() {
 
   return (
     <AuthLayout icon={UserPlus} title="Create your account" subtitle="Sign up to get started">
-      <GoogleButton returnTo={returnTo} />
+      <GoogleButton returnTo={returnTo} onError={setError} />
       <OrDivider />
       <AuthError>{error}</AuthError>
       <form onSubmit={register} className="space-y-4">

@@ -32,7 +32,7 @@ export function LoginPage() {
 
   return (
     <AuthLayout icon={LogIn} title="Welcome back" subtitle="Log in to your account">
-      <GoogleButton returnTo={returnTo} />
+      <GoogleButton returnTo={returnTo} onError={setError} />
       <OrDivider />
       <AuthError>{error}</AuthError>
       <form onSubmit={submit} className="space-y-4">

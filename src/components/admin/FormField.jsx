@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Upload } from "lucide-react";
+import { Upload, Loader2, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -15,23 +15,38 @@ export function FormField({ field, value, onChange }) {
   const [busy, setBusy] = useState(false);
   const id = `f-${field.name}`;
 
+  const isImageField =
+    field.accept?.includes("image") ||
+    field.name?.includes("image") ||
+    field.name?.includes("cover") ||
+    field.name?.includes("photo") ||
+    field.name?.includes("logo") ||
+    (typeof value === "string" && (value.startsWith("data:image") || value.match(/\.(jpeg|jpg|png|webp|gif|svg)(\?.*)?$/i)));
+
   const upload = async (file) => {
     if (!file) return;
     setBusy(true);
     try {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.info("Optimizing and preparing image…");
+      }
       if (field.type === "file-public") {
         const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
-        onChange(file_url);
+        if (file_url) {
+          onChange(file_url);
+          toast.success("Image uploaded and attached successfully!");
+        } else {
+          toast.error("Upload did not produce a valid file.");
+        }
       } else {
         const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
-        onChange(file_uri);
+        if (file_uri) {
+          onChange(file_uri);
+          toast.success("Document uploaded successfully.");
+        }
       }
-      toast.success(
-        field.type === "file-public"
-          ? "File uploaded (stored publicly — anyone with the link can open it)"
-          : "File uploaded (stored privately)",
-      );
     } catch (error) {
+      console.error("Upload error:", error);
       toast.error("The upload did not complete. Please try again.");
     } finally {
       setBusy(false);
@@ -96,20 +111,57 @@ export function FormField({ field, value, onChange }) {
             className="rounded-none text-[13.5px]"
           />
         ) : field.type === "file-private" || field.type === "file-public" ? (
-          <div className="flex items-center gap-2">
-            <Input value={value || ""} onChange={(e) => onChange(e.target.value)} placeholder="File reference" className="rounded-none text-[12.5px]" />
-            <Button asChild variant="outline" size="sm" className="rounded-none" disabled={busy}>
-              <label className="cursor-pointer">
-                <Upload className="mr-1.5 h-3.5 w-3.5" />
-                {busy ? "Uploading" : "Upload"}
-                <input
-                  type="file"
-                  className="hidden"
-                  onChange={(e) => upload(e.target.files?.[0])}
-                  accept={field.accept || undefined}
-                />
-              </label>
-            </Button>
+          <div className="space-y-2">
+            {isImageField && value ? (
+              <div className="flex items-center gap-3 rounded-none border border-border bg-secondary/20 p-2">
+                <div className="relative h-16 w-24 shrink-0 overflow-hidden border border-border bg-background">
+                  <img
+                    src={value}
+                    alt={field.label}
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                </div>
+                <div className="flex-1 space-y-1 overflow-hidden">
+                  <p className="truncate text-[12px] font-medium text-foreground">
+                    {value.startsWith("data:") ? "Image loaded (embedded data)" : value}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">Attached to record</p>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onChange("")}
+                    className="h-6 px-1.5 text-[11px] text-destructive hover:bg-destructive/10"
+                  >
+                    <Trash2 className="mr-1 h-3 w-3" /> Remove image
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="flex items-center gap-2">
+              <Input
+                value={value || ""}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder={isImageField ? "Paste image URL or click Upload" : "File reference"}
+                className="rounded-none text-[12.5px]"
+              />
+              <Button asChild variant="outline" size="sm" className="shrink-0 rounded-none border-border" disabled={busy}>
+                <label className="cursor-pointer">
+                  {busy ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin text-gold" /> : <Upload className="mr-1.5 h-3.5 w-3.5" />}
+                  {busy ? "Processing…" : value ? "Replace" : "Upload"}
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => upload(e.target.files?.[0])}
+                    accept={field.accept || (isImageField ? "image/*" : undefined)}
+                  />
+                </label>
+              </Button>
+            </div>
           </div>
         ) : (
           <Input

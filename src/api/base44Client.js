@@ -15,6 +15,65 @@ import { createEntitiesProxy } from "@/lib/firebase/firestore-adapter";
 import { currentUrl } from "@/lib/authReturnTo";
 
 /**
+ * Converts a file (specifically an image) to an optimized, compressed Base64 Data URL.
+ * Downscales images over 1400px so they easily fit in Firestore documents without quality loss.
+ */
+async function fileToDataUrl(file, maxWidth = 1400, maxHeight = 1400, quality = 0.82) {
+  if (!file) return "";
+  return new Promise((resolve) => {
+    if (typeof window === "undefined" || !window.FileReader) {
+      resolve("");
+      return;
+    }
+
+    // For non-images or SVGs, read as data URL directly without canvas compression
+    if (!file.type || !file.type.startsWith("image/") || file.type.includes("svg")) {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => resolve("");
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const mime = file.type === "image/png" ? "image/png" : "image/jpeg";
+          const dataUrl = canvas.toDataURL(mime, quality);
+          resolve(dataUrl);
+          return;
+        }
+        resolve(String(e.target?.result || ""));
+      };
+      img.onerror = () => resolve(String(e.target?.result || ""));
+      img.src = String(e.target?.result || "");
+    };
+    reader.onerror = () => resolve("");
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
  * Firebase-backed client adapter preserving the Base44 API surface for all UI components.
  */
 export const base44 = {
@@ -86,8 +145,9 @@ export const base44 = {
           const file_url = await getDownloadURL(snapshot.ref);
           return { file_url };
         } catch (err) {
-          console.warn("[Storage] Public upload falling back:", err?.message || err);
-          return { file_url: URL.createObjectURL(file) };
+          console.warn("[Storage] Cloud Storage upload bypassed/failed, optimizing to persistent data URI:", err?.message || err);
+          const file_url = await fileToDataUrl(file);
+          return { file_url };
         }
       },
       UploadPrivateFile: async ({ file }) => {
@@ -99,8 +159,9 @@ export const base44 = {
           const file_uri = await getDownloadURL(snapshot.ref);
           return { file_uri };
         } catch (err) {
-          console.warn("[Storage] Private upload falling back to document record:", err?.message || err);
-          return { file_uri: `ota-doc://${file.name || "supporting_document"}` };
+          console.warn("[Storage] Private Cloud Storage upload bypassed/failed, falling back to data URI:", err?.message || err);
+          const file_uri = await fileToDataUrl(file);
+          return { file_uri: file_uri || `ota-doc://${file.name || "supporting_document"}` };
         }
       },
       CreateFileSignedUrl: async ({ file_uri }) => {

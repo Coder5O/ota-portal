@@ -5,6 +5,8 @@ import {
   sendPasswordResetEmail,
   confirmPasswordReset,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
   browserLocalPersistence,
@@ -86,6 +88,7 @@ export async function getOrCreateUserProfile(firebaseUser, additionalData = {}) 
 export function formatAuthError(error) {
   if (!error) return "";
   const code = error.code || "";
+  const host = typeof window !== "undefined" ? window.location.hostname : "your domain";
   switch (code) {
     case "auth/invalid-credential":
     case "auth/user-not-found":
@@ -100,7 +103,15 @@ export function formatAuthError(error) {
     case "auth/too-many-requests":
       return "Access to this account has been temporarily disabled due to many failed login attempts. Please try again later.";
     case "auth/popup-closed-by-user":
-      return "The sign-in popup was closed before completion.";
+      return "Sign-in cancelled: The Google popup window was closed.";
+    case "auth/cancelled-popup-request":
+      return "Sign-in cancelled: Multiple popup requests were initiated.";
+    case "auth/popup-blocked":
+      return "The Google sign-in popup was blocked by your browser. Please allow popups for this site.";
+    case "auth/unauthorized-domain":
+      return `Domain not authorized for Google Sign-In. Please add "${host}" under Firebase Console -> Authentication -> Settings -> Authorized domains.`;
+    case "auth/operation-not-allowed":
+      return "Google Sign-In is not enabled for this project. Please enable Google provider under Firebase Console -> Authentication -> Sign-in method.";
     case "auth/network-request-failed":
       return "Network error. Please check your internet connection.";
     default:
@@ -140,8 +151,32 @@ export async function loginWithGoogle() {
     const credential = await signInWithPopup(auth, googleProvider);
     return await getOrCreateUserProfile(credential.user);
   } catch (error) {
+    if (error.code === "auth/popup-blocked") {
+      try {
+        await signInWithRedirect(auth, googleProvider);
+        return null;
+      } catch (redirectErr) {
+        throw new Error(formatAuthError(redirectErr));
+      }
+    }
     throw new Error(formatAuthError(error));
   }
+}
+
+/**
+ * Handle redirect result after OAuth redirect flow
+ */
+export async function checkOAuthRedirectResult() {
+  if (typeof window === "undefined") return null;
+  try {
+    const result = await getRedirectResult(auth);
+    if (result?.user) {
+      return await getOrCreateUserProfile(result.user);
+    }
+  } catch (error) {
+    console.warn("OAuth redirect error:", error);
+  }
+  return null;
 }
 
 /**

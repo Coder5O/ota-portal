@@ -44,11 +44,11 @@ service cloud.firestore {
         !request.resource.data.keys().hasAny(['role']) ||
         request.resource.data.role == 'user'
       );
-      // Users cannot elevate their role or change governance attributes
+      // Users cannot elevate their role, change identity email/id, or change governance attributes
       allow update: if isAdmin() || (
         isOwner(userId) &&
         !request.resource.data.diff(resource.data).affectedKeys().hasAny([
-          'role', 'institution_slug', 'officer_title', 'approval_authority'
+          'role', 'email', 'uid', 'id', 'institution_slug', 'officer_title', 'approval_authority'
         ])
       );
       allow delete: if isAdmin();
@@ -149,14 +149,14 @@ service cloud.firestore {
         resource.data.email == request.auth.token.email &&
         !request.resource.data.diff(resource.data).affectedKeys().hasAny([
           'membership_number', 'status', 'status_reason', 'category', 'joined_date',
-          'review_date', 'approval_authority', 'approval_date'
+          'review_date', 'approval_authority', 'approval_date', 'email', 'id'
         ])
       );
     }
 
     match /member_applications/{id} {
-      // Public intake can submit applications
-      allow create: if true;
+      // Public intake can submit applications, but initial status must be 'submitted' (cannot forge 'approved')
+      allow create: if !request.resource.data.keys().hasAny(['status']) || request.resource.data.status == 'submitted';
       allow read: if isAdmin() || (isSignedIn() && (
         resource.data.email == request.auth.token.email ||
         resource.data.created_by_id == request.auth.uid
@@ -166,19 +166,20 @@ service cloud.firestore {
 
     match /application_events/{id} {
       allow read: if isAdmin() || (isSignedIn() && resource.data.applicant_email == request.auth.token.email);
-      allow create: if isSignedIn() || isAdmin();
+      // Strictly restrict status transition event generation to administrators
+      allow create: if isAdmin();
       allow update, delete: if false; // Immutable audit log
     }
 
     // --- 5. Enquiries & Event Registrations ---
     match /enquiries/{id} {
-      allow create: if true;
+      allow create: if !request.resource.data.keys().hasAny(['status']) || request.resource.data.status == 'New';
       allow read: if isAdmin() || (isSignedIn() && resource.data.email == request.auth.token.email);
       allow update, delete: if isAdmin();
     }
 
     match /event_registrations/{id} {
-      allow create: if true;
+      allow create: if !request.resource.data.keys().hasAny(['status']) || request.resource.data.status == 'Confirmed' || request.resource.data.status == 'registered';
       allow read: if isAdmin() || (isSignedIn() && resource.data.email == request.auth.token.email);
       allow update, delete: if isAdmin();
     }
@@ -186,7 +187,8 @@ service cloud.firestore {
     // --- 6. Notifications ---
     match /notifications/{id} {
       allow read: if isAdmin() || (isSignedIn() && resource.data.recipient_email == request.auth.token.email);
-      allow create: if true;
+      // Only authorized administrators or backend functions can dispatch notifications
+      allow create: if isAdmin();
       allow update: if isAdmin() || (isSignedIn() && resource.data.recipient_email == request.auth.token.email);
       allow delete: if isAdmin();
     }
@@ -194,7 +196,8 @@ service cloud.firestore {
     // --- 7. Audit Logs ---
     match /audit_logs/{id} {
       allow read: if isAdmin();
-      allow create: if isSignedIn();
+      // Audit logs must be recorded by administrators or backend functions, never arbitrary signed-in users
+      allow create: if isAdmin();
       allow update, delete: if false; // Immutable audit log
     }
 
@@ -209,7 +212,7 @@ service cloud.firestore {
     }
 
     match /heritage_submissions/{id} {
-      allow create: if true;
+      allow create: if !request.resource.data.keys().hasAny(['status']) || request.resource.data.status == 'pending' || request.resource.data.status == 'submitted';
       allow read, update, delete: if isAdmin();
     }
   }

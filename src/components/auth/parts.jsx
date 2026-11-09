@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { GoogleIcon } from "./GoogleIcon";
 import { base44 } from "@/api/base44Client";
@@ -31,11 +33,37 @@ export function SubmitButton({ busy, busyLabel, children, ...props }) {
   );
 }
 
-export function GoogleButton({ returnTo }) {
+export function GoogleButton({ returnTo, onError }) {
+  const [busy, setBusy] = useState(false);
+
+  const handleClick = async () => {
+    setBusy(true);
+    try {
+      await base44.auth.loginWithProvider("google", returnTo);
+    } catch (err) {
+      console.error("Google sign-in error:", err);
+      const msg = err.message || "Failed to sign in with Google.";
+      toast.error(msg, { duration: 9000 });
+      if (onError) onError(msg);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
-    <Button type="button" variant="outline" className="mb-6 h-12 w-full text-sm font-medium" onClick={() => base44.auth.loginWithProvider("google", returnTo)}>
-      <GoogleIcon className="mr-2 h-5 w-5" />
-      Continue with Google
+    <Button
+      type="button"
+      variant="outline"
+      className="mb-6 h-12 w-full text-sm font-medium"
+      disabled={busy}
+      onClick={handleClick}
+    >
+      {busy ? (
+        <Loader2 className="mr-2 h-5 w-5 animate-spin text-gold" />
+      ) : (
+        <GoogleIcon className="mr-2 h-5 w-5" />
+      )}
+      {busy ? "Connecting to Google…" : "Continue with Google"}
     </Button>
   );
 }
