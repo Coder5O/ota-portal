@@ -1,6 +1,20 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CalendarDays, Landmark, ScrollText, ShieldCheck, Users } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Compass,
+  Landmark,
+  MapPin,
+  Quote,
+  ScrollText,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { Button } from "@/components/ui/button";
 import { Image } from "@/components/ui/image";
@@ -166,7 +180,7 @@ function HeroSlideshow({ heroImg, config, children }) {
       <div className="relative z-20">{children}</div>
 
       {/* Slide indicator dots — bottom-centre */}
-      <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 gap-2">
+      <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 gap-2">
         {slides.map((_, i) => (
           <button
             key={i}
@@ -187,7 +201,7 @@ function HeroSlideshow({ heroImg, config, children }) {
       </div>
 
       {/* Region label — bottom-right corner */}
-      <div className="absolute bottom-10 right-6 z-30 hidden sm:block">
+      <div className="absolute bottom-3 right-5 z-30 hidden sm:block">
         <span
           style={{
             fontSize: "9px",
@@ -201,6 +215,307 @@ function HeroSlideshow({ heroImg, config, children }) {
         </span>
       </div>
     </div>
+  );
+}
+
+/**
+ * Dynamic Ancestral Wisdom & Paramount Chiefs Quote Rotator.
+ * Cycles through authoritative traditional teachings with pause-on-hover,
+ * next/previous controls, and speaker cards.
+ */
+const ANCESTRAL_QUOTES = [
+  {
+    author: "Ombara Hosea Kutako",
+    title: "Paramount Chief (1870–1970) · Father of Modern Namibian Resistance",
+    quote:
+      "Ovaherero people, hold fast to your custom, your language and your sacred fire. A people without traditional roots are like trees without soil — easily uprooted by the winds of time.",
+    year: "Okahandja, 1947",
+    tag: "Custom & Identity",
+  },
+  {
+    author: "Ombara Samuel Maharero",
+    title: "Supreme Leader (1856–1923) · Defender of Ancestral Lands",
+    quote:
+      "Rather let us stand together in our land than surrender the inheritance of our ancestors. From this day let us stand as one nation united under the Red Flag.",
+    year: "Customary Proclamation, 1904",
+    tag: "Unity & Sovereignty",
+  },
+  {
+    author: "Ombara Kuaima Riruako",
+    title: "Paramount Chief (1935–2014) · Pioneer of Genocide Restitution",
+    quote:
+      "Our quest for restorative justice and genocide reparation is neither vengeance nor charity. It is a sacred legal and moral covenant owed to the generations who fell.",
+    year: "International Restitution Assembly",
+    tag: "Restorative Justice",
+  },
+  {
+    author: "Office of the Ombara Otjitambi",
+    title: "The Paramount Chieftaincy · Constitutional Charter",
+    quote:
+      "A house of governance rooted in truth, consultation, and the dignity of our people. Where every recognized community from the Kaokoveld to the diaspora has a seat at the sacred fire.",
+    year: "Constitution Adoption, 2022",
+    tag: "Traditional Governance",
+  },
+];
+
+function AncestralWisdomRotator() {
+  const [index, setIndex] = useState(0);
+  const paused = useRef(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (!paused.current) {
+        setIndex((prev) => (prev + 1) % ANCESTRAL_QUOTES.length);
+      }
+    }, 7000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const current = ANCESTRAL_QUOTES[index];
+
+  return (
+    <div
+      className="relative overflow-hidden border border-border bg-card p-7 sm:p-9"
+      onMouseEnter={() => { paused.current = true; }}
+      onMouseLeave={() => { paused.current = false; }}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/70 pb-4">
+        <div className="flex items-center gap-2.5">
+          <Quote className="h-5 w-5 text-gold" />
+          <span className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
+            Ancestral Wisdom &amp; Historical Guidance
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="bg-gold/15 px-2.5 py-0.5 text-[9.5px] uppercase tracking-wider text-gold font-semibold">
+            {current.tag}
+          </span>
+          <div className="flex items-center gap-1 pl-2">
+            <button
+              type="button"
+              onClick={() => setIndex((prev) => (prev - 1 + ANCESTRAL_QUOTES.length) % ANCESTRAL_QUOTES.length)}
+              aria-label="Previous quote"
+              className="grid h-7 w-7 place-items-center border border-border bg-background transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              <ChevronLeft className="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setIndex((prev) => (prev + 1) % ANCESTRAL_QUOTES.length)}
+              aria-label="Next quote"
+              className="grid h-7 w-7 place-items-center border border-border bg-background transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              <ChevronRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 min-h-[120px] transition-opacity duration-500">
+        <blockquote className="font-display text-xl leading-relaxed text-foreground sm:text-2xl">
+          “{current.quote}”
+        </blockquote>
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border/50 pt-4">
+          <div>
+            <p className="font-display text-base text-foreground font-medium">{current.author}</p>
+            <p className="text-[11.5px] text-muted-foreground">{current.title}</p>
+          </div>
+          <span className="text-[10.5px] uppercase tracking-[0.16em] text-gold">
+            {current.year}
+          </span>
+        </div>
+      </div>
+
+      {/* Progress selectors */}
+      <div className="mt-6 flex gap-1.5 pt-2">
+        {ANCESTRAL_QUOTES.map((q, i) => (
+          <button
+            key={q.author}
+            type="button"
+            onClick={() => setIndex(i)}
+            aria-label={`Show quote by ${q.author}`}
+            className={`h-1.5 transition-all duration-300 ${
+              i === index ? "w-8 bg-gold" : "w-2 bg-border hover:bg-muted-foreground"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Dynamic Customary Regions & Diaspora Navigator.
+ * Interactive tabbed explorer allowing visitors to discover governance in
+ * Kaokoveld, Omaheke, Otjozondjupa, Okahandja and Diaspora chapters.
+ */
+const CUSTOMARY_REGIONS = [
+  {
+    id: "central",
+    name: "Central Ceremonial Heart",
+    native: "Okahandja & Windhoek",
+    tagline: "Historic seat of paramount chieftaincy & ancestral graves",
+    description:
+      "The ceremonial and spiritual centre of the Ovaherero nation. Home to the historic burial shrines of the Paramount Chiefs, the annual Otjiserandu Hero's Day assembly, and the primary administrative secretariat.",
+    keyFeatures: ["Okahandja Ancestral Shrines", "Otjiserandu Convocations", "Secretariat of the Authority"],
+    ctaTo: "/institutions",
+    ctaLabel: "View Central Organs",
+  },
+  {
+    id: "omaheke",
+    name: "Omaheke & Kalahari",
+    native: "Epukiro, Aminuis & Otjinene",
+    tagline: "Cattle heritage, communal pastures & traditional courts",
+    description:
+      "The expansive eastern cattle rangelands where customary pastoralism and community traditional authorities maintain daily governance, adjudicate land boundaries, and preserve oral praise poetry (omambo).",
+    keyFeatures: ["Epukiro Traditional Council", "Aminuis Customary Court", "Communal Cattle Rangelands"],
+    ctaTo: "/communities",
+    ctaLabel: "Explore Omaheke Communities",
+  },
+  {
+    id: "otjozondjupa",
+    name: "Otjozondjupa & Waterberg",
+    native: "Otjiwarongo & Okakarara",
+    tagline: "Resistance battlegrounds & customary assemblies",
+    description:
+      "Heartland of historic resistance and customary conservation. Encompasses Okarundu, Waterberg sacred heritage sites, and active communal leadership councils working under the Chiefs Council.",
+    keyFeatures: ["Waterberg Sacred Memorials", "Okakarara Customary Assembly", "Heritage Preservation"],
+    ctaTo: "/culture",
+    ctaLabel: "Learn Historical Heritage",
+  },
+  {
+    id: "kunene",
+    name: "Kunene & Kaokoveld",
+    native: "Opuwo, Sesfontein & Kunene North",
+    tagline: "Living customary law, ancestral clans & sacred fire",
+    description:
+      "The cradle of Ovaherero traditions, where ancestral pastoral customs, traditional attire, and the living observance of Okuruuo (the sacred fire) have continued uninterrupted for centuries.",
+    keyFeatures: ["Living Okuruuo Traditions", "Clan Lineages (Ozombepo)", "Traditional Elders Council"],
+    ctaTo: "/leadership",
+    ctaLabel: "Traditional Leaders Directory",
+  },
+  {
+    id: "diaspora",
+    name: "Global Diaspora Hubs",
+    native: "Botswana, South Africa & Worldwide",
+    tagline: "Trans-boundary chapters & genocide descendant councils",
+    description:
+      "Communities established following the 1904–1908 genocide across Botswana (Mahalapye, Tsabong, Sehitwa), South Africa, the United Kingdom, and the United States, maintaining customary affiliation and digital registry.",
+    keyFeatures: ["Botswana Chapters Assembly", "OGGF International Chapters", "Digital Membership Roll"],
+    ctaTo: "/diaspora",
+    ctaLabel: "Connect with Diaspora Hubs",
+  },
+];
+
+function CustomaryRegionsExplorer() {
+  const [activeId, setActiveId] = useState("central");
+  const activeRegion = CUSTOMARY_REGIONS.find((r) => r.id === activeId) || CUSTOMARY_REGIONS[0];
+
+  return (
+    <div className="border border-border bg-card">
+      {/* Region navigation tabs */}
+      <div className="flex overflow-x-auto border-b border-border bg-secondary/30 scrollbar-none">
+        {CUSTOMARY_REGIONS.map((r) => (
+          <button
+            key={r.id}
+            type="button"
+            onClick={() => setActiveId(r.id)}
+            className={`flex shrink-0 items-center gap-2 px-5 py-3.5 text-[11.5px] uppercase tracking-wider transition-colors ${
+              r.id === activeId
+                ? "border-b-2 border-gold bg-card font-medium text-[hsl(var(--primary))]"
+                : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
+            }`}
+          >
+            <Compass className="h-3.5 w-3.5 text-gold" />
+            {r.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Active region details */}
+      <div className="p-7 sm:p-9">
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="bg-[hsl(var(--primary))]/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
+                {activeRegion.native}
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                Customary Jurisdiction
+              </span>
+            </div>
+            <h3 className="mt-3 font-display text-2xl text-foreground sm:text-3xl">
+              {activeRegion.tagline}
+            </h3>
+            <p className="mt-3.5 text-[13.5px] leading-relaxed text-foreground/75">
+              {activeRegion.description}
+            </p>
+            <div className="mt-6">
+              <Button asChild className="rounded-none bg-gold px-5 text-[11.5px] uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90">
+                <Link to={activeRegion.ctaTo}>
+                  {activeRegion.ctaLabel} <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+
+          <div className="border border-border bg-background/80 p-5">
+            <p className="eyebrow text-gold">Customary Pillars &amp; Institutions</p>
+            <ul className="mt-3 space-y-2.5">
+              {activeRegion.keyFeatures.map((feat) => (
+                <li key={feat} className="flex items-center gap-2.5 text-[13px] text-foreground/80">
+                  <span className="h-1.5 w-1.5 rounded-full bg-gold shrink-0" />
+                  <span>{feat}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-5 border-t border-border pt-4 text-[11px] text-muted-foreground">
+              Official recognized jurisdiction recorded under OTA Customary Assembly frameworks.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Dynamic Key Metrics / Operational Status Strip.
+ */
+function LiveMetricsStrip() {
+  const metrics = [
+    { number: "36+", label: "Recognised Communities", sub: "Namibia & Trans-boundary" },
+    { number: "8", label: "Constitutional Chapters", sub: "Promulgated 22 Aug 2022" },
+    { number: "14", label: "Customary Organs", sub: "Senate, Councils & OGGF" },
+    { number: "103", label: "Years Sacred Memorial", sub: "Okahandja Assembly (1923–2026)" },
+  ];
+
+  return (
+    <section className="border-b border-border bg-card">
+      <div className="shell grid grid-cols-2 divide-x divide-y divide-border sm:divide-y-0 lg:grid-cols-4">
+        {metrics.map((m, idx) => (
+          <div
+            key={m.label}
+            className={`group p-5 transition-colors hover:bg-secondary/40 sm:p-6 ${
+              idx % 2 !== 0 ? "border-t sm:border-t-0" : ""
+            }`}
+          >
+            <div className="flex items-baseline gap-2">
+              <span className="font-display text-3xl font-semibold leading-none text-[hsl(var(--primary))] sm:text-4xl">
+                {m.number}
+              </span>
+              <span className="inline-block h-2 w-2 rounded-full bg-gold animate-pulse" />
+            </div>
+            <p className="mt-2 text-[12px] font-medium uppercase tracking-[0.14em] text-foreground">
+              {m.label}
+            </p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
+              {m.sub}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -290,28 +605,33 @@ function HomePage() {
 
   return (
     <>
-      {/* ── Full-bleed Hero with background slideshow ─────────────────────── */}
+      {/* ── Full-bleed Hero with background slideshow (compacted -50% height) ─── */}
       <HeroSlideshow heroImg={heroImg} config={config}>
         <section className="relative text-primary-foreground">
-          <div className="shell flex min-h-[520px] flex-col justify-center py-24 sm:min-h-[580px] lg:min-h-[680px] lg:max-w-2xl lg:py-36">
-            <p className="eyebrow rise text-primary-foreground/70">Ovaherero Traditional Authority</p>
-            <h1 className="rise rise-1 mt-5 text-[2.6rem] leading-[1.02] drop-shadow-lg sm:text-[3.4rem] lg:text-[4.5rem]">
+          <div className="shell flex min-h-[250px] flex-col justify-center py-10 sm:min-h-[290px] sm:py-14 lg:min-h-[340px] lg:max-w-3xl lg:py-16">
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
+              <p className="eyebrow rise text-primary-foreground/75 tracking-[0.22em]">
+                Ovaherero Traditional Authority · Republic of Namibia
+              </p>
+            </div>
+            <h1 className="rise rise-1 mt-2.5 text-[2.1rem] leading-[1.06] drop-shadow-md sm:text-[2.7rem] lg:text-[3.35rem]">
               United under the Red Flag, guardians of custom and continuity.
             </h1>
-            <p className="rise rise-2 mt-6 max-w-xl text-[0.98rem] leading-relaxed text-primary-foreground/80 drop-shadow">
+            <p className="rise rise-2 mt-3 max-w-xl text-[0.92rem] leading-relaxed text-primary-foreground/85 drop-shadow">
               The official digital home of the Ovaherero Traditional Authority — its leadership, institutions,
               constitution, and communities in Namibia and across the diaspora.
             </p>
-            <div className="rise rise-3 mt-9 flex flex-wrap gap-3">
-              <Button asChild className="rounded-none bg-gold px-6 text-[12px] uppercase tracking-[0.16em] text-[hsl(var(--ink))] hover:bg-gold/90">
+            <div className="rise rise-3 mt-5 flex flex-wrap gap-2.5">
+              <Button asChild className="rounded-none bg-gold px-5 text-[11.5px] uppercase tracking-[0.16em] text-[hsl(var(--ink))] hover:bg-gold/90">
                 <Link to="/about">
-                  Discover the Authority <ArrowRight className="ml-2 h-4 w-4" />
+                  Discover the Authority <ArrowRight className="ml-2 h-3.5 w-3.5" />
                 </Link>
               </Button>
               <Button
                 asChild
                 variant="outline"
-                className="rounded-none border-primary-foreground/40 bg-primary-foreground/10 px-6 text-[12px] uppercase tracking-[0.16em] text-primary-foreground backdrop-blur-sm hover:bg-primary-foreground/20 hover:text-primary-foreground"
+                className="rounded-none border-primary-foreground/40 bg-primary-foreground/10 px-5 text-[11.5px] uppercase tracking-[0.16em] text-primary-foreground backdrop-blur-sm hover:bg-primary-foreground/20 hover:text-primary-foreground"
               >
                 <Link to="/constitution">Read the Constitution</Link>
               </Button>
@@ -344,6 +664,9 @@ function HomePage() {
           })}
         </div>
       </section>
+
+      {/* ── Dynamic Operational Key Metrics Strip ───────────────────────────── */}
+      <LiveMetricsStrip />
 
       <section className="shell grid gap-12 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:py-28">
         <div className="relative">
@@ -405,6 +728,11 @@ function HomePage() {
             </Link>
           </div>
         </div>
+      </section>
+
+      {/* ── Dynamic Ancestral Wisdom & Paramount Chiefs Quote Rotator ─────── */}
+      <section className="shell py-12 lg:py-16">
+        <AncestralWisdomRotator />
       </section>
 
       <section className="bg-secondary/60 py-20 lg:py-24">
@@ -504,6 +832,28 @@ function HomePage() {
         </div>
       </section>
 
+      {/* ── Dynamic Customary Regions & Diaspora Hub Navigator ───────────── */}
+      <section className="border-t border-border bg-secondary/30 py-20 lg:py-24">
+        <div className="shell">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <p className="eyebrow">Customary Homeland &amp; Jurisdiction</p>
+              <h2 className="mt-3 text-[2rem] leading-tight sm:text-[2.5rem]">
+                Customary Regions &amp; Diaspora Hubs
+              </h2>
+            </div>
+            <Link
+              to="/communities"
+              className="group inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.16em] text-[hsl(var(--primary))]"
+            >
+              All Traditional Communities
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+          <CustomaryRegionsExplorer />
+        </div>
+      </section>
+
       <section className="shell py-20 lg:py-24">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -569,12 +919,18 @@ function HomePage() {
                       <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{date.month}</p>
                     </div>
                     <div className="min-w-0">
-                      <p className="font-display text-[1.25rem] leading-snug text-foreground">
-                        <Link to="/events" className="hover:text-[hsl(var(--primary))]">
-                          {event.title}
-                        </Link>
-                      </p>
-                      <p className="mt-1 text-[11.5px] uppercase tracking-[0.12em] text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <p className="font-display text-[1.25rem] leading-snug text-foreground">
+                          <Link to="/events" className="hover:text-[hsl(var(--primary))]">
+                            {event.title}
+                          </Link>
+                        </p>
+                        <span className="inline-flex items-center gap-1 bg-gold/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-gold">
+                          <span className="h-1.5 w-1.5 rounded-full bg-gold animate-pulse" /> Official Conclave
+                        </span>
+                      </div>
+                      <p className="mt-1 text-[11.5px] uppercase tracking-[0.12em] text-muted-foreground flex items-center gap-1.5">
+                        <Clock className="h-3 w-3 text-muted-foreground/70" />
                         {[event.venue, event.town].filter(Boolean).join(", ") || event.audience}
                       </p>
                     </div>
