@@ -16,21 +16,25 @@ const DETAIL_IMAGE =
 
 // Namibian landscape slides shown in the hero carousel after the main hero image.
 // The first slide (index 0) is always the admin-configurable hero image.
+// Slides 2–4 each have a config key so the admin can override them from the settings panel.
 const LANDSCAPE_SLIDES = [
   {
-    src: "/images/slides/spitzkoppe-sunset.jpg",
+    configKey: "slide_2_image",
+    defaultSrc: "/images/slides/spitzkoppe-sunset.jpg",
     alt: "Spitzkoppe granite peaks at sunset, Erongo Region",
     region: "Erongo Region",
     caption: "The ancient granite peaks of the Spitzkoppe — sacred Ovaherero ancestral land.",
   },
   {
-    src: "/images/slides/oryx-dunes.jpg",
+    configKey: "slide_3_image",
+    defaultSrc: "/images/slides/oryx-dunes.jpg",
     alt: "Oryx standing on red Kalahari dunes, Namibia",
     region: "Kalahari, Namibia",
     caption: "The Oryx — guardian of the red dunes, emblem of Namibian identity.",
   },
   {
-    src: "/images/slides/namibia-acacia.jpg",
+    configKey: "slide_4_image",
+    defaultSrc: "/images/slides/namibia-acacia.jpg",
     alt: "Lone camelthorn acacia tree on the Etosha pan",
     region: "Etosha, Namibia",
     caption: "Solitary beneath the endless sky — the camelthorn witnesses centuries of Ovaherero life.",
@@ -42,15 +46,21 @@ const LANDSCAPE_SLIDES = [
  * Images fill the entire hero section behind the text, blending into the
  * primary maroon colour on all edges. Auto-advances every 6 s with a slow
  * cross-fade and Ken Burns zoom. Pauses while the user hovers.
+ * Each slide's image can be overridden by the admin via SiteConfig.
  */
-function HeroSlideshow({ heroImg, children }) {
+function HeroSlideshow({ heroImg, config, children }) {
+  // Build the slide array — admin-uploaded URLs take priority over defaults
   const slides = [
     {
       src: heroImg,
       alt: "Ovaherero women united under the Red Flag, Namibia",
       region: "Ovaherero Homeland",
     },
-    ...LANDSCAPE_SLIDES,
+    ...LANDSCAPE_SLIDES.map((s) => ({
+      src: (config?.[s.configKey]) || s.defaultSrc,
+      alt: s.alt,
+      region: s.region,
+    })),
   ];
 
   const [current, setCurrent] = useState(0);
@@ -194,30 +204,32 @@ function HeroSlideshow({ heroImg, children }) {
   );
 }
 
-/** Interactive Namibian Heritage Showcase gallery section */
-const HERITAGE_CARDS = [
-  {
-    src: "/images/slides/spitzkoppe-sunset.jpg",
-    alt: "Spitzkoppe peaks at sunset",
-    region: "Erongo Region",
-    title: "Sacred Granite Peaks",
-    desc: "The Spitzkoppe have watched over Ovaherero communities across generations — ancient landmarks of the ancestral homeland.",
-  },
-  {
-    src: "/images/slides/oryx-dunes.jpg",
-    alt: "Oryx on Kalahari red dunes",
-    region: "Kalahari",
-    title: "Guardians of the Dunes",
-    desc: "The Oryx, emblem of resilience, roams the red Kalahari dunes — lands held in custodianship by the Ovaherero people.",
-  },
-  {
-    src: "/images/slides/namibia-acacia.jpg",
-    alt: "Lone acacia under the Etosha sky",
-    region: "Etosha, Namibia",
-    title: "The Lone Witness",
-    desc: "Camelthorn acacias have stood sentinel over the Etosha pan since before the recorded history of the Ovaherero kingdom.",
-  },
-];
+/** Build heritage showcase cards, resolving admin-uploaded images from config. */
+function buildHeritageCards(config) {
+  return [
+    {
+      src: config?.slide_2_image || "/images/slides/spitzkoppe-sunset.jpg",
+      alt: "Spitzkoppe peaks at sunset",
+      region: "Erongo Region",
+      title: "Sacred Granite Peaks",
+      desc: "The Spitzkoppe have watched over Ovaherero communities across generations — ancient landmarks of the ancestral homeland.",
+    },
+    {
+      src: config?.slide_3_image || "/images/slides/oryx-dunes.jpg",
+      alt: "Oryx on Kalahari red dunes",
+      region: "Kalahari",
+      title: "Guardians of the Dunes",
+      desc: "The Oryx, emblem of resilience, roams the red Kalahari dunes — lands held in custodianship by the Ovaherero people.",
+    },
+    {
+      src: config?.slide_4_image || "/images/slides/namibia-acacia.jpg",
+      alt: "Lone acacia under the Etosha sky",
+      region: "Etosha, Namibia",
+      title: "The Lone Witness",
+      desc: "Camelthorn acacias have stood sentinel over the Etosha pan since before the recorded history of the Ovaherero kingdom.",
+    },
+  ];
+}
 
 export const Route = createFileRoute("/_site/")({
   head: () => ({
@@ -279,7 +291,7 @@ function HomePage() {
   return (
     <>
       {/* ── Full-bleed Hero with background slideshow ─────────────────────── */}
-      <HeroSlideshow heroImg={heroImg}>
+      <HeroSlideshow heroImg={heroImg} config={config}>
         <section className="relative text-primary-foreground">
           <div className="shell flex min-h-[520px] flex-col justify-center py-24 sm:min-h-[580px] lg:min-h-[680px] lg:max-w-2xl lg:py-36">
             <p className="eyebrow rise text-primary-foreground/70">Ovaherero Traditional Authority</p>
@@ -457,7 +469,7 @@ function HomePage() {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-3">
-            {HERITAGE_CARDS.map((card) => (
+            {buildHeritageCards(config).map((card) => (
               <div
                 key={card.title}
                 className="group relative overflow-hidden border border-border bg-card"

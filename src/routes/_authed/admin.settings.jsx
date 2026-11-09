@@ -33,6 +33,10 @@ const EMPTY = {
   favicon_url: "",
   home_hero_image: "",
   home_detail_image: "",
+  // Slideshow slides 2–4 (slide 1 is home_hero_image above)
+  slide_2_image: "",
+  slide_3_image: "",
+  slide_4_image: "",
   culture_hero_image: "",
   oggf_hero_image: "",
   contact_email: "",
@@ -303,6 +307,113 @@ function SettingsPage() {
                     hint="Click Upload to replace this photo with your own file, or paste an image link. Recommended ratio: portrait (4:5)."
                     aspect="portrait"
                     previewHeight="h-52"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* ── Homepage Slideshow ─────────────────────────────────────────── */}
+            <section className="space-y-6 border-2 border-primary/20 bg-card p-6 lg:col-span-2">
+              <div className="flex flex-col justify-between gap-3 border-b border-border pb-4 sm:flex-row sm:items-center">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-10 w-10 place-items-center bg-primary/10 text-[hsl(var(--primary))]">
+                    <ImageIcon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 className="font-display text-2xl text-foreground">Homepage Hero Slideshow</h2>
+                    <p className="text-[12px] text-muted-foreground">
+                      Replace any of the 4 background slides that cycle automatically on the homepage hero banner.
+                      Slide 1 is the same as the "Women Under the Red Flag" image above.
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  className="rounded-none bg-gold px-5 text-[12px] font-medium uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90"
+                  disabled={save.isPending}
+                  onClick={() => save.mutate()}
+                >
+                  {save.isPending ? "Saving..." : "Save Slides"}
+                </Button>
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+                {/* Slide 1 — reuses home_hero_image */}
+                <div className="flex flex-col border border-border bg-background p-4">
+                  <span className="inline-block rounded-none bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
+                    Slide 1
+                  </span>
+                  <h3 className="mt-2 font-display text-base text-foreground">Ovaherero Women</h3>
+                  <p className="mb-3 mt-1 text-[11px] text-muted-foreground">
+                    The opening slide — Ovaherero homeland hero image.
+                  </p>
+                  <ImageUploader
+                    label="Slide 1 Image"
+                    value={form.home_hero_image}
+                    fallback={DEFAULT_HERO_IMAGE}
+                    onChange={(url) => set("home_hero_image", url)}
+                    hint="1600×900 px recommended."
+                    aspect="banner"
+                    previewHeight="h-36"
+                  />
+                </div>
+
+                {/* Slide 2 — Spitzkoppe sunset */}
+                <div className="flex flex-col border border-border bg-background p-4">
+                  <span className="inline-block rounded-none bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
+                    Slide 2
+                  </span>
+                  <h3 className="mt-2 font-display text-base text-foreground">Spitzkoppe Sunset</h3>
+                  <p className="mb-3 mt-1 text-[11px] text-muted-foreground">
+                    Erongo Region granite peaks at sunset. Default: Spitzkoppe.
+                  </p>
+                  <ImageUploader
+                    label="Slide 2 Image"
+                    value={form.slide_2_image}
+                    fallback="/images/slides/spitzkoppe-sunset.jpg"
+                    onChange={(url) => set("slide_2_image", url)}
+                    hint="1600×900 px recommended."
+                    aspect="banner"
+                    previewHeight="h-36"
+                  />
+                </div>
+
+                {/* Slide 3 — Oryx dunes */}
+                <div className="flex flex-col border border-border bg-background p-4">
+                  <span className="inline-block rounded-none bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
+                    Slide 3
+                  </span>
+                  <h3 className="mt-2 font-display text-base text-foreground">Oryx on the Dunes</h3>
+                  <p className="mb-3 mt-1 text-[11px] text-muted-foreground">
+                    Kalahari oryx on red dunes. Default: Oryx photograph.
+                  </p>
+                  <ImageUploader
+                    label="Slide 3 Image"
+                    value={form.slide_3_image}
+                    fallback="/images/slides/oryx-dunes.jpg"
+                    onChange={(url) => set("slide_3_image", url)}
+                    hint="1600×900 px recommended."
+                    aspect="banner"
+                    previewHeight="h-36"
+                  />
+                </div>
+
+                {/* Slide 4 — Namibia acacia */}
+                <div className="flex flex-col border border-border bg-background p-4">
+                  <span className="inline-block rounded-none bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
+                    Slide 4
+                  </span>
+                  <h3 className="mt-2 font-display text-base text-foreground">Camelthorn Acacia</h3>
+                  <p className="mb-3 mt-1 text-[11px] text-muted-foreground">
+                    Lone camelthorn under the Etosha sky. Default: Acacia photograph.
+                  </p>
+                  <ImageUploader
+                    label="Slide 4 Image"
+                    value={form.slide_4_image}
+                    fallback="/images/slides/namibia-acacia.jpg"
+                    onChange={(url) => set("slide_4_image", url)}
+                    hint="1600×900 px recommended."
+                    aspect="banner"
+                    previewHeight="h-36"
                   />
                 </div>
               </div>
