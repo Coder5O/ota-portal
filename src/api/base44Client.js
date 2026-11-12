@@ -18,18 +18,34 @@ const cloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const cloudinaryUploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 async function uploadToCloudinary(file) {
-  if (!cloudinaryCloudName || !cloudinaryUploadPreset) return null;
+  if (!cloudinaryCloudName || !cloudinaryUploadPreset) {
+    throw new Error("Public media uploads are not configured. Add the Cloudinary environment values and redeploy the website.");
+  }
 
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", cloudinaryUploadPreset);
   formData.append("folder", "ota-governance");
 
-  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/auto/upload`, {
-    method: "POST",
-    body: formData,
-  });
-  const payload = await response.json();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 60000);
+  let response;
+  let payload;
+  try {
+    response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/auto/upload`, {
+      method: "POST",
+      body: formData,
+      signal: controller.signal,
+    });
+    payload = await response.json();
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      throw new Error("The upload took longer than one minute. Check the file size and try again.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!response.ok || !payload.secure_url) {
     throw new Error(payload?.error?.message || "Cloudinary could not upload this file.");
@@ -201,29 +217,8 @@ export const base44 = {
     Core: {
       UploadPublicFile: async ({ file }) => {
         if (!file) return { file_url: "" };
-        try {
-          const cloudinaryUrl = await uploadToCloudinary(file);
-          if (cloudinaryUrl) return { file_url: cloudinaryUrl };
-
-          const safeName = file.name ? file.name.replace(/[^a-zA-Z0-9._-]/g, "_") : "upload";
-          const fileReference = storageRef(storage, `public/${Date.now()}_${safeName}`);
-          const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("Firebase Storage timed out after 60s")), 60000),
-          );
-          const snapshot = await Promise.race([
-            uploadBytes(fileReference, file),
-            timeoutPromise,
-          ]);
-          const file_url = await getDownloadURL(snapshot.ref);
-          return { file_url };
-        } catch (err) {
-          if (file.type?.startsWith("video/")) {
-            throw new Error("Video upload failed. Please verify Firebase Storage is configured and try again.");
-          }
-          console.warn("[Storage] Cloud Storage upload timed out or failed, using persistent data URI:", err?.message || err);
-          const file_url = await fileToDataUrl(file);
-          return { file_url };
-        }
+        const cloudinaryUrl = await uploadToCloudinary(file);
+        return { file_url: cloudinaryUrl };
       },
       UploadPrivateFile: async ({ file }) => {
         if (!file) return { file_uri: "" };

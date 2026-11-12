@@ -1,11 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { RecordManager } from "@/components/admin/RecordManager";
 import { StatusPill } from "@/components/admin/StatusPill";
+import { GalleryBatchUploader } from "@/components/admin/GalleryBatchUploader";
 import { fmtDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_authed/admin/gallery")({
   component: () => (
-    <RecordManager
+    <>
+      <GalleryBatchUploader />
+      <RecordManager
       entity="GalleryItem"
       label="gallery item"
       title="Photo & video gallery"
@@ -27,6 +30,7 @@ export const Route = createFileRoute("/_authed/admin/gallery")({
         { key: "taken_date", label: "Date", render: (row) => fmtDate(row.taken_date || row.created_date) },
         { key: "status", label: "Status", render: (row) => <StatusPill status={row.status} /> },
       ]}
-    />
+      />
+    </>
   ),
 });

@@ -109,11 +109,14 @@ export function SiteHeader({ config }) {
         <div className="shell flex h-[74px] items-center justify-between gap-6">
           <Link to="/" className="flex items-center gap-3" aria-label="Ovaherero Traditional Authority home">
             <Monogram text={config?.monogram_text || "OTA"} logoUrl={config?.logo_url || OTA_SEAL} />
-            <span className="leading-tight">
-              <span className="block font-display text-[1.05rem] tracking-tight text-foreground sm:text-[1.2rem]">
+            <span className="min-w-0 leading-tight">
+              <span className="block font-display text-[1.15rem] tracking-tight text-foreground sm:hidden">
+                OTA
+              </span>
+              <span className="hidden font-display text-[1.05rem] tracking-tight text-foreground sm:block sm:text-[1.2rem]">
                 {config?.organisation_name || "Ovaherero Traditional Authority"}
               </span>
-              <span className="block text-[9.5px] uppercase tracking-[0.26em] text-muted-foreground">
+              <span className="block text-[8.5px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[9.5px] sm:tracking-[0.26em]">
                 {config?.tagline || "Republic of Namibia"}
               </span>
             </span>

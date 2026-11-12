@@ -52,7 +52,7 @@ export function FormField({ field, value, onChange }) {
       }
     } catch (error) {
       console.error("Upload error:", error);
-      toast.error("The upload did not complete. Please try again.");
+      toast.error(error?.message || "The upload did not complete. Please try again.");
     } finally {
       setBusy(false);
     }

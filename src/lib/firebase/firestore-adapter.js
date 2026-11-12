@@ -12,6 +12,7 @@ import {
   orderBy,
   limit as firestoreLimit,
   getCountFromServer,
+  writeBatch,
 } from "firebase/firestore";
 import { db } from "./client";
 
@@ -226,6 +227,27 @@ export function createEntityService(entityName) {
       return { id: docRef.id, ...payload };
     },
 
+    bulkCreate: async (records) => {
+      if (!Array.isArray(records) || records.length === 0) return [];
+      const colRef = collection(db, colName);
+      const batch = writeBatch(db);
+      const now = new Date().toISOString();
+      const created = records.map((data) => {
+        const ref = doc(colRef);
+        const cleanData = { ...data };
+        delete cleanData.id;
+        const payload = {
+          ...cleanData,
+          created_date: data.created_date || now,
+          updated_date: now,
+        };
+        batch.set(ref, payload);
+        return { id: ref.id, ...payload };
+      });
+      await batch.commit();
+      return created;
+    },
+
     update: async (id, data) => {
       if (!id) throw new Error("ID required for update");
       const ref = doc(db, colName, String(id));
@@ -238,6 +260,23 @@ export function createEntityService(entityName) {
       await updateDoc(ref, payload);
       const snap = await getDoc(ref);
       return { id: snap.id, ...snap.data() };
+    },
+
+    bulkUpdate: async (records) => {
+      if (!Array.isArray(records) || records.length === 0) return [];
+      const batch = writeBatch(db);
+      const now = new Date().toISOString();
+      const updated = records.map((data) => {
+        if (!data?.id) throw new Error("Each bulk update record requires an ID");
+        const ref = doc(db, colName, String(data.id));
+        const cleanData = { ...data };
+        delete cleanData.id;
+        const payload = { ...cleanData, updated_date: now };
+        batch.update(ref, payload);
+        return { id: String(data.id), ...payload };
+      });
+      await batch.commit();
+      return updated;
     },
 
     delete: async (id) => {
