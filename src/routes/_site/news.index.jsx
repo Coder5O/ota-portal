@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Play } from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { PageHero } from "@/components/site/PageHero";
 import { Section, EmptyNote } from "@/components/site/PageParts";
@@ -79,6 +80,14 @@ function NewsPage() {
                       className="mb-4 aspect-[16/10] w-full object-cover"
                       fittingType="fill"
                     />
+                  </Link>
+                ) : null}
+                {!post.cover_image && post.video_url ? (
+                  <Link to="/news/$postId" params={{ postId: post.id }} className="relative mb-4 block aspect-[16/10] bg-[hsl(var(--ink))]">
+                    <video preload="metadata" className="h-full w-full object-cover">
+                      <source src={post.video_url} />
+                    </video>
+                    <span className="absolute inset-0 grid place-items-center"><Play className="h-10 w-10 fill-white text-white" /></span>
                   </Link>
                 ) : null}
                 <div className="flex flex-wrap items-center gap-2 text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">

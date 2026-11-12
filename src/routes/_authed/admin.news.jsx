@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authed/admin/news")({
         { name: "excerpt", label: "Summary", type: "textarea", rows: 2, full: true },
         { name: "body", label: "Full text", type: "textarea", rows: 10, full: true, description: "Separate paragraphs with a blank line." },
         { name: "cover_image", label: "Cover image", type: "file-public", accept: "image/*", full: true, description: "Publicly visible image on the website." },
+        { name: "video_url", label: "News video", type: "file-public", accept: "video/*", full: true, description: "Optional public video. Upload MP4/WebM video or paste a direct video URL." },
         { name: "status", label: "Status", type: "select", options: ["draft", "published", "archived"] },
       ]}
       columns={[

@@ -11,6 +11,7 @@ import {
   Gauge,
   Landmark,
   LayoutTemplate,
+  Images,
   LogOut,
   Mail,
   MapPin,
@@ -40,6 +41,7 @@ const NAV = [
   { to: "/admin/roles", label: "Roles & permissions", icon: ShieldAlert },
   { to: "/admin/reports", label: "Reports & exports", icon: BarChart3 },
   { to: "/admin/news", label: "News & media", icon: Newspaper },
+  { to: "/admin/gallery", label: "Gallery", icon: Images },
   { to: "/admin/events", label: "Events", icon: CalendarDays },
   { to: "/admin/pages", label: "Website pages", icon: LayoutTemplate },
   { to: "/admin/documents", label: "Documents", icon: Files },
@@ -57,9 +59,11 @@ export function AdminShell() {
     <div className="flex min-h-screen flex-col bg-secondary/40 lg:flex-row">
       <aside className="bg-[hsl(var(--ink))] text-[hsl(var(--background))] lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-64 lg:shrink-0 lg:flex-col">
         <div className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
-          <span className="grid h-9 w-9 place-items-center border border-gold/60 font-display text-[11px] text-gold">
-            OTA
-          </span>
+          <img
+            src="/images/branding/ota-seal.jpeg"
+            alt="Ovaherero Traditional Authority seal"
+            className="h-9 w-9 border border-gold/60 object-contain bg-white"
+          />
           <div className="leading-tight">
             <p className="font-display text-base">Administration</p>
             <p className="text-[9.5px] uppercase tracking-[0.2em] text-white/40">Ovaherero Traditional Authority</p>

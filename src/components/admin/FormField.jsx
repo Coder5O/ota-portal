@@ -15,26 +15,31 @@ export function FormField({ field, value, onChange }) {
   const [busy, setBusy] = useState(false);
   const id = `f-${field.name}`;
 
+  const isVideoField = field.accept?.includes("video") || field.name?.includes("video");
   const isImageField =
-    field.accept?.includes("image") ||
+    !isVideoField && (field.accept?.includes("image") ||
     field.name?.includes("image") ||
     field.name?.includes("cover") ||
     field.name?.includes("photo") ||
     field.name?.includes("logo") ||
-    (typeof value === "string" && (value.startsWith("data:image") || value.match(/\.(jpeg|jpg|png|webp|gif|svg)(\?.*)?$/i)));
+    (typeof value === "string" && (value.startsWith("data:image") || value.match(/\.(jpeg|jpg|png|webp|gif|svg)(\?.*)?$/i))));
 
   const upload = async (file) => {
     if (!file) return;
     setBusy(true);
     try {
-      if (file.size > 5 * 1024 * 1024) {
+      if (isVideoField && file.size > 100 * 1024 * 1024) {
+        toast.error("Videos must be 100 MB or smaller.");
+        return;
+      }
+      if (isImageField && file.size > 5 * 1024 * 1024) {
         toast.info("Optimizing and preparing image…");
       }
       if (field.type === "file-public") {
         const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
         if (file_url) {
           onChange(file_url);
-          toast.success("Image uploaded and attached successfully!");
+          toast.success(isVideoField ? "Video uploaded and attached successfully!" : "File uploaded and attached successfully!");
         } else {
           toast.error("Upload did not produce a valid file.");
         }
@@ -146,7 +151,7 @@ export function FormField({ field, value, onChange }) {
               <Input
                 value={value || ""}
                 onChange={(e) => onChange(e.target.value)}
-                placeholder={isImageField ? "Paste image URL or click Upload" : "File reference"}
+                placeholder={isVideoField ? "Paste video URL or click Upload" : isImageField ? "Paste image URL or click Upload" : "File reference"}
                 className="rounded-none text-[12.5px]"
               />
               <Button asChild variant="outline" size="sm" className="shrink-0 rounded-none border-border" disabled={busy}>

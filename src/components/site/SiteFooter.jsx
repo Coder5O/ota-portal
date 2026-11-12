@@ -26,6 +26,7 @@ const COLUMNS = [
       { to: "/culture", label: "Culture & Heritage" },
       { to: "/projects", label: "Community Projects" },
       { to: "/news", label: "News & Media" },
+      { to: "/gallery", label: "Photo & Video Gallery" },
       { to: "/events", label: "Events & Calendar" },
     ],
   },
@@ -42,15 +43,17 @@ const COLUMNS = [
 ];
 
 export function SiteFooter({ config }) {
+  const logoUrl = config?.logo_url || "/images/branding/ota-seal.jpeg";
+
   return (
     <footer className="mt-24 bg-[hsl(var(--ink))] text-[hsl(var(--background))]">
       <div className="shell grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-6">
         <div className="lg:col-span-2">
           <div className="flex items-center gap-3">
-            {config?.logo_url ? (
+            {logoUrl ? (
               <img
-                src={config.logo_url}
-                alt="Logo"
+                src={logoUrl}
+                alt="Ovaherero Traditional Authority seal"
                 className="h-11 w-11 object-contain"
               />
             ) : (

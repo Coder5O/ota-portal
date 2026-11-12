@@ -16,6 +16,8 @@ export const Route = createRootRoute({
     ],
     // No icon link: the platform adds the app's logo when serving.
     links: [
+      { rel: "icon", href: "/images/branding/ota-seal.jpeg", type: "image/jpeg" },
+      { rel: "apple-touch-icon", href: "/images/branding/ota-seal.jpeg" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" },

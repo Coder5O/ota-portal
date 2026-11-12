@@ -34,9 +34,12 @@ const PRIMARY = [
     ],
   },
   { to: "/news", label: "News & Media" },
+  { to: "/gallery", label: "Gallery" },
   { to: "/events", label: "Events" },
   { to: "/contact", label: "Contact" },
 ];
+
+const OTA_SEAL = "/images/branding/ota-seal.jpeg";
 
 const MORE = [
   { to: "/oggf", label: "Ovaherero Global Genocide Foundation (OGGF)" },
@@ -105,7 +108,7 @@ export function SiteHeader({ config }) {
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
         <div className="shell flex h-[74px] items-center justify-between gap-6">
           <Link to="/" className="flex items-center gap-3" aria-label="Ovaherero Traditional Authority home">
-            <Monogram text={config?.monogram_text || "OTA"} logoUrl={config?.logo_url} />
+            <Monogram text={config?.monogram_text || "OTA"} logoUrl={config?.logo_url || OTA_SEAL} />
             <span className="leading-tight">
               <span className="block font-display text-[1.05rem] tracking-tight text-foreground sm:text-[1.2rem]">
                 {config?.organisation_name || "Ovaherero Traditional Authority"}

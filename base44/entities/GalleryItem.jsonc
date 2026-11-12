@@ -1,0 +1,14 @@
+{
+  "name": "GalleryItem",
+  "type": "object",
+  "properties": {
+    "title": { "type": "string" },
+    "caption": { "type": "string" },
+    "media_type": { "type": "string", "enum": ["image", "video"], "default": "image" },
+    "media_url": { "type": "string" },
+    "thumbnail_url": { "type": "string" },
+    "taken_date": { "type": "string" },
+    "status": { "type": "string", "enum": ["draft", "published", "archived"], "default": "draft" }
+  },
+  "required": ["title", "media_type", "media_url"]
+}

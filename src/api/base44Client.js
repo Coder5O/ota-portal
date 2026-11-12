@@ -14,6 +14,29 @@ import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage
 import { createEntitiesProxy } from "@/lib/firebase/firestore-adapter";
 import { currentUrl } from "@/lib/authReturnTo";
 
+const cloudinaryCloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const cloudinaryUploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+async function uploadToCloudinary(file) {
+  if (!cloudinaryCloudName || !cloudinaryUploadPreset) return null;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", cloudinaryUploadPreset);
+  formData.append("folder", "ota-governance");
+
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryCloudName}/auto/upload`, {
+    method: "POST",
+    body: formData,
+  });
+  const payload = await response.json();
+
+  if (!response.ok || !payload.secure_url) {
+    throw new Error(payload?.error?.message || "Cloudinary could not upload this file.");
+  }
+  return payload.secure_url;
+}
+
 /**
  * Converts a file (specifically an image) to an optimized, compressed Base64 Data URL.
  * Downscales images over 1400px so they easily fit in Firestore documents without quality loss.
@@ -179,10 +202,13 @@ export const base44 = {
       UploadPublicFile: async ({ file }) => {
         if (!file) return { file_url: "" };
         try {
+          const cloudinaryUrl = await uploadToCloudinary(file);
+          if (cloudinaryUrl) return { file_url: cloudinaryUrl };
+
           const safeName = file.name ? file.name.replace(/[^a-zA-Z0-9._-]/g, "_") : "upload";
           const fileReference = storageRef(storage, `public/${Date.now()}_${safeName}`);
           const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("Firebase Storage timed out after 3s")), 3000),
+            setTimeout(() => reject(new Error("Firebase Storage timed out after 60s")), 60000),
           );
           const snapshot = await Promise.race([
             uploadBytes(fileReference, file),
@@ -191,6 +217,9 @@ export const base44 = {
           const file_url = await getDownloadURL(snapshot.ref);
           return { file_url };
         } catch (err) {
+          if (file.type?.startsWith("video/")) {
+            throw new Error("Video upload failed. Please verify Firebase Storage is configured and try again.");
+          }
           console.warn("[Storage] Cloud Storage upload timed out or failed, using persistent data URI:", err?.message || err);
           const file_url = await fileToDataUrl(file);
           return { file_url };

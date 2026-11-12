@@ -60,6 +60,12 @@ function NewsArticle() {
               fittingType="fill"
             />
           ) : null}
+          {post.video_url ? (
+            <video controls preload="metadata" className="mb-8 aspect-video w-full bg-black">
+              <source src={post.video_url} />
+              Your browser does not support this video.
+            </video>
+          ) : null}
           {post.excerpt ? (
             <p className="mb-6 border-l-2 border-gold pl-5 font-display text-[1.3rem] leading-relaxed text-foreground/85">
               {post.excerpt}

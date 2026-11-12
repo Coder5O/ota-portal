@@ -42,6 +42,7 @@ export const COLLECTION_MAP = {
   Asset: "assets",
   DisciplinaryRecord: "disciplinary_records",
   HeritageSubmission: "heritage_submissions",
+  GalleryItem: "gallery_items",
 };
 
 export function getCollectionName(entity) {

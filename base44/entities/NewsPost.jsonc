@@ -34,6 +34,10 @@
     "cover_image": {
       "type": "string"
     },
+    "video_url": {
+      "type": "string",
+      "description": "Optional public video URL"
+    },
     "status": {
       "type": "string",
       "enum": [

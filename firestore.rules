@@ -96,6 +96,11 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /gallery_items/{id} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if isAdmin();
+    }
+
     // --- 3. Institutional Governance Records ---
     match /meetings/{id} {
       allow read: if resource.data.visibility == 'public' || isOfficerFor(resource.data.institution_slug);

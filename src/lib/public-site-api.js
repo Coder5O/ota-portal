@@ -18,6 +18,7 @@ const PUBLIC_ENTITIES = [
   "Document",
   "SiteConfig",
   "Resolution",
+  "GalleryItem",
 ];
 
 const ReadInput = z.object({
