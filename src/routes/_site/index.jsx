@@ -19,7 +19,7 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
-import { PARAMOUNT_CHIEFS } from "./_site/paramount-chiefs.$slug";
+import { PARAMOUNT_CHIEFS } from "./paramount-chiefs.$slug";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { Button } from "@/components/ui/button";
 import { Image } from "@/components/ui/image";
@@ -308,6 +308,115 @@ function HeroSlideshow({
         </span>
       </div>
     </div>
+  );
+}
+
+/**
+ * A concise introduction to the historical succession. The full biography for
+ * every leader lives on its own route, keeping the home page a gateway rather
+ * than duplicating the report as a long document.
+ */
+function ParamountChiefsSlideshow() {
+  const [current, setCurrent] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const total = PARAMOUNT_CHIEFS.length;
+  const chief = PARAMOUNT_CHIEFS[current];
+
+  const goTo = useCallback(
+    (index) => setCurrent((index + total) % total),
+    [total],
+  );
+
+  useEffect(() => {
+    if (isPaused) return undefined;
+    const timer = setInterval(() => goTo(current + 1), 6500);
+    return () => clearInterval(timer);
+  }, [current, goTo, isPaused]);
+
+  return (
+    <section
+      className="overflow-hidden border-b border-border bg-secondary/55"
+      aria-label="Paramount Chiefs of the Ovaherero"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <div className="shell py-12 sm:py-14 lg:py-16">
+        <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="eyebrow">Historical succession</p>
+            <h2 className="mt-2 text-[2rem] leading-tight sm:text-[2.5rem]">Paramount Chiefs of the Ovaherero</h2>
+          </div>
+          <Link
+            to="/paramount-chiefs"
+            className="group inline-flex items-center gap-2 text-[11.5px] font-medium uppercase tracking-[0.16em] text-[hsl(var(--primary))]"
+          >
+            View the full succession
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+
+        <div className="grid overflow-hidden border border-border bg-card shadow-sm md:grid-cols-[minmax(230px,0.78fr)_minmax(0,1.22fr)]">
+          <div className="relative min-h-[305px] bg-[hsl(var(--primary))] md:min-h-[390px]">
+            <img
+              key={chief.slug}
+              src={chief.photo}
+              alt={`Historical image associated with ${chief.name}`}
+              className="absolute inset-0 h-full w-full object-cover object-top"
+              onError={(event) => {
+                event.currentTarget.onerror = null;
+                event.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10" />
+            <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-6">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">{chief.reign}</p>
+              <p className="mt-2 font-display text-[1.35rem] leading-tight">{chief.name}</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-between p-6 sm:p-8 lg:p-10">
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Crown className="h-4 w-4 text-gold" />
+                <p className="text-[10.5px] font-semibold uppercase tracking-[0.17em] text-gold">{chief.era}</p>
+                {chief.isDisputed ? (
+                  <span className="border border-gold/50 bg-gold/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
+                    Contested succession
+                  </span>
+                ) : null}
+              </div>
+              <h3 className="mt-4 font-display text-[2rem] leading-[1.05] text-foreground sm:text-[2.6rem]">{chief.name}</h3>
+              {chief.nameAlt ? <p className="mt-1 text-[13px] text-muted-foreground">Also known as {chief.nameAlt}</p> : null}
+              <p className="mt-4 text-[0.96rem] leading-[1.8] text-foreground/75">{chief.teaser}</p>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-5 border-t border-border pt-5">
+              <Button asChild className="rounded-none bg-gold px-5 text-[11px] uppercase tracking-[0.15em] text-[hsl(var(--ink))] hover:bg-gold/90">
+                <Link to="/paramount-chiefs/$slug" params={{ slug: chief.slug }}>
+                  See more <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                </Link>
+              </Button>
+              <div className="flex items-center gap-1.5" aria-label={`Chief ${current + 1} of ${total}`}>
+                {PARAMOUNT_CHIEFS.map((item, index) => (
+                  <button
+                    key={item.slug}
+                    type="button"
+                    onClick={() => goTo(index)}
+                    aria-label={`Show ${item.name}`}
+                    aria-current={index === current ? "true" : undefined}
+                    className="h-2.5 w-2.5 rounded-full border border-[hsl(var(--primary))]/35 transition-all"
+                    style={{
+                      backgroundColor: index === current ? "hsl(var(--gold))" : "transparent",
+                      transform: index === current ? "scale(1.25)" : "scale(1)",
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -921,6 +1030,8 @@ function HomePage() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       />
+
+      <ParamountChiefsSlideshow />
 
       <section className="border-b border-border bg-card">
         <div className="shell grid divide-y divide-border sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
