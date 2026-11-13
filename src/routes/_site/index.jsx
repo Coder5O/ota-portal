@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Clock,
   Compass,
+  Crown,
   Landmark,
   MapPin,
   Pause,
@@ -18,6 +19,7 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
+import { PARAMOUNT_CHIEFS } from "./_site/paramount-chiefs.$slug";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { Button } from "@/components/ui/button";
 import { Image } from "@/components/ui/image";
