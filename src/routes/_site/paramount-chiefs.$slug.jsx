@@ -18,7 +18,7 @@ export const PARAMOUNT_CHIEFS = [
     died: "1890, Okahandja",
     era: "Founding Era",
     eraColor: "gold",
-    photo: "/images/heritage/paramount-chief-ceremonial-dress.jpg",
+    photo: "/images/heritage/maharero-ka-tjamuaha.jpg",
     photoCredit: "Historical engraving, Hugo von François, Nama und Damara (1896) · Public domain via Wikimedia Commons",
     teaser:
       "First Paramount Chief of the Ovaherero. Maharero consolidated the Herero polity, repelled the Oorlam invasion of 1863, and presided over the early German colonial era.",
@@ -48,7 +48,7 @@ export const PARAMOUNT_CHIEFS = [
     reburied: "August 1923, Okahandja",
     era: "Resistance & Genocide Era",
     eraColor: "primary",
-    photo: "/images/heritage/samuel-maharero-portrait.jpg",
+    photo: "/images/heritage/samuel-maharero.jpg",
     photoCredit: "Historical photograph · Wikimedia Commons, open source record",
     teaser:
       "Led the 1904 Herero uprising against German colonial rule. Survived the genocide and died in exile, but was reinterred at Okahandja in 1923 — the moment that inaugurated the annual Red Flag Pilgrimage.",
@@ -110,7 +110,7 @@ export const PARAMOUNT_CHIEFS = [
     died: "27 March 1978, Windhoek (assassinated)",
     era: "Resistance Era",
     eraColor: "primary",
-    photo: "/images/heritage/paramount-chief-ceremonial-dress.jpg",
+    photo: "/images/heritage/clemens-kapuuo.jpg",
     photoCredit: "Portrait photograph · NBC Namibia, open source record",
     teaser:
       "Nephew of Hosea Kutako and his successor as Paramount Chief. A prominent anti-apartheid politician and first president of the Turnhalle Alliance, Kapuuo was assassinated in 1978.",
@@ -142,7 +142,7 @@ export const PARAMOUNT_CHIEFS = [
     era: "Post-Independence Era",
     eraColor: "gold",
     photo: "/images/heritage/kuaima-riruako.jpg",
-    photoCredit: "Portrait photograph (2006) · Bries / Wikimedia Commons, CC BY-SA 3.0 / GFDL",
+    photoCredit: "Supplied portrait (2006) · attributed in the source report to Bries / Wikimedia Commons, CC BY-SA 3.0 / GFDL",
     teaser:
       "Longest-serving Paramount Chief in modern history. Led the Ovaherero through Namibian independence (1990), pressed Germany for genocide reparations, and served as a member of the Namibian Parliament under NUDO.",
     biography: [
@@ -203,7 +203,7 @@ export const PARAMOUNT_CHIEFS = [
     died: null,
     era: "Contemporary Era · Disputed Succession",
     eraColor: "gold",
-    photo: "/images/heritage/paramount-chief-ceremonial-dress.jpg",
+    photo: "/images/heritage/mutjinde-katjiua.jpg",
     photoCredit: "Contemporary press photograph (Berlin, November 2024) · John MacDougall / AFP / Getty Images",
     teaser:
       "Elected by the Chiefs' Council in December 2021 and formally appointed by the OTA in March 2022 following the death of Vekuii Rukoro. His appointment is disputed by a faction aligned with Vipuira Kapuuo.",
