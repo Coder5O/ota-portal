@@ -217,8 +217,32 @@ export const base44 = {
     Core: {
       UploadPublicFile: async ({ file }) => {
         if (!file) return { file_url: "" };
-        const cloudinaryUrl = await uploadToCloudinary(file);
-        return { file_url: cloudinaryUrl };
+        try {
+          if (cloudinaryCloudName && cloudinaryUploadPreset) {
+            const cloudinaryUrl = await uploadToCloudinary(file);
+            if (cloudinaryUrl) return { file_url: cloudinaryUrl };
+          }
+        } catch (cloudinaryErr) {
+          console.warn("[Storage] Cloudinary public upload failed, trying Storage fallback:", cloudinaryErr?.message || cloudinaryErr);
+        }
+
+        try {
+          const safeName = file.name ? file.name.replace(/[^a-zA-Z0-9._-]/g, "_") : "public_file";
+          const fileReference = storageRef(storage, `public/${Date.now()}_${safeName}`);
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Storage upload timed out after 5s")), 5000),
+          );
+          const snapshot = await Promise.race([
+            uploadBytes(fileReference, file),
+            timeoutPromise,
+          ]);
+          const file_url = await getDownloadURL(snapshot.ref);
+          return { file_url };
+        } catch (storageErr) {
+          console.warn("[Storage] Firebase Storage public upload failed, falling back to data URL:", storageErr?.message || storageErr);
+          const file_url = await fileToDataUrl(file);
+          return { file_url: file_url || `ota-file://${file.name || "file"}` };
+        }
       },
       UploadPrivateFile: async ({ file }) => {
         if (!file) return { file_uri: "" };

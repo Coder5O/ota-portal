@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Play } from "lucide-react";
+import { Paperclip, Play } from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { PageHero } from "@/components/site/PageHero";
 import { Section, EmptyNote } from "@/components/site/PageParts";
@@ -94,6 +94,15 @@ function NewsPage() {
                   <span className="text-[hsl(var(--oxblood))]">{post.category}</span>
                   <span className="h-px w-4 bg-border" />
                   <time>{fmtDate(post.published_date || post.created_date)}</time>
+                  {Array.isArray(post.attachments) && post.attachments.length > 0 ? (
+                    <>
+                      <span className="h-px w-4 bg-border" />
+                      <span className="inline-flex items-center gap-1 font-medium text-gold">
+                        <Paperclip className="h-3 w-3" />
+                        {post.attachments.length} {post.attachments.length === 1 ? "file" : "files"}
+                      </span>
+                    </>
+                  ) : null}
                   {post.is_demo ? <IllustrativeBadge /> : null}
                 </div>
                 <h2 className="mt-3 font-display text-[1.4rem] leading-snug">

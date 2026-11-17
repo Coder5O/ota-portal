@@ -1,11 +1,24 @@
+import { useMemo } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download, ExternalLink, File, FileText, Film, Paperclip } from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { Section } from "@/components/site/PageParts";
 import { Image } from "@/components/ui/image";
+import { Button } from "@/components/ui/button";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
-import { fmtDate } from "@/lib/format";
-import { paragraphs } from "@/lib/format";
+import { fmtDate, paragraphs } from "@/lib/format";
+
+function formatBytes(bytes) {
+  if (!bytes || Number.isNaN(Number(bytes)) || Number(bytes) <= 0) return "";
+  const units = ["B", "KB", "MB", "GB"];
+  let size = Number(bytes);
+  let unitIndex = 0;
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
+  }
+  return `${size.toFixed(1)} ${units[unitIndex]}`;
+}
 
 export const Route = createFileRoute("/_site/news/$postId")({
   head: ({ loaderData }) => ({
@@ -29,6 +42,36 @@ export const Route = createFileRoute("/_site/news/$postId")({
 
 function NewsArticle() {
   const { post = {} } = Route.useLoaderData() || {};
+
+  const { imageAttachments, documentAttachments } = useMemo(() => {
+    const raw = post.attachments || post.files || [];
+    const list = Array.isArray(raw)
+      ? raw
+          .map((item, idx) => {
+            if (!item) return null;
+            if (typeof item === "string") {
+              const rawName = item.split("/").pop()?.split("?")[0] || `Attachment ${idx + 1}`;
+              const isImg = item.match(/\.(jpeg|jpg|png|webp|gif|svg)(\?.*)?$/i) || item.startsWith("data:image");
+              return {
+                name: decodeURIComponent(rawName),
+                url: item,
+                type: isImg ? "image" : "document",
+              };
+            }
+            return item;
+          })
+          .filter(Boolean)
+      : [];
+
+    const images = list.filter(
+      (item) => item.type === "image" || (item.url && item.url.match(/\.(jpeg|jpg|png|webp|gif|svg)(\?.*)?$/i)),
+    );
+    const documents = list.filter(
+      (item) => item.type !== "image" && (!item.url || !item.url.match(/\.(jpeg|jpg|png|webp|gif|svg)(\?.*)?$/i)),
+    );
+
+    return { imageAttachments: images, documentAttachments: documents };
+  }, [post.attachments, post.files]);
 
   return (
     <>
@@ -81,6 +124,82 @@ function NewsArticle() {
           {paragraphs(post.body).length === 0 ? (
             <p className="text-[13px] italic text-muted-foreground">The full text of this notice is pending publication.</p>
           ) : null}
+
+          {/* Attached Documents / Files Section */}
+          {documentAttachments.length > 0 && (
+            <div className="mt-12 border border-border bg-secondary/35 p-6 sm:p-7">
+              <div className="flex items-center gap-2 pb-3 border-b border-border">
+                <Paperclip className="h-4 w-4 text-gold" />
+                <h2 className="font-display text-lg text-foreground">Official Documents &amp; Attachments</h2>
+              </div>
+              <ul className="divide-y divide-border/60">
+                {documentAttachments.map((doc, idx) => (
+                  <li key={idx} className="flex flex-wrap items-center justify-between gap-4 py-4 first:pt-4 last:pb-0">
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <div className="grid h-10 w-10 shrink-0 place-items-center border border-border bg-background">
+                        {doc.type === "pdf" || doc.name?.toLowerCase().endsWith(".pdf") ? (
+                          <FileText className="h-5 w-5 text-[hsl(var(--oxblood))]" />
+                        ) : doc.type === "video" ? (
+                          <Film className="h-5 w-5 text-gold" />
+                        ) : (
+                          <File className="h-5 w-5 text-[hsl(var(--primary))]" />
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate text-[13.5px] font-medium text-foreground">{doc.name || "Official Document"}</p>
+                        <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                          {doc.type === "pdf" || doc.name?.toLowerCase().endsWith(".pdf")
+                            ? "PDF Document"
+                            : doc.type === "video"
+                              ? "Video Recording"
+                              : "Attached File"}
+                          {doc.size ? ` · ${formatBytes(doc.size)}` : ""}
+                        </p>
+                      </div>
+                    </div>
+                    <Button asChild size="sm" variant="outline" className="rounded-none shrink-0 border-gold/70 text-[11px] uppercase tracking-[0.14em] hover:bg-gold hover:text-[hsl(var(--ink))]">
+                      <a href={doc.url} target="_blank" rel="noopener noreferrer" download={doc.name}>
+                        <Download className="mr-1.5 h-3.5 w-3.5" /> Download
+                      </a>
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Attached Photographs / Gallery Section */}
+          {imageAttachments.length > 0 && (
+            <div className="mt-12 border-t border-border pt-8">
+              <div className="flex items-center justify-between gap-2 mb-4">
+                <h2 className="font-display text-xl text-foreground">Photographs &amp; Media Gallery</h2>
+                <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                  {imageAttachments.length} {imageAttachments.length === 1 ? "photo" : "photos"}
+                </span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {imageAttachments.map((img, i) => (
+                  <a
+                    key={i}
+                    href={img.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative block aspect-[4/3] overflow-hidden border border-border bg-card shadow-sm"
+                  >
+                    <img
+                      src={img.url}
+                      alt={img.name || post.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100 flex items-end justify-between p-3.5 text-white">
+                      <span className="truncate text-[12px] font-medium max-w-[80%]">{img.name || "Enlarge image"}</span>
+                      <ExternalLink className="h-3.5 w-3.5 shrink-0 text-gold" />
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </article>
       </Section>
     </>
