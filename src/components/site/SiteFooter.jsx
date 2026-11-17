@@ -8,6 +8,8 @@ const COLUMNS = [
       { to: "/about", label: "About OTA" },
       { to: "/constitution", label: "Constitution" },
       { to: "/paramount-chief", label: "Paramount Chief" },
+      { to: "/paramount-chiefs", label: "Paramount Chiefs Succession" },
+      { to: "/chapters", label: "Chapters & Traditional Seats" },
       { to: "/leadership", label: "Traditional Leadership" },
       { to: "/communities", label: "Traditional Communities" },
     ],

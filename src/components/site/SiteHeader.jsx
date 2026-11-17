@@ -20,6 +20,7 @@ const PRIMARY = [
     children: [
       { to: "/paramount-chief", label: "Paramount Chief" },
       { to: "/paramount-chiefs", label: "Paramount Chiefs Succession" },
+      { to: "/chapters", label: "Chapters" },
       { to: "/leadership", label: "Traditional Leadership" },
       { to: "/institutions/office-of-the-paramount-chief", label: "Office of the Paramount Chief" },
     ],
