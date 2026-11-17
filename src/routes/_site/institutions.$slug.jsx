@@ -1,9 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { ArrowRight, Crown } from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { INSTITUTIONS } from "@/lib/institutions";
 import { PageHero } from "@/components/site/PageHero";
 import { Section, EmptyNote } from "@/components/site/PageParts";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
+import { Button } from "@/components/ui/button";
 import { fmtDate } from "@/lib/format";
 
 export const Route = createFileRoute("/_site/institutions/$slug")({
@@ -55,19 +57,88 @@ export const Route = createFileRoute("/_site/institutions/$slug")({
 function InstitutionPage() {
   const { institution = {}, officeholders = [], resolutions = [] } = Route.useLoaderData() || {};
 
+  const isChiefsOffice = institution.slug === "office-of-the-paramount-chief";
+
+  const heroImage =
+    institution.banner_url ||
+    (isChiefsOffice
+      ? "/images/heritage/mutjinde-katjiua.jpg"
+      : "/images/slides/spitzkoppe-sunset.jpg");
+
+  const displayOfficeholders =
+    officeholders.length > 0
+      ? officeholders
+      : isChiefsOffice
+        ? [
+            {
+              id: "current-chief",
+              title: "Paramount Chief of the Ovaherero (Ombára Otjitambi)",
+              name: "Professor Mutjinde Katjiua",
+              community_name: "Ovaherero Traditional Authority",
+              photo_url: "/images/heritage/mutjinde-katjiua.jpg",
+              biography:
+                "Elected by the Chiefs' Council in December 2021 and formally installed by the Ovaherero Traditional Authority in March 2022. Supreme traditional leader, constitutional custodian, and international advocate for genocide restorative justice.",
+            },
+          ]
+        : [];
+
   return (
     <>
       <PageHero
         eyebrow={institution.native_name || "Institutional structure"}
         title={institution.name}
         intro={institution.summary}
-        image={institution.banner_url || "/images/slides/spitzkoppe-sunset.jpg"}
-        imageAlt={institution.name}
+        image={heroImage}
+        imageAlt={isChiefsOffice ? "Professor Mutjinde Katjiua, Paramount Chief of the Ovaherero" : institution.name}
       >
         {institution.is_demo ? <IllustrativeBadge className="bg-white/90" /> : null}
       </PageHero>
 
       <Section>
+        {isChiefsOffice && (
+          <div className="mb-10 border border-border bg-card p-6 shadow-md sm:p-8">
+            <div className="grid gap-6 sm:grid-cols-[160px_1fr] sm:items-center">
+              <div className="relative aspect-[4/5] overflow-hidden border border-border shadow-sm bg-[hsl(var(--primary))]">
+                <img
+                  src="/images/heritage/mutjinde-katjiua.jpg"
+                  alt="Professor Mutjinde Katjiua, Paramount Chief of the Ovaherero"
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <Crown className="h-4 w-4 text-gold" />
+                  <span className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-gold">
+                    Current Paramount Chief
+                  </span>
+                </div>
+                <h3 className="mt-1.5 font-display text-2xl text-foreground sm:text-3xl">
+                  Professor Mutjinde Katjiua
+                </h3>
+                <p className="mt-1 text-[11.5px] uppercase tracking-wider text-muted-foreground">
+                  Ombára Otjitambi · In office from March 2022
+                </p>
+                <p className="mt-3 text-[13.5px] leading-relaxed text-foreground/80 max-w-2xl">
+                  Supreme customary leader and constitutional head of the Ovaherero Traditional Authority.
+                  Presiding over the High Chiefs Council, customary land administration, and international genocide restitution.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Button asChild size="sm" className="rounded-none bg-gold text-[11px] uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90">
+                    <Link to="/paramount-chief">
+                      View Chief Profile <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                  <Button asChild size="sm" variant="outline" className="rounded-none border-border text-[11px] uppercase tracking-[0.14em]">
+                    <Link to="/paramount-chiefs">
+                      Historical Succession (1863 – Present)
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="grid gap-10 lg:grid-cols-[1.3fr_0.7fr]">
           <div>
             <p className="eyebrow">Mandate</p>
@@ -126,20 +197,41 @@ function InstitutionPage() {
       </Section>
 
       <Section eyebrow="Officeholders" title="Approved officeholders" tone="muted">
-        {officeholders.length === 0 ? (
+        {displayOfficeholders.length === 0 ? (
           <EmptyNote>No officeholder of this structure has been published.</EmptyNote>
         ) : (
           <div className="grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
-            {officeholders.map((person) => (
-              <div key={person.id} className="bg-card p-6">
-                <p className="text-[10px] uppercase tracking-[0.16em] text-[hsl(var(--oxblood))]">{person.title}</p>
-                <h3 className="mt-2 font-display text-xl leading-snug">{person.name}</h3>
-                {person.community_name ? (
-                  <p className="mt-1 text-[12px] text-foreground/60">{person.community_name}</p>
-                ) : null}
-                {person.biography ? (
-                  <p className="mt-3 line-clamp-4 text-[12.5px] leading-relaxed text-foreground/65">{person.biography}</p>
-                ) : null}
+            {displayOfficeholders.map((person) => (
+              <div key={person.id} className="bg-card p-6 flex flex-col justify-between">
+                <div>
+                  {person.photo_url ? (
+                    <div className="relative mb-4 aspect-[4/5] w-full overflow-hidden border border-border bg-background shadow-sm">
+                      <img
+                        src={person.photo_url}
+                        alt={person.name}
+                        className="h-full w-full object-cover object-top"
+                      />
+                    </div>
+                  ) : null}
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-[hsl(var(--oxblood))]">{person.title}</p>
+                  <h3 className="mt-2 font-display text-xl leading-snug">{person.name}</h3>
+                  {person.community_name ? (
+                    <p className="mt-1 text-[12px] text-foreground/60">{person.community_name}</p>
+                  ) : null}
+                  {person.biography ? (
+                    <p className="mt-3 line-clamp-4 text-[12.5px] leading-relaxed text-foreground/65">{person.biography}</p>
+                  ) : null}
+                </div>
+                {isChiefsOffice && (
+                  <div className="mt-4 border-t border-border pt-3">
+                    <Link
+                      to="/paramount-chief"
+                      className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-[hsl(var(--primary))] hover:underline"
+                    >
+                      View profile &rarr;
+                    </Link>
+                  </div>
+                )}
               </div>
             ))}
           </div>
