@@ -51,21 +51,31 @@ function ParamountChiefsIndexPage() {
               key={chief.slug}
               to="/paramount-chiefs/$slug"
               params={{ slug: chief.slug }}
-              className="group grid gap-6 bg-card p-7 transition-colors hover:bg-background sm:grid-cols-[180px_1fr_auto] sm:items-center"
+              className="group grid gap-0 bg-card transition-colors hover:bg-background sm:grid-cols-[200px_1fr]"
             >
-              {/* Number + reign */}
-              <div>
-                <span className="font-display text-5xl font-bold text-gold/30 leading-none">
-                  {String(idx + 1).padStart(2, "0")}
-                </span>
-                <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  {chief.reign}
-                </p>
+              {/* Photo */}
+              <div className="relative overflow-hidden bg-[hsl(var(--primary))] border-b border-border sm:border-b-0 sm:border-r">
+                <img
+                  src={chief.photo}
+                  alt={`Portrait of ${chief.name}`}
+                  className="h-52 w-full object-cover object-top transition-transform duration-500 group-hover:scale-105 sm:h-full"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
+                  }}
+                />
+                {/* Ordinal overlay */}
+                <div className="absolute top-3 left-3 bg-black/50 px-2 py-0.5">
+                  <span className="font-display text-2xl font-bold text-gold/90 leading-none">
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
+                </div>
               </div>
 
-              {/* Name + teaser */}
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
+              {/* Info */}
+              <div className="flex flex-col justify-center p-6 sm:p-8">
+                {/* Era + reign */}
+                <div className="flex flex-wrap items-center gap-2 mb-2">
                   <Crown className="h-3.5 w-3.5 text-gold shrink-0" />
                   <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-gold">
                     {chief.era}
@@ -76,23 +86,18 @@ function ParamountChiefsIndexPage() {
                     </span>
                   )}
                 </div>
-                <h3 className="mt-2 font-display text-[1.35rem] leading-tight group-hover:text-[hsl(var(--primary))]">
+                <h3 className="font-display text-[1.4rem] leading-tight transition-colors group-hover:text-[hsl(var(--primary))]">
                   {chief.name}
                 </h3>
                 {chief.nameAlt && (
-                  <p className="mt-0.5 text-[11.5px] text-muted-foreground">({chief.nameAlt})</p>
+                  <p className="mt-0.5 text-[12px] text-muted-foreground">({chief.nameAlt})</p>
                 )}
-                <p className="mt-2 text-[13px] leading-relaxed text-foreground/65 max-w-2xl">
+                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                  {chief.reign}
+                </p>
+                <p className="mt-3 text-[13.5px] leading-relaxed text-foreground/70 max-w-3xl">
                   {chief.teaser}
                 </p>
-              </div>
-
-              {/* CTA arrow */}
-              <div className="hidden sm:flex items-center">
-                <span className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-[hsl(var(--primary))]">
-                  Read more
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                </span>
               </div>
             </Link>
           ))}

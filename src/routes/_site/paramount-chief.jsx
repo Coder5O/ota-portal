@@ -150,7 +150,12 @@ function ParamountChiefPage() {
 
             {principal.biography ? (
               <div className="mt-6 space-y-4">
-                {principal.biography.split(/\n\s*\n/).map((text, i) => (
+                {(Array.isArray(principal.biography)
+                  ? principal.biography
+                  : typeof principal.biography === "string"
+                    ? principal.biography.split(/\n\s*\n/)
+                    : [String(principal.biography)]
+                ).map((text, i) => (
                   <p key={i} className="text-[0.96rem] leading-[1.85] text-foreground/80">
                     {text}
                   </p>
