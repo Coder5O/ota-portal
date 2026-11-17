@@ -108,23 +108,23 @@ export function SiteHeader({ config }) {
       </div>
 
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
-        <div className="shell flex h-[74px] items-center justify-between gap-6">
-          <Link to="/" className="flex items-center gap-3" aria-label="Ovaherero Traditional Authority home">
+        <div className="shell flex min-h-[74px] items-center justify-between gap-4 py-2">
+          <Link to="/" className="flex shrink-0 items-center gap-3" aria-label="Ovaherero Traditional Authority home">
             <Monogram text={config?.monogram_text || "OTA"} logoUrl={config?.logo_url || OTA_SEAL} />
-            <span className="min-w-0 leading-tight">
+            <span className="shrink-0 leading-tight">
               <span className="block font-display text-[1.15rem] tracking-tight text-foreground sm:hidden">
                 OTA
               </span>
-              <span className="hidden font-display text-[1.05rem] tracking-tight text-foreground sm:block sm:text-[1.2rem]">
+              <span className="hidden font-display text-[1.05rem] tracking-tight text-foreground whitespace-nowrap sm:block sm:text-[1.18rem]">
                 {config?.organisation_name || "Ovaherero Traditional Authority"}
               </span>
-              <span className="block text-[8.5px] uppercase tracking-[0.18em] text-muted-foreground sm:text-[9.5px] sm:tracking-[0.26em]">
+              <span className="block text-[8.5px] uppercase tracking-[0.18em] text-muted-foreground whitespace-nowrap sm:text-[9px] sm:tracking-[0.24em]">
                 {config?.tagline || "Republic of Namibia"}
               </span>
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-5 xl:flex" aria-label="Main">
+          <nav className="hidden items-center gap-3 xl:flex 2xl:gap-5" aria-label="Main">
             {PRIMARY.map((item) =>
               item.children ? (
                 <DropdownMenu key={item.label}>
