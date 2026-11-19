@@ -8,6 +8,8 @@ import { Section } from "@/components/site/PageParts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fmtDate } from "@/lib/format";
+import { PARAMOUNT_CHIEFS } from "./paramount-chiefs.$slug";
+import { CHAPTERS_DATA } from "./chapters";
 
 export const Route = createFileRoute("/_site/search")({
   head: () => ({
@@ -81,6 +83,45 @@ function SearchPage() {
     queryKey: ["site-search", active],
     enabled: active.length > 1,
     queryFn: async () => {
+      const qLower = active.toLowerCase();
+
+      // In-memory search for Paramount Chiefs
+      const matchingChiefs = PARAMOUNT_CHIEFS.filter(
+        (c) =>
+          c.name.toLowerCase().includes(qLower) ||
+          (c.nameAlt && c.nameAlt.toLowerCase().includes(qLower)) ||
+          c.title.toLowerCase().includes(qLower) ||
+          c.reign.toLowerCase().includes(qLower) ||
+          c.era.toLowerCase().includes(qLower) ||
+          c.teaser.toLowerCase().includes(qLower),
+      ).map((c) => ({
+        id: `chief-${c.slug}`,
+        title: `${c.name} (${c.reign})`,
+        __type: "Paramount Chief",
+        __source: {
+          link: () => ({ to: "/paramount-chiefs/$slug", params: { slug: c.slug } }),
+          meta: () => `${c.era} · ${c.title}`,
+        },
+      }));
+
+      // In-memory search for Chapters & Traditional Seats
+      const matchingChapters = CHAPTERS_DATA.filter(
+        (ch) =>
+          ch.chapter.toLowerCase().includes(qLower) ||
+          ch.location.toLowerCase().includes(qLower) ||
+          ch.namedChief.toLowerCase().includes(qLower) ||
+          ch.region.toLowerCase().includes(qLower) ||
+          ch.summary.toLowerCase().includes(qLower),
+      ).map((ch) => ({
+        id: `chapter-${ch.id}`,
+        title: `${ch.chapter} — ${ch.region} Region`,
+        __type: "Chapter & Traditional Seat",
+        __source: {
+          link: () => ({ to: "/chapters", search: { q: ch.chapter } }),
+          meta: () => `${ch.statusLabel} · Chief: ${ch.namedChief}`,
+        },
+      }));
+
       const responses = await Promise.all(
         SOURCES.map(async (source) => {
           const page = await base44.entities[source.entity].filter(
@@ -90,7 +131,8 @@ function SearchPage() {
           return (page.items || []).map((row) => ({ ...row, __type: source.type, __source: source }));
         }),
       );
-      return responses.flat();
+
+      return [...matchingChiefs, ...matchingChapters, ...responses.flat()];
     },
   });
 

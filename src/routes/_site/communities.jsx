@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, Building2, MapPin } from "lucide-react";
 import { publicSiteApi as base44 } from "@/lib/public-site-api";
 import { PageHero } from "@/components/site/PageHero";
 import { ProseBlocks, Section, EmptyNote } from "@/components/site/PageParts";
@@ -66,6 +67,26 @@ function CommunitiesPage() {
           empty="Information about the registration and administration of traditional communities is published here by the administration."
         />
       </Section>
+
+      {/* Featured Chapters Callout */}
+      <section className="border-y border-border bg-secondary/35 py-10">
+        <div className="shell flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
+          <div>
+            <span className="eyebrow text-gold">Customary Territorial Register</span>
+            <h2 className="mt-1 font-display text-2xl text-foreground">
+              Chapters &amp; Traditional Seats Directory
+            </h2>
+            <p className="mt-2 max-w-2xl text-[13px] leading-relaxed text-foreground/75">
+              Explore the full register of 29 territorial chapters, communal seats, and international diaspora branches across Kunene (8), Omaheke (6), Otjozondjupa (7), Erongo (2), Omusati (1), and abroad (5).
+            </p>
+          </div>
+          <Button asChild className="rounded-none bg-gold px-6 text-[11.5px] uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90 shrink-0">
+            <Link to="/chapters">
+              View All 29 Chapters <ArrowRight className="ml-2 h-3.5 w-3.5" />
+            </Link>
+          </Button>
+        </div>
+      </section>
 
       <Section eyebrow="Directory" title="Registered communities" tone="muted">
         {communities.length === 0 ? (

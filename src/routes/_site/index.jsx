@@ -545,8 +545,10 @@ const CUSTOMARY_REGIONS = [
       "Annual Red Flag Day (Otjiserandu) pilgrimage & commemoration grounds",
       "Executive Headquarters of the Ovaherero Traditional Authority",
     ],
-    ctaTo: "/communities",
-    ctaLabel: "View Central Communities",
+    ctaTo: "/paramount-chiefs",
+    ctaLabel: "Paramount Chiefs Succession",
+    secondaryCtaTo: "/chapters",
+    secondaryCtaLabel: "All Chapters Directory",
   },
   {
     id: "omaheke",
@@ -560,8 +562,11 @@ const CUSTOMARY_REGIONS = [
       "Traditional courts administering customary civil and pastoral tenure",
       "High concentration of hereditary village headmen and regional councilors",
     ],
-    ctaTo: "/communities",
-    ctaLabel: "Explore Omaheke Councils",
+    ctaTo: "/chapters",
+    ctaSearch: { region: "Omaheke" },
+    ctaLabel: "Explore Omaheke Chapters",
+    secondaryCtaTo: "/communities",
+    secondaryCtaLabel: "Communities Register",
   },
   {
     id: "otjozondjupa",
@@ -575,8 +580,11 @@ const CUSTOMARY_REGIONS = [
       "Okakarara Traditional Authority regional administration offices",
       "Ovitoto communal conservancies & customary grazing frameworks",
     ],
-    ctaTo: "/communities",
-    ctaLabel: "Explore Otjozondjupa",
+    ctaTo: "/chapters",
+    ctaSearch: { region: "Otjozondjupa" },
+    ctaLabel: "Explore Otjozondjupa Chapters",
+    secondaryCtaTo: "/communities",
+    secondaryCtaLabel: "Communities Register",
   },
   {
     id: "kunene",
@@ -590,8 +598,11 @@ const CUSTOMARY_REGIONS = [
       "Traditional leadership councils of Opuwo, Sesfontein, and Ruacana",
       "Living customary rites of passage and sacred cattle lineages",
     ],
-    ctaTo: "/communities",
-    ctaLabel: "Discover Kaokoveld",
+    ctaTo: "/chapters",
+    ctaSearch: { region: "Kunene" },
+    ctaLabel: "Explore Kunene Chapters (8)",
+    secondaryCtaTo: "/communities",
+    secondaryCtaLabel: "Communities Register",
   },
   {
     id: "diaspora",
@@ -605,8 +616,11 @@ const CUSTOMARY_REGIONS = [
       "South African Diaspora Forum (Gauteng, North West, Northern Cape)",
       "OGGF international advocacy chapters in Europe and North America",
     ],
-    ctaTo: "/diaspora",
-    ctaLabel: "Connect with Diaspora",
+    ctaTo: "/chapters",
+    ctaSearch: { region: "Diaspora" },
+    ctaLabel: "View Diaspora Chapters (5)",
+    secondaryCtaTo: "/diaspora",
+    secondaryCtaLabel: "Diaspora Portal",
   },
 ];
 
@@ -659,12 +673,19 @@ function CustomaryRegionsExplorer() {
             <p className="mt-3.5 text-[13.5px] leading-relaxed text-foreground/75">
               {activeRegion.description}
             </p>
-            <div className="mt-6">
+            <div className="mt-6 flex flex-wrap gap-3">
               <Button asChild className="rounded-none bg-gold px-5 text-[11.5px] uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90">
-                <Link to={activeRegion.ctaTo}>
+                <Link to={activeRegion.ctaTo} search={activeRegion.ctaSearch}>
                   {activeRegion.ctaLabel} <ArrowRight className="ml-2 h-3.5 w-3.5" />
                 </Link>
               </Button>
+              {activeRegion.secondaryCtaTo && (
+                <Button asChild variant="outline" className="rounded-none px-5 text-[11.5px] uppercase tracking-[0.14em]">
+                  <Link to={activeRegion.secondaryCtaTo}>
+                    {activeRegion.secondaryCtaLabel} <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                  </Link>
+                </Button>
+              )}
             </div>
           </div>
 

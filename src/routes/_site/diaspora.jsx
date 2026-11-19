@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import {
+  ArrowRight,
   Globe2,
   Mail,
   MapPin,
@@ -294,10 +295,73 @@ function DiasporaPage() {
       {/* Published Chapters */}
       <Section eyebrow="Registered chapters" title="Recognised Diaspora Chapters" tone="muted">
         {chapters.length === 0 ? (
-          <EmptyNote>
-            No diaspora chapter has been published yet. Chapters register voluntarily and appear here
-            once formally verified by the OTA Executive.
-          </EmptyNote>
+          <div>
+            <p className="mb-6 text-[13px] text-muted-foreground">
+              Historical and active chapters across Southern Africa, Europe, and North America representing the continuous lineage of genocide survivor communities:
+            </p>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                {
+                  country: "Botswana",
+                  leader: "Chief Moses Maharero",
+                  status: "Documented Chieftaincy (Since 2012)",
+                  desc: "Direct descendants of Paramount Chief Samuel Maharero and genocide survivors who sought sanctuary in Bechuanaland in 1904. Active participation in Okahandja pilgrimage.",
+                },
+                {
+                  country: "South Africa",
+                  leader: "Chief Kandorozu",
+                  status: "Diaspora Chapter",
+                  desc: "Representing communities in Gauteng, Northern Cape, and Western Cape; coordinates cross-border memorial assemblies and reparations advocacy.",
+                },
+                {
+                  country: "United States of America",
+                  leader: "Chief Katuuo",
+                  status: "Diaspora Chapter",
+                  desc: "Coordinates cultural preservation, national assemblies, and educational initiatives across US state chapters.",
+                },
+                {
+                  country: "United Kingdom & Europe",
+                  leader: "Chief Kasuto",
+                  status: "Diaspora Chapter",
+                  desc: "Represents UK and continental European families; interfaces with European human rights institutions on restitution.",
+                },
+                {
+                  country: "Canada",
+                  leader: "Council Representative",
+                  status: "Diaspora Chapter",
+                  desc: "Canadian diaspora forum supporting cultural heritage, family networks, and community development across provinces.",
+                },
+              ].map((item) => (
+                <div key={item.country} className="border border-border bg-card p-6 flex flex-col justify-between">
+                  <div>
+                    <span className="text-[10px] uppercase tracking-wider text-gold font-semibold">
+                      {item.status}
+                    </span>
+                    <h3 className="mt-1.5 font-display text-xl">{item.country}</h3>
+                    <p className="mt-2 text-[12.5px] font-medium text-foreground">
+                      <strong>Leader:</strong> {item.leader}
+                    </p>
+                    <p className="mt-2 text-[12px] leading-relaxed text-foreground/70">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 border border-border bg-card p-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+              <div>
+                <h4 className="font-display text-lg">Full Chapters &amp; Traditional Seats Directory</h4>
+                <p className="text-[12.5px] text-muted-foreground">
+                  View all 29 territorial and international chapters across Namibia and the diaspora.
+                </p>
+              </div>
+              <Button asChild className="rounded-none bg-gold px-6 text-[11px] uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90 shrink-0">
+                <Link to="/chapters" search={{ region: "Diaspora" }}>
+                  View in Directory <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {chapters.map((chapter) => (

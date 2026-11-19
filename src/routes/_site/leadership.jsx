@@ -280,9 +280,12 @@ function LeadershipPage() {
             <p className="text-[13px] text-muted-foreground">
               Over 36 recognised traditional communities across Namibia, Botswana, and South Africa hold seating in the OTA Customary Assembly.
             </p>
-            <div className="mt-4">
-              <Button asChild size="sm" variant="outline" className="rounded-none border-gold text-[11px] uppercase tracking-[0.14em]">
-                <Link to="/communities">Explore All Communities</Link>
+            <div className="mt-4 flex flex-wrap justify-center gap-3">
+              <Button asChild size="sm" className="rounded-none bg-gold text-[11px] uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90">
+                <Link to="/chapters">Chapters &amp; Traditional Seats Directory</Link>
+              </Button>
+              <Button asChild size="sm" variant="outline" className="rounded-none border-border text-[11px] uppercase tracking-[0.14em]">
+                <Link to="/communities">Communities Register</Link>
               </Button>
             </div>
           </div>

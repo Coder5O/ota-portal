@@ -20,6 +20,11 @@ import { PageHero } from "@/components/site/PageHero";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_site/chapters")({
+  validateSearch: (search) => ({
+    region: typeof search.region === "string" ? search.region : undefined,
+    type: typeof search.type === "string" ? search.type : undefined,
+    q: typeof search.q === "string" ? search.q : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Chapters & Traditional Seats · Ovaherero Traditional Authority" },
@@ -525,9 +530,10 @@ const REGIONS = [
 ];
 
 function ChaptersPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType, setSelectedType] = useState("all");
-  const [selectedRegion, setSelectedRegion] = useState("All");
+  const searchParams = Route.useSearch() || {};
+  const [searchTerm, setSearchTerm] = useState(searchParams.q || "");
+  const [selectedType, setSelectedType] = useState(searchParams.type || "all");
+  const [selectedRegion, setSelectedRegion] = useState(searchParams.region || "All");
   const [viewMode, setViewMode] = useState("grid"); // "grid" | "table"
 
   const filteredChapters = useMemo(() => {
