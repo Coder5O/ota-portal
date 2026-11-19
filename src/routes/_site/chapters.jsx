@@ -125,32 +125,32 @@ export const CHAPTERS_DATA = [
   {
     id: 6,
     chapter: "Ongango",
-    location: "Omaheke Region, Namibia",
-    region: "Omaheke",
+    location: "Kunene Region, Namibia",
+    region: "Kunene",
     country: "Namibia",
     type: "local",
     namedChief: "Chief U. Musaso",
     chiefShort: "U. Musaso",
     status: "unverified",
     statusLabel: "Customary Seat",
-    citation: "Traditional authority register",
-    summary: "Omaheke settlement seat recorded under Chief U. Musaso.",
-    notes: "Administered through the local Chiefs' council delegate network.",
+    citation: "Kunene traditional authority register",
+    summary: "Kunene Region settlement seat recorded under Chief U. Musaso.",
+    notes: "Administered through the regional traditional council delegate network in Kunene.",
   },
   {
     id: 7,
     chapter: "Orue",
-    location: "Omaheke / Central Namibia",
-    region: "Omaheke",
+    location: "Kunene Region, Namibia",
+    region: "Kunene",
     country: "Namibia",
     type: "local",
     namedChief: "Chief E. Tjiramba",
     chiefShort: "E. Tjiramba",
     status: "unverified",
     statusLabel: "Customary Seat",
-    citation: "Communal land board submissions",
-    summary: "Communal settlement branch with traditional leadership under Chief E. Tjiramba.",
-    notes: "Affiliated with the eastern customary corridor.",
+    citation: "Kunene communal land council submissions",
+    summary: "Communal settlement branch in Kunene Region with traditional leadership under Chief E. Tjiramba.",
+    notes: "Affiliated with the northwestern customary corridor in Kunene.",
   },
   {
     id: 8,
@@ -270,7 +270,7 @@ export const CHAPTERS_DATA = [
   {
     id: 15,
     chapter: "Omatjete",
-    location: "Erongo / Omaheke Corridor",
+    location: "Erongo Region, Namibia",
     region: "Erongo",
     country: "Namibia",
     type: "local",
@@ -278,9 +278,9 @@ export const CHAPTERS_DATA = [
     chiefShort: "Jeja",
     status: "unverified",
     statusLabel: "Customary Seat",
-    citation: "Daures constituency customary registers",
-    summary: "Rural farming community with customary leadership registered under Chief Jeja.",
-    notes: "Maintains traditional livestock practices and local dispute resolution forums.",
+    citation: "Daures constituency customary registers (Erongo)",
+    summary: "Rural farming community in Erongo Region (Dâures Constituency) with customary leadership registered under Chief Jeja.",
+    notes: "Located in the Erongo communal corridor; maintains traditional livestock practices and local dispute resolution forums.",
   },
   {
     id: 16,
@@ -296,7 +296,7 @@ export const CHAPTERS_DATA = [
     citation: "Kunene traditional leadership archives (2016)",
     summary:
       "Northern community in Kunene Region. Archival records note the funeral of historic Chief Bernhard Turitjo at Omuhama, with the seat now recorded under Chief Kazondu.",
-    notes: "Connected to northern customary dynasties and sacred kraals.",
+    notes: "Connected to northern customary dynasties and sacred kraals in Kunene.",
   },
   {
     id: 17,
@@ -311,7 +311,7 @@ export const CHAPTERS_DATA = [
     statusLabel: "Customary Seat",
     citation: "Kunene customary authority submissions",
     summary: "Traditional settlement in Kunene Region represented by Chief Zakekua.",
-    notes: "Northwestern communal region with rich oral lineage heritage.",
+    notes: "Northwestern communal region with rich oral lineage heritage in Kunene.",
   },
   {
     id: 18,
@@ -328,58 +328,58 @@ export const CHAPTERS_DATA = [
     summary:
       "Prominent Kunene community led by Ombara David Kavari, who exercises customary leadership across local wards.",
     notes:
-      "Ombara is the traditional Herero honorific denoting royal chieftaincy and judicial authority.",
+      "Ombara is the traditional Herero honorific denoting royal chieftaincy and judicial authority in Kunene.",
   },
   {
     id: 19,
     chapter: "Ombombo",
-    location: "Kunene / Southern Angola (Cunene Province)",
-    region: "Cross-Border",
-    country: "Angola / Namibia",
-    type: "cross-border",
+    location: "Kunene Region, Namibia",
+    region: "Kunene",
+    country: "Namibia",
+    type: "local",
     namedChief: "Chief Representative",
     chiefShort: "Representative",
-    status: "cross-border",
-    statusLabel: "Cross-Border Seat",
-    citation: "Trans-boundary pastoralist treaties",
+    status: "customary",
+    statusLabel: "Customary Seat",
+    citation: "Kunene traditional leadership records",
     summary:
-      "Historic settlement in the borderlands linking Kunene Region with southern Angola (Cunene Province), serving trans-boundary Ovaherero and pastoralist families.",
+      "Historic settlement in Kunene Region, serving Ovaherero pastoralist communities.",
     notes:
-      "Maintains customary transhumance corridors and family links established before colonial demarcations.",
+      "Maintains customary grazing and family links in northern Kunene.",
   },
   {
     id: 20,
     chapter: "Otuzemba",
-    location: "Kunene / Southern Angola",
-    region: "Cross-Border",
-    country: "Angola / Namibia",
-    type: "cross-border",
+    location: "Kunene Region, Namibia",
+    region: "Kunene",
+    country: "Namibia",
+    type: "local",
     namedChief: "Chief Representatives (OvaZemba)",
     chiefShort: "OvaZemba Representatives",
-    status: "cross-border",
-    statusLabel: "Cross-Border / OvaZemba",
-    citation: "OvaZemba Cultural Council archives",
+    status: "customary",
+    statusLabel: "OvaZemba Customary Seat",
+    citation: "Kunene / OvaZemba Cultural Council archives",
     summary:
-      "Represents the OvaZemba community, an intrinsic branch of the greater Ovaherero cultural family residing across northwestern Namibia and southern Angola.",
+      "Represents the OvaZemba community in Kunene Region, an intrinsic branch of the greater Ovaherero cultural family.",
     notes:
-      "Preserves ancient linguistic forms, customary clothing traditions, and pastoral assembly practices.",
+      "Preserves ancient linguistic forms, customary clothing traditions, and pastoral assembly practices in Kunene.",
   },
   {
     id: 21,
     chapter: "Okozonguehe",
-    location: "Angola / Kunene Borderlands",
-    region: "Cross-Border",
-    country: "Angola / Namibia",
-    type: "cross-border",
+    location: "Kunene Region, Namibia",
+    region: "Kunene",
+    country: "Namibia",
+    type: "local",
     namedChief: "Chief Representative",
     chiefShort: "Representative",
-    status: "cross-border",
-    statusLabel: "Cross-Border Seat",
-    citation: "Regional pastoral council records",
+    status: "customary",
+    statusLabel: "Customary Seat",
+    citation: "Kunene pastoral council records",
     summary:
-      "Northern pastoral settlement seat representing Ovaherero families residing in the trans-boundary Cunene basin.",
+      "Northern pastoral settlement seat in Kunene Region representing Ovaherero families.",
     notes:
-      "Fosters customary unity across modern international borders.",
+      "Fosters customary unity and traditional pasture management in Kunene.",
   },
   {
     id: 22,
@@ -516,12 +516,11 @@ export const CHAPTERS_DATA = [
 
 const REGIONS = [
   "All",
+  "Kunene",
   "Omaheke",
   "Otjozondjupa",
-  "Kunene",
   "Erongo",
   "Omusati",
-  "Cross-Border",
   "Diaspora",
 ];
 
@@ -536,7 +535,7 @@ function ChaptersPage() {
       // Type filter
       if (selectedType === "local" && item.type !== "local") return false;
       if (selectedType === "diaspora" && item.type !== "diaspora") return false;
-      if (selectedType === "cross-border" && item.type !== "cross-border") return false;
+      if (selectedType === "kunene" && item.region !== "Kunene") return false;
       if (selectedType === "confirmed" && item.status !== "confirmed") return false;
 
       // Region filter
@@ -573,27 +572,35 @@ function ChaptersPage() {
       <section className="border-b border-border bg-card">
         <div className="shell grid grid-cols-2 divide-x divide-border py-8 sm:grid-cols-4 sm:py-10">
           <div className="px-4 text-center sm:px-6">
-            <span className="font-display text-3xl font-bold text-gold sm:text-4xl">29</span>
+            <span className="font-display text-3xl font-bold text-gold sm:text-4xl">
+              {CHAPTERS_DATA.length}
+            </span>
             <p className="mt-1 text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
               Total Recorded Seats
             </p>
           </div>
           <div className="px-4 text-center sm:px-6">
-            <span className="font-display text-3xl font-bold text-foreground sm:text-4xl">21</span>
+            <span className="font-display text-3xl font-bold text-foreground sm:text-4xl">
+              {CHAPTERS_DATA.filter((c) => c.type === "local").length}
+            </span>
             <p className="mt-1 text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
               Local Namibian Chapters
             </p>
           </div>
           <div className="px-4 text-center sm:px-6">
-            <span className="font-display text-3xl font-bold text-foreground sm:text-4xl">5</span>
+            <span className="font-display text-3xl font-bold text-gold sm:text-4xl">
+              {CHAPTERS_DATA.filter((c) => c.region === "Kunene").length}
+            </span>
             <p className="mt-1 text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
-              Diaspora Chapters
+              Kunene Region Seats
             </p>
           </div>
           <div className="px-4 text-center sm:px-6">
-            <span className="font-display text-3xl font-bold text-gold sm:text-4xl">3</span>
+            <span className="font-display text-3xl font-bold text-foreground sm:text-4xl">
+              {CHAPTERS_DATA.filter((c) => c.type === "diaspora").length}
+            </span>
             <p className="mt-1 text-[10.5px] uppercase tracking-[0.16em] text-muted-foreground">
-              Cross-Border Seats
+              Diaspora Chapters
             </p>
           </div>
         </div>
@@ -707,9 +714,9 @@ function ChaptersPage() {
             </span>
             {[
               { id: "all", label: "All Seats (29)" },
-              { id: "local", label: "Namibia (Local)" },
-              { id: "diaspora", label: "Diaspora" },
-              { id: "cross-border", label: "Cross-Border" },
+              { id: "local", label: "Namibia (Local) (24)" },
+              { id: "kunene", label: "Kunene Region (8)" },
+              { id: "diaspora", label: "Diaspora (5)" },
               { id: "confirmed", label: "Confirmed OTA Chiefs" },
             ].map((tab) => (
               <button
