@@ -133,186 +133,9 @@ function buildHeroAndMilestoneSlides(heroImg, config) {
 }
 
 /**
- * Full-bleed Hero with dynamic background slideshow synchronized with the governance numbers.
- * Images crossfade slowly with Ken Burns zoom, and pause while hovering.
- */
-function HeroSlideshow({
-  slides,
-  current,
-  prev,
-  goTo,
-  onMouseEnter,
-  onMouseLeave,
-}) {
-  const active = slides[current];
-
-  return (
-    <div
-      className="relative overflow-hidden bg-[hsl(var(--primary))]"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      {/* Background slide stack */}
-      <div className="absolute inset-0 z-0">
-        {slides.map((slide, i) => {
-          const isActive = i === current;
-          const isLeaving = i === prev;
-          return (
-            <div
-              key={i}
-              aria-hidden={!isActive}
-              style={{
-                position: "absolute",
-                inset: 0,
-                transition: "opacity 1.4s ease-in-out",
-                opacity: isActive ? 1 : isLeaving ? 0 : 0,
-                zIndex: isActive ? 2 : isLeaving ? 1 : 0,
-              }}
-            >
-              {/* Ken Burns zoom */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  transform: isActive ? "scale(1.07)" : "scale(1)",
-                  transition: "transform 7s ease-out",
-                }}
-              >
-                <img
-                  src={slide.src}
-                  alt={slide.alt}
-                  className="h-full w-full object-cover"
-                  loading={i === 0 ? "eager" : "lazy"}
-                />
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Multi-directional blend overlays */}
-        <div
-          className="pointer-events-none absolute inset-0 z-10"
-          style={{
-            background:
-              "linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)/0.85) 30%, hsl(var(--primary)/0.40) 65%, transparent 100%)",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute inset-0 z-10"
-          style={{
-            background:
-              "linear-gradient(to bottom, hsl(var(--primary)/0.65) 0%, transparent 35%, transparent 65%, hsl(var(--primary)/0.75) 100%)",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute inset-0 z-10"
-          style={{
-            background:
-              "linear-gradient(to left, hsl(var(--primary)/0.45) 0%, transparent 30%)",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute inset-0 z-10"
-          style={{ background: "hsl(var(--primary)/0.20)", mixBlendMode: "multiply" }}
-        />
-      </div>
-
-      {/* Foreground Content */}
-      <div className="relative z-20 text-primary-foreground">
-        <section className="shell flex min-h-[250px] flex-col justify-center py-10 sm:min-h-[290px] sm:py-14 lg:min-h-[340px] lg:max-w-3xl lg:py-16">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-block h-2 w-2 rounded-full bg-gold animate-pulse" />
-            <span className="border border-gold/40 bg-gold/15 px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-gold">
-              Slide {current + 1} of {slides.length} · {active.number} {active.label}
-            </span>
-            <span className="hidden sm:inline-block text-[11px] uppercase tracking-[0.2em] text-primary-foreground/75">
-              · {active.badge}
-            </span>
-          </div>
-
-          <h1 className="rise rise-1 mt-3 font-display text-[1.95rem] leading-[1.08] drop-shadow-md sm:text-[2.5rem] lg:text-[3.15rem]">
-            {active.title}
-          </h1>
-
-          <p className="rise rise-2 mt-3 max-w-xl text-[0.92rem] leading-relaxed text-primary-foreground/90 drop-shadow">
-            {active.desc}
-          </p>
-
-          <div className="rise rise-3 mt-5 flex flex-wrap items-center gap-3">
-            <Button asChild className="rounded-none bg-gold px-5 text-[11.5px] uppercase tracking-[0.16em] text-[hsl(var(--ink))] hover:bg-gold/90">
-              <Link to={active.ctaTo}>
-                {active.ctaLabel} <ArrowRight className="ml-2 h-3.5 w-3.5" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              className="rounded-none border-primary-foreground/40 bg-primary-foreground/10 px-5 text-[11.5px] uppercase tracking-[0.16em] text-primary-foreground backdrop-blur-sm hover:bg-primary-foreground/20 hover:text-primary-foreground"
-            >
-              <Link to="/constitution">Read the Constitution</Link>
-            </Button>
-          </div>
-        </section>
-      </div>
-
-      {/* Slide indicator pills — bottom-centre */}
-      <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.5 sm:gap-2">
-        {slides.map((s, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => goTo(i)}
-            aria-label={`Go to slide ${i + 1}: ${s.number} ${s.label}`}
-            className="group flex items-center gap-1.5 px-1 py-1 transition-all"
-          >
-            <span
-              style={{
-                height: "3.5px",
-                width: i === current ? "28px" : "10px",
-                background: i === current ? "hsl(var(--gold, 45 85% 60%))" : "rgba(255,255,255,0.45)",
-                transition: "width 0.4s ease, background 0.4s ease",
-              }}
-              className="block"
-            />
-            {i === current ? (
-              <span className="hidden md:inline-block text-[9.5px] font-bold text-gold uppercase tracking-wider">
-                {s.number}
-              </span>
-            ) : null}
-          </button>
-        ))}
-      </div>
-
-      {/* Manual Chevron controls — bottom-right */}
-      <div className="absolute bottom-3 right-5 z-30 hidden sm:flex items-center gap-1.5">
-        <button
-          type="button"
-          onClick={() => goTo(current - 1)}
-          aria-label="Previous slide"
-          className="grid h-7 w-7 place-items-center border border-white/30 bg-black/30 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/60"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => goTo(current + 1)}
-          aria-label="Next slide"
-          className="grid h-7 w-7 place-items-center border border-white/30 bg-black/30 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/60"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </button>
-        <span className="ml-2 text-[9px] uppercase tracking-[0.2em] text-white/60">
-          {active.region}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-/**
- * A concise introduction to the historical succession. The full biography for
- * every leader lives on its own route, keeping the home page a gateway rather
- * than duplicating the report as a long document.
+ * Paramount Chiefs of the Ovaherero Hero Showcase.
+ * Interactive showcase of the historical succession from 1863 to present,
+ * serving as the primary hero gateway to Ovaherero leadership and governance.
  */
 function ParamountChiefsSlideshow() {
   const [current, setCurrent] = useState(0);
@@ -341,8 +164,10 @@ function ParamountChiefsSlideshow() {
       <div className="shell py-12 sm:py-14 lg:py-16">
         <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="eyebrow">Historical succession</p>
-            <h2 className="mt-2 text-[2rem] leading-tight sm:text-[2.5rem]">Paramount Chiefs of the Ovaherero</h2>
+            <p className="eyebrow text-gold">Office of the Ombára Otjitambi · Historical Succession</p>
+            <h1 className="mt-2 font-display text-[2.2rem] leading-tight text-foreground sm:text-[2.85rem]">
+              Paramount Chiefs of the Ovaherero
+            </h1>
           </div>
           <Link
             to="/paramount-chiefs"
@@ -383,32 +208,60 @@ function ParamountChiefsSlideshow() {
                   </span>
                 ) : null}
               </div>
-              <h3 className="mt-4 font-display text-[2rem] leading-[1.05] text-foreground sm:text-[2.6rem]">{chief.name}</h3>
+              <h2 className="mt-4 font-display text-[2rem] leading-[1.05] text-foreground sm:text-[2.6rem]">{chief.name}</h2>
               {chief.nameAlt ? <p className="mt-1 text-[13px] text-muted-foreground">Also known as {chief.nameAlt}</p> : null}
               <p className="mt-4 text-[0.96rem] leading-[1.8] text-foreground/75">{chief.teaser}</p>
             </div>
 
             <div className="mt-8 flex flex-wrap items-center justify-between gap-5 border-t border-border pt-5">
-              <Button asChild className="rounded-none bg-gold px-5 text-[11px] uppercase tracking-[0.15em] text-[hsl(var(--ink))] hover:bg-gold/90">
-                <Link to="/paramount-chiefs/$slug" params={{ slug: chief.slug }}>
-                  See more <ArrowRight className="ml-2 h-3.5 w-3.5" />
-                </Link>
-              </Button>
-              <div className="flex items-center gap-1.5" aria-label={`Chief ${current + 1} of ${total}`}>
-                {PARAMOUNT_CHIEFS.map((item, index) => (
+              <div className="flex flex-wrap items-center gap-3">
+                <Button asChild className="rounded-none bg-gold px-5 text-[11px] uppercase tracking-[0.15em] text-[hsl(var(--ink))] hover:bg-gold/90">
+                  <Link to="/paramount-chiefs/$slug" params={{ slug: chief.slug }}>
+                    See more <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="rounded-none border-border px-4 text-[11px] uppercase tracking-[0.15em] hover:bg-secondary">
+                  <Link to="/paramount-chiefs">
+                    All 7 Chiefs
+                  </Link>
+                </Button>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5" aria-label={`Chief ${current + 1} of ${total}`}>
+                  {PARAMOUNT_CHIEFS.map((item, index) => (
+                    <button
+                      key={item.slug}
+                      type="button"
+                      onClick={() => goTo(index)}
+                      aria-label={`Show ${item.name}`}
+                      aria-current={index === current ? "true" : undefined}
+                      className="h-2.5 w-2.5 rounded-full border border-[hsl(var(--primary))]/35 transition-all"
+                      style={{
+                        backgroundColor: index === current ? "hsl(var(--gold))" : "transparent",
+                        transform: index === current ? "scale(1.25)" : "scale(1)",
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="flex items-center gap-1 border-l border-border pl-3">
                   <button
-                    key={item.slug}
                     type="button"
-                    onClick={() => goTo(index)}
-                    aria-label={`Show ${item.name}`}
-                    aria-current={index === current ? "true" : undefined}
-                    className="h-2.5 w-2.5 rounded-full border border-[hsl(var(--primary))]/35 transition-all"
-                    style={{
-                      backgroundColor: index === current ? "hsl(var(--gold))" : "transparent",
-                      transform: index === current ? "scale(1.25)" : "scale(1)",
-                    }}
-                  />
-                ))}
+                    onClick={() => goTo(current - 1)}
+                    aria-label="Previous Chief"
+                    className="grid h-7 w-7 place-items-center border border-border bg-background transition-colors hover:bg-secondary hover:text-[hsl(var(--primary))]"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => goTo(current + 1)}
+                    aria-label="Next Chief"
+                    className="grid h-7 w-7 place-items-center border border-border bg-background transition-colors hover:bg-secondary hover:text-[hsl(var(--primary))]"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1000,18 +853,15 @@ function HomePage() {
 
   const slides = useMemo(() => buildHeroAndMilestoneSlides(heroImg, config), [heroImg, config]);
   const [current, setCurrent] = useState(0);
-  const [prev, setPrev] = useState(null);
   const paused = useRef(false);
   const [isPaused, setIsPaused] = useState(false);
 
   const goTo = useCallback(
     (idx) => {
       const next = (idx + slides.length) % slides.length;
-      setPrev(current);
       setCurrent(next);
-      setTimeout(() => setPrev(null), 1400);
     },
-    [current, slides.length],
+    [slides.length],
   );
 
   useEffect(() => {
@@ -1028,28 +878,9 @@ function HomePage() {
     setIsPaused(paused.current);
   };
 
-  const handleMouseEnter = () => {
-    paused.current = true;
-    setIsPaused(true);
-  };
-
-  const handleMouseLeave = () => {
-    paused.current = false;
-    setIsPaused(false);
-  };
-
   return (
     <>
-      {/* ── Full-bleed Hero with dynamic background slideshow & numbers ─── */}
-      <HeroSlideshow
-        slides={slides}
-        current={current}
-        prev={prev}
-        goTo={goTo}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      />
-
+      {/* ── Paramount Chiefs of the Ovaherero Hero Showcase ──────────────── */}
       <ParamountChiefsSlideshow />
 
       <section className="border-b border-border bg-card">
