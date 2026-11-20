@@ -176,7 +176,7 @@ function ParamountChiefsHeroBanner() {
 
   return (
     <section
-      className="relative overflow-hidden bg-[hsl(var(--ink))] text-white border-b border-border/80"
+      className="relative overflow-hidden bg-[hsl(22_34%_24%)] text-white border-b border-border/80"
       aria-label="Paramount Chiefs of the Ovaherero Hero Banner"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -187,19 +187,19 @@ function ParamountChiefsHeroBanner() {
           key={`bg-${chief.slug}`}
           src={chief.photo}
           alt=""
-          className="absolute -right-20 -top-20 h-[120%] w-[70%] object-cover opacity-15 blur-3xl transition-opacity duration-1000"
+          className="absolute -right-20 -top-20 h-[120%] w-[70%] object-cover opacity-20 blur-3xl transition-opacity duration-1000"
           onError={(e) => {
             e.currentTarget.onerror = null;
             e.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--ink))] via-[hsl(var(--ink))]/90 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--ink))] via-transparent to-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(22_34%_22%)] via-[hsl(22_34%_24%)]/95 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(22_34%_20%)] via-transparent to-black/25" />
       </div>
 
-      <div className="relative z-10 shell py-8 sm:py-10 lg:py-12">
+      <div className="relative z-10 shell py-7 sm:py-9 lg:py-10">
         {/* Top Eyebrow & Quick Succession Link */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-white/10">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-white/15 max-w-5xl mx-auto">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
             <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold sm:text-[11px]">
@@ -215,24 +215,24 @@ function ParamountChiefsHeroBanner() {
           </Link>
         </div>
 
-        {/* Hero Main Stage Grid */}
-        <div className="grid items-center gap-8 py-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12 lg:py-10">
+        {/* Hero Main Stage Grid - 50% width portrait & compact layout */}
+        <div className="grid items-center gap-8 py-5 max-w-5xl mx-auto lg:grid-cols-[1fr_auto] lg:gap-14 lg:py-8">
           {/* Left: Punchy Text & Actions */}
-          <div className="space-y-5">
+          <div className="space-y-4">
             {/* Era, Reign & Ordinal Tag */}
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="border border-gold/50 bg-gold/15 px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-gold">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="border border-gold/50 bg-gold/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">
                 Chief {String(current + 1).padStart(2, "0")} of {String(total).padStart(2, "0")}
               </span>
-              <span className="border border-white/20 bg-white/5 px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/80">
+              <span className="border border-white/25 bg-white/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/90">
                 {chief.reign}
               </span>
-              <span className="hidden sm:inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] text-white/60">
+              <span className="hidden sm:inline-flex items-center gap-1 text-[10.5px] uppercase tracking-[0.16em] text-white/70">
                 <Crown className="h-3.5 w-3.5 text-gold shrink-0" />
                 {chief.era}
               </span>
               {chief.isDisputed && (
-                <span className="border border-gold/40 bg-gold/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-gold">
+                <span className="border border-gold/40 bg-gold/15 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-gold">
                   Contested Succession
                 </span>
               )}
@@ -240,41 +240,41 @@ function ParamountChiefsHeroBanner() {
 
             {/* Chief Name */}
             <div>
-              <h1 className="font-display text-[2.2rem] leading-[1.05] tracking-tight text-white sm:text-[2.9rem] lg:text-[3.3rem]">
+              <h1 className="font-display text-[2rem] leading-[1.08] tracking-tight text-white sm:text-[2.6rem] lg:text-[3rem]">
                 {chief.name}
               </h1>
               {chief.nameAlt && (
-                <p className="mt-1.5 font-display text-lg text-gold/85 italic">
+                <p className="mt-1 font-display text-base sm:text-lg text-gold/85 italic">
                   ({chief.nameAlt})
                 </p>
               )}
             </div>
 
             {/* Concise 1-Line Punchline */}
-            <p className="max-w-xl text-[0.95rem] leading-[1.7] text-white/80 sm:text-[1.05rem]">
+            <p className="max-w-xl text-[0.92rem] leading-[1.7] text-white/85 sm:text-[0.98rem]">
               {CHIEF_PUNCHLINES[chief.slug] || chief.teaser.split(".")[0] + "."}
             </p>
 
             {/* CTA Buttons & Chevrons */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
-              <Button asChild className="rounded-none bg-gold px-6 py-2.5 text-[11.5px] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--ink))] shadow-lg hover:bg-gold/90 transition-transform active:scale-95">
+            <div className="flex flex-wrap items-center gap-3.5 pt-2">
+              <Button asChild className="rounded-none bg-gold px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--ink))] shadow-md hover:bg-gold/90 transition-transform active:scale-95">
                 <Link to="/paramount-chiefs/$slug" params={{ slug: chief.slug }}>
-                  Explore Biography <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                  Explore Biography <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="rounded-none border-white/30 bg-white/5 px-5 py-2.5 text-[11.5px] uppercase tracking-[0.16em] text-white hover:bg-white/15 hover:text-white">
+              <Button asChild variant="outline" className="rounded-none border-white/30 bg-white/10 px-4 py-2 text-[11px] uppercase tracking-[0.16em] text-white hover:bg-white/20 hover:text-white">
                 <Link to="/paramount-chiefs">
                   Full Archive
                 </Link>
               </Button>
 
               {/* Prev / Next controls */}
-              <div className="flex items-center gap-1.5 ml-auto">
+              <div className="flex items-center gap-1.5 sm:ml-auto">
                 <button
                   type="button"
                   onClick={() => goTo(current - 1)}
                   aria-label="Previous Chief"
-                  className="grid h-9 w-9 place-items-center border border-white/20 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/20 hover:text-white"
+                  className="grid h-8 w-8 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
@@ -282,7 +282,7 @@ function ParamountChiefsHeroBanner() {
                   type="button"
                   onClick={() => goTo(current + 1)}
                   aria-label="Next Chief"
-                  className="grid h-9 w-9 place-items-center border border-white/20 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/20 hover:text-white"
+                  className="grid h-8 w-8 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
@@ -290,9 +290,9 @@ function ParamountChiefsHeroBanner() {
             </div>
           </div>
 
-          {/* Right: Featured Portrait (Visual Hero) */}
-          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-            <div className="relative aspect-[4/5] overflow-hidden border-2 border-gold/40 bg-[hsl(var(--primary))] shadow-2xl">
+          {/* Right: Featured Portrait - Reduced width by 50% for elegant proportion */}
+          <div className="relative mx-auto w-full max-w-[270px] lg:max-w-[280px]">
+            <div className="relative aspect-[4/5] overflow-hidden border-2 border-gold/45 bg-[hsl(22_30%_20%)] shadow-2xl">
               <img
                 key={chief.slug}
                 src={chief.photo}
@@ -303,28 +303,28 @@ function ParamountChiefsHeroBanner() {
                   event.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
 
               {/* Chief Ordinal Watermark Badge */}
-              <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-gold/40 px-3 py-1">
-                <span className="font-display text-xl font-bold text-gold">
+              <div className="absolute top-3.5 right-3.5 bg-black/60 backdrop-blur-md border border-gold/40 px-2.5 py-0.5">
+                <span className="font-display text-lg font-bold text-gold">
                   {String(current + 1).padStart(2, "0")}
                 </span>
               </div>
 
               {/* Bottom Plate on Portrait */}
-              <div className="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-white">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">{chief.reign}</p>
-                <p className="mt-1 font-display text-xl sm:text-2xl leading-tight font-medium drop-shadow-sm">{chief.name}</p>
-                <p className="mt-0.5 text-[11px] uppercase tracking-[0.14em] text-white/70">{chief.title}</p>
+              <div className="absolute bottom-0 inset-x-0 p-4 text-white">
+                <p className="text-[9.5px] font-semibold uppercase tracking-[0.2em] text-gold">{chief.reign}</p>
+                <p className="mt-0.5 font-display text-lg leading-tight font-medium drop-shadow-sm">{chief.name}</p>
+                <p className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-white/70">{chief.title}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Thumbnail Strip: Visual Gallery of all 7 Chiefs */}
-        <div className="mt-6 border-t border-white/10 pt-5">
-          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">
+        <div className="mt-5 border-t border-white/15 pt-4 max-w-5xl mx-auto">
+          <p className="mb-2.5 text-[9.5px] font-semibold uppercase tracking-[0.2em] text-white/60">
             Select a Paramount Chief · 1863 to Present
           </p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
@@ -335,17 +335,17 @@ function ParamountChiefsHeroBanner() {
                   key={item.slug}
                   type="button"
                   onClick={() => goTo(idx)}
-                  className={`group relative flex items-center gap-2.5 p-2 text-left transition-all border ${
+                  className={`group relative flex items-center gap-2 p-1.5 text-left transition-all border ${
                     isActive
-                      ? "border-gold bg-gold/15 shadow-md"
-                      : "border-white/10 bg-white/5 hover:border-white/30 hover:bg-white/10"
+                      ? "border-gold bg-gold/20 shadow-md"
+                      : "border-white/15 bg-black/20 hover:border-white/35 hover:bg-black/35"
                   }`}
                 >
                   <img
                     src={item.photo}
                     alt={item.name}
-                    className={`h-11 w-11 shrink-0 object-cover object-top border transition-all ${
-                      isActive ? "border-gold ring-1 ring-gold scale-105" : "border-white/20 opacity-70 group-hover:opacity-100"
+                    className={`h-10 w-10 shrink-0 object-cover object-top border transition-all ${
+                      isActive ? "border-gold ring-1 ring-gold scale-105" : "border-white/20 opacity-75 group-hover:opacity-100"
                     }`}
                     onError={(e) => {
                       e.currentTarget.onerror = null;
@@ -353,10 +353,10 @@ function ParamountChiefsHeroBanner() {
                     }}
                   />
                   <div className="min-w-0">
-                    <p className={`text-[10px] uppercase font-bold leading-none ${isActive ? "text-gold" : "text-white/50"}`}>
+                    <p className={`text-[9.5px] uppercase font-bold leading-none ${isActive ? "text-gold" : "text-white/60"}`}>
                       {String(idx + 1).padStart(2, "0")} · {item.reign.split(" ")[0]}
                     </p>
-                    <p className={`mt-1 font-display text-[12.5px] leading-tight truncate ${isActive ? "text-white font-semibold" : "text-white/80"}`}>
+                    <p className={`mt-0.5 font-display text-[12px] leading-tight truncate ${isActive ? "text-white font-semibold" : "text-white/85"}`}>
                       {CHIEF_SHORT_NAMES[item.slug] || item.name.split(" ")[0]}
                     </p>
                   </div>
