@@ -28,10 +28,8 @@ import { EmptyNote } from "@/components/site/PageParts";
 import { dayMonth, fmtDate } from "@/lib/format";
 import { INSTITUTIONS } from "@/lib/institutions";
 
-const HERO_IMAGE =
-  "https://media.base44.com/images/public/6ae34c9a19c15fe652c019e1/934e2f759_generated_image.png";
-const DETAIL_IMAGE =
-  "https://media.base44.com/images/public/6ae34c9a19c15fe652c019e1/a4f4fd11b_generated_image.png";
+const HERO_IMAGE = "/images/heritage/ovaherero-women-red-flag.jpg";
+const DETAIL_IMAGE = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
 
 /**
  * Build the 4 dynamic hero and milestone slides, resolving admin overrides from SiteConfig.
