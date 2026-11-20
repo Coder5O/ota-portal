@@ -132,12 +132,32 @@ function buildHeroAndMilestoneSlides(heroImg, config) {
   ];
 }
 
+const CHIEF_PUNCHLINES = {
+  "maharero-ka-tjamuaha": "Architect of Ovaherero political unity who repelled foreign incursions in 1863 and inaugurated the unified Paramount Chieftaincy.",
+  "samuel-maharero": "Supreme leader of the 1904 anti-colonial resistance who led the survival across the desert and founded the Red Flag covenant.",
+  "hosea-kutako": "Father of Namibian nationalism who led for 50 years, founded the Chiefs' Council, and petitioned the UN for independence.",
+  "clemens-kapuuo": "Courageous diplomat and anti-apartheid leader who championed Ovaherero ancestral land rights on the international stage.",
+  "kuaima-riruako": "Visionary leader who served for 36 years, guided the nation through independence, and initiated the global genocide reparations campaign.",
+  "vekuii-rukoro": "Distinguished jurist and former Attorney-General who transformed genocide restitution into US federal and international court actions.",
+  "mutjinde-katjiua": "Academic and conservation scientist formally installed by the OTA in 2022, championing constitutional governance and genocide justice.",
+};
+
+const CHIEF_SHORT_NAMES = {
+  "maharero-ka-tjamuaha": "Maharero I",
+  "samuel-maharero": "Samuel Maharero",
+  "hosea-kutako": "Hosea Kutako",
+  "clemens-kapuuo": "Clemens Kapuuo",
+  "kuaima-riruako": "Kuaima Riruako",
+  "vekuii-rukoro": "Vekuii Rukoro",
+  "mutjinde-katjiua": "Mutjinde Katjiua",
+};
+
 /**
- * Paramount Chiefs of the Ovaherero Hero Showcase.
- * Interactive showcase of the historical succession from 1863 to present,
- * serving as the primary hero gateway to Ovaherero leadership and governance.
+ * Paramount Chiefs of the Ovaherero Hero Banner.
+ * Dynamic full-bleed hero banner showcasing the historical succession
+ * with prominent portraiture, interactive thumbnail gallery, and concise highlights.
  */
-function ParamountChiefsSlideshow() {
+function ParamountChiefsHeroBanner() {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const total = PARAMOUNT_CHIEFS.length;
@@ -156,114 +176,197 @@ function ParamountChiefsSlideshow() {
 
   return (
     <section
-      className="overflow-hidden border-b border-border bg-secondary/55"
-      aria-label="Paramount Chiefs of the Ovaherero"
+      className="relative overflow-hidden bg-[hsl(var(--ink))] text-white border-b border-border/80"
+      aria-label="Paramount Chiefs of the Ovaherero Hero Banner"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="shell py-12 sm:py-14 lg:py-16">
-        <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="eyebrow text-gold">Office of the Ombára Otjitambi · Historical Succession</p>
-            <h1 className="mt-2 font-display text-[2.2rem] leading-tight text-foreground sm:text-[2.85rem]">
-              Paramount Chiefs of the Ovaherero
-            </h1>
+      {/* Dynamic Ambient Background Blur */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <img
+          key={`bg-${chief.slug}`}
+          src={chief.photo}
+          alt=""
+          className="absolute -right-20 -top-20 h-[120%] w-[70%] object-cover opacity-15 blur-3xl transition-opacity duration-1000"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--ink))] via-[hsl(var(--ink))]/90 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--ink))] via-transparent to-black/30" />
+      </div>
+
+      <div className="relative z-10 shell py-8 sm:py-10 lg:py-12">
+        {/* Top Eyebrow & Quick Succession Link */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold sm:text-[11px]">
+              Office of the Ombára Otjitambi · Historical Succession
+            </span>
           </div>
           <Link
             to="/paramount-chiefs"
-            className="group inline-flex items-center gap-2 text-[11.5px] font-medium uppercase tracking-[0.16em] text-[hsl(var(--primary))]"
+            className="group inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-gold/90 transition-colors hover:text-white"
           >
-            View the full succession
+            All 7 Paramount Chiefs
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
-        <div className="grid overflow-hidden border border-border bg-card shadow-sm md:grid-cols-[minmax(230px,0.78fr)_minmax(0,1.22fr)]">
-          <div className="relative min-h-[305px] bg-[hsl(var(--primary))] md:min-h-[390px]">
-            <img
-              key={chief.slug}
-              src={chief.photo}
-              alt={`Historical image associated with ${chief.name}`}
-              className="absolute inset-0 h-full w-full object-cover object-top"
-              onError={(event) => {
-                event.currentTarget.onerror = null;
-                event.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/10" />
-            <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-6">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">{chief.reign}</p>
-              <p className="mt-2 font-display text-[1.35rem] leading-tight">{chief.name}</p>
+        {/* Hero Main Stage Grid */}
+        <div className="grid items-center gap-8 py-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12 lg:py-10">
+          {/* Left: Punchy Text & Actions */}
+          <div className="space-y-5">
+            {/* Era, Reign & Ordinal Tag */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="border border-gold/50 bg-gold/15 px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-gold">
+                Chief {String(current + 1).padStart(2, "0")} of {String(total).padStart(2, "0")}
+              </span>
+              <span className="border border-white/20 bg-white/5 px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/80">
+                {chief.reign}
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.16em] text-white/60">
+                <Crown className="h-3.5 w-3.5 text-gold shrink-0" />
+                {chief.era}
+              </span>
+              {chief.isDisputed && (
+                <span className="border border-gold/40 bg-gold/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-gold">
+                  Contested Succession
+                </span>
+              )}
+            </div>
+
+            {/* Chief Name */}
+            <div>
+              <h1 className="font-display text-[2.2rem] leading-[1.05] tracking-tight text-white sm:text-[2.9rem] lg:text-[3.3rem]">
+                {chief.name}
+              </h1>
+              {chief.nameAlt && (
+                <p className="mt-1.5 font-display text-lg text-gold/85 italic">
+                  ({chief.nameAlt})
+                </p>
+              )}
+            </div>
+
+            {/* Concise 1-Line Punchline */}
+            <p className="max-w-xl text-[0.95rem] leading-[1.7] text-white/80 sm:text-[1.05rem]">
+              {CHIEF_PUNCHLINES[chief.slug] || chief.teaser.split(".")[0] + "."}
+            </p>
+
+            {/* CTA Buttons & Chevrons */}
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <Button asChild className="rounded-none bg-gold px-6 py-2.5 text-[11.5px] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--ink))] shadow-lg hover:bg-gold/90 transition-transform active:scale-95">
+                <Link to="/paramount-chiefs/$slug" params={{ slug: chief.slug }}>
+                  Explore Biography <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="rounded-none border-white/30 bg-white/5 px-5 py-2.5 text-[11.5px] uppercase tracking-[0.16em] text-white hover:bg-white/15 hover:text-white">
+                <Link to="/paramount-chiefs">
+                  Full Archive
+                </Link>
+              </Button>
+
+              {/* Prev / Next controls */}
+              <div className="flex items-center gap-1.5 ml-auto">
+                <button
+                  type="button"
+                  onClick={() => goTo(current - 1)}
+                  aria-label="Previous Chief"
+                  className="grid h-9 w-9 place-items-center border border-white/20 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/20 hover:text-white"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goTo(current + 1)}
+                  aria-label="Next Chief"
+                  className="grid h-9 w-9 place-items-center border border-white/20 bg-white/5 text-white/80 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/20 hover:text-white"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col justify-between p-6 sm:p-8 lg:p-10">
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <Crown className="h-4 w-4 text-gold" />
-                <p className="text-[10.5px] font-semibold uppercase tracking-[0.17em] text-gold">{chief.era}</p>
-                {chief.isDisputed ? (
-                  <span className="border border-gold/50 bg-gold/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
-                    Contested succession
-                  </span>
-                ) : null}
-              </div>
-              <h2 className="mt-4 font-display text-[2rem] leading-[1.05] text-foreground sm:text-[2.6rem]">{chief.name}</h2>
-              {chief.nameAlt ? <p className="mt-1 text-[13px] text-muted-foreground">Also known as {chief.nameAlt}</p> : null}
-              <p className="mt-4 text-[0.96rem] leading-[1.8] text-foreground/75">{chief.teaser}</p>
-            </div>
+          {/* Right: Featured Portrait (Visual Hero) */}
+          <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+            <div className="relative aspect-[4/5] overflow-hidden border-2 border-gold/40 bg-[hsl(var(--primary))] shadow-2xl">
+              <img
+                key={chief.slug}
+                src={chief.photo}
+                alt={`Portrait of ${chief.name}`}
+                className="h-full w-full object-cover object-top transition-transform duration-700 ease-out hover:scale-105"
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
 
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-5 border-t border-border pt-5">
-              <div className="flex flex-wrap items-center gap-3">
-                <Button asChild className="rounded-none bg-gold px-5 text-[11px] uppercase tracking-[0.15em] text-[hsl(var(--ink))] hover:bg-gold/90">
-                  <Link to="/paramount-chiefs/$slug" params={{ slug: chief.slug }}>
-                    See more <ArrowRight className="ml-2 h-3.5 w-3.5" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="rounded-none border-border px-4 text-[11px] uppercase tracking-[0.15em] hover:bg-secondary">
-                  <Link to="/paramount-chiefs">
-                    All 7 Chiefs
-                  </Link>
-                </Button>
+              {/* Chief Ordinal Watermark Badge */}
+              <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md border border-gold/40 px-3 py-1">
+                <span className="font-display text-xl font-bold text-gold">
+                  {String(current + 1).padStart(2, "0")}
+                </span>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5" aria-label={`Chief ${current + 1} of ${total}`}>
-                  {PARAMOUNT_CHIEFS.map((item, index) => (
-                    <button
-                      key={item.slug}
-                      type="button"
-                      onClick={() => goTo(index)}
-                      aria-label={`Show ${item.name}`}
-                      aria-current={index === current ? "true" : undefined}
-                      className="h-2.5 w-2.5 rounded-full border border-[hsl(var(--primary))]/35 transition-all"
-                      style={{
-                        backgroundColor: index === current ? "hsl(var(--gold))" : "transparent",
-                        transform: index === current ? "scale(1.25)" : "scale(1)",
-                      }}
-                    />
-                  ))}
-                </div>
-                <div className="flex items-center gap-1 border-l border-border pl-3">
-                  <button
-                    type="button"
-                    onClick={() => goTo(current - 1)}
-                    aria-label="Previous Chief"
-                    className="grid h-7 w-7 place-items-center border border-border bg-background transition-colors hover:bg-secondary hover:text-[hsl(var(--primary))]"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => goTo(current + 1)}
-                    aria-label="Next Chief"
-                    className="grid h-7 w-7 place-items-center border border-border bg-background transition-colors hover:bg-secondary hover:text-[hsl(var(--primary))]"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </div>
+              {/* Bottom Plate on Portrait */}
+              <div className="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-white">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">{chief.reign}</p>
+                <p className="mt-1 font-display text-xl sm:text-2xl leading-tight font-medium drop-shadow-sm">{chief.name}</p>
+                <p className="mt-0.5 text-[11px] uppercase tracking-[0.14em] text-white/70">{chief.title}</p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Bottom Thumbnail Strip: Visual Gallery of all 7 Chiefs */}
+        <div className="mt-6 border-t border-white/10 pt-5">
+          <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50">
+            Select a Paramount Chief · 1863 to Present
+          </p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
+            {PARAMOUNT_CHIEFS.map((item, idx) => {
+              const isActive = idx === current;
+              return (
+                <button
+                  key={item.slug}
+                  type="button"
+                  onClick={() => goTo(idx)}
+                  className={`group relative flex items-center gap-2.5 p-2 text-left transition-all border ${
+                    isActive
+                      ? "border-gold bg-gold/15 shadow-md"
+                      : "border-white/10 bg-white/5 hover:border-white/30 hover:bg-white/10"
+                  }`}
+                >
+                  <img
+                    src={item.photo}
+                    alt={item.name}
+                    className={`h-11 w-11 shrink-0 object-cover object-top border transition-all ${
+                      isActive ? "border-gold ring-1 ring-gold scale-105" : "border-white/20 opacity-70 group-hover:opacity-100"
+                    }`}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
+                    }}
+                  />
+                  <div className="min-w-0">
+                    <p className={`text-[10px] uppercase font-bold leading-none ${isActive ? "text-gold" : "text-white/50"}`}>
+                      {String(idx + 1).padStart(2, "0")} · {item.reign.split(" ")[0]}
+                    </p>
+                    <p className={`mt-1 font-display text-[12.5px] leading-tight truncate ${isActive ? "text-white font-semibold" : "text-white/80"}`}>
+                      {CHIEF_SHORT_NAMES[item.slug] || item.name.split(" ")[0]}
+                    </p>
+                  </div>
+                  {/* Active Slide Progress Line */}
+                  {isActive && (
+                    <span className="absolute bottom-0 inset-x-0 h-0.5 bg-gold animate-pulse" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -880,8 +983,8 @@ function HomePage() {
 
   return (
     <>
-      {/* ── Paramount Chiefs of the Ovaherero Hero Showcase ──────────────── */}
-      <ParamountChiefsSlideshow />
+      {/* ── Paramount Chiefs of the Ovaherero Dynamic Hero Banner ─────────── */}
+      <ParamountChiefsHeroBanner />
 
       <section className="border-b border-border bg-card">
         <div className="shell grid divide-y divide-border sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
