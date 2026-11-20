@@ -133,13 +133,13 @@ function buildHeroAndMilestoneSlides(heroImg, config) {
 }
 
 const CHIEF_PUNCHLINES = {
-  "maharero-ka-tjamuaha": "Architect of Ovaherero political unity who repelled foreign incursions in 1863 and inaugurated the unified Paramount Chieftaincy.",
-  "samuel-maharero": "Supreme leader of the 1904 anti-colonial resistance who led the survival across the desert and founded the Red Flag covenant.",
-  "hosea-kutako": "Father of Namibian nationalism who led for 50 years, founded the Chiefs' Council, and petitioned the UN for independence.",
-  "clemens-kapuuo": "Courageous diplomat and anti-apartheid leader who championed Ovaherero ancestral land rights on the international stage.",
-  "kuaima-riruako": "Visionary leader who served for 36 years, guided the nation through independence, and initiated the global genocide reparations campaign.",
-  "vekuii-rukoro": "Distinguished jurist and former Attorney-General who transformed genocide restitution into US federal and international court actions.",
-  "mutjinde-katjiua": "Academic and conservation scientist formally installed by the OTA in 2022, championing constitutional governance and genocide justice.",
+  "maharero-ka-tjamuaha": "United clans into a sovereign nation.",
+  "samuel-maharero": "Supreme commander of 1904 Resistance.",
+  "hosea-kutako": "Father of modern Namibian liberation.",
+  "clemens-kapuuo": "Courageous defender of customary land rights.",
+  "kuaima-riruako": "Initiated global genocide reparations campaign.",
+  "vekuii-rukoro": "Championed landmark US federal reparations litigation.",
+  "mutjinde-katjiua": "Leading constitutional renewal and diaspora unity.",
 };
 
 const CHIEF_SHORT_NAMES = {
@@ -177,95 +177,92 @@ function ParamountChiefsHeroBanner() {
 
   return (
     <section
-      className="relative overflow-hidden bg-[hsl(22_34%_24%)] text-white border-b border-border/80"
+      className="relative flex min-h-[calc(100vh-4.5rem)] sm:min-h-[calc(100vh-6.5rem)] flex-col justify-between overflow-hidden bg-[hsl(22_34%_24%)] text-white border-b border-border/80"
       aria-label="Paramount Chiefs of the Ovaherero Hero Banner"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Dynamic Ambient Background Blur */}
+      {/* Background Layer: Namibian Nature Landscape + Warm Brown Tint + Ambient Glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <img
+          src="/images/slides/namibia-acacia.jpg"
+          alt="Namibian Landscape"
+          className="absolute inset-0 h-full w-full object-cover object-center opacity-30"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "/images/slides/spitzkoppe-sunset.jpg";
+          }}
+        />
         <img
           key={`bg-${chief.slug}`}
           src={chief.photo}
           alt=""
-          className="absolute -right-20 -top-20 h-[140%] w-[65%] object-cover opacity-20 blur-3xl transition-opacity duration-1000"
+          className="absolute -right-20 -top-20 h-[140%] w-[65%] object-cover opacity-15 blur-3xl transition-opacity duration-1000"
           onError={(e) => {
             e.currentTarget.onerror = null;
             e.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(22_34%_22%)] via-[hsl(22_34%_24%)]/95 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(22_34%_20%)] via-transparent to-black/25" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(22_34%_20%)]/95 via-[hsl(22_34%_24%)]/88 to-[hsl(22_34%_22%)]/75" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(22_34%_18%)] via-transparent to-black/30" />
       </div>
 
-      <div className="relative z-10 shell py-4 sm:py-5 lg:py-6">
-        {/* Top Eyebrow & Quick Succession Link */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/15">
+      <div className="relative z-10 shell flex flex-1 flex-col justify-between py-5 sm:py-7 lg:py-8 pb-[10vh] sm:pb-[14vh]">
+        {/* Top Eyebrow: Minimal Words */}
+        <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/15">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold sm:text-[11px]">
-              Office of the Ombára Otjitambi · Historical Succession
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold sm:text-[11px]">
+              Ombára Otjitambi · Succession
             </span>
           </div>
           <Link
             to="/paramount-chiefs"
-            className="group inline-flex items-center gap-1.5 text-[10.5px] font-medium uppercase tracking-[0.16em] text-gold/90 transition-colors hover:text-white"
+            className="group inline-flex items-center gap-1 text-[10.5px] font-medium uppercase tracking-[0.16em] text-gold/90 transition-colors hover:text-white"
           >
-            All 7 Paramount Chiefs
-            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            Archive
+            <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
 
-        {/* Hero Main Stage Grid - 50% reduced vertical length, full-width spread */}
-        <div className="grid items-center gap-6 py-3 sm:py-4 lg:grid-cols-[1fr_auto] lg:gap-10">
-          {/* Left: Punchy Text & Actions */}
-          <div className="space-y-2.5 min-w-0">
-            {/* Era, Reign & Ordinal Tag */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="border border-gold/50 bg-gold/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">
-                Chief {String(current + 1).padStart(2, "0")} of {String(total).padStart(2, "0")}
-              </span>
-              <span className="border border-white/25 bg-white/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/90">
-                {chief.reign}
-              </span>
-              <span className="hidden sm:inline-flex items-center gap-1 text-[10.5px] uppercase tracking-[0.16em] text-white/70">
-                <Crown className="h-3.5 w-3.5 text-gold shrink-0" />
-                {chief.era}
+        {/* Hero Main Stage Grid: Prominent Portrait & Minimal Words */}
+        <div className="my-auto grid items-center gap-6 py-4 sm:py-6 lg:grid-cols-[1fr_auto] lg:gap-12">
+          {/* Left: Punchy Minimal Text */}
+          <div className="space-y-3 min-w-0">
+            {/* Chief Number & Reign */}
+            <div className="flex items-center gap-2">
+              <span className="border border-gold/50 bg-gold/15 px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.16em] text-gold">
+                Chief {String(current + 1).padStart(2, "0")} · {chief.reign}
               </span>
               {chief.isDisputed && (
-                <span className="border border-gold/40 bg-gold/15 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-gold">
-                  Contested Succession
+                <span className="border border-gold/40 bg-gold/15 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-wider text-gold">
+                  Contested
                 </span>
               )}
             </div>
 
-            {/* Chief Name & Alt */}
-            <div className="flex flex-wrap items-baseline gap-2.5">
-              <h1 className="font-display text-2xl leading-tight tracking-tight text-white sm:text-3xl lg:text-[2.25rem]">
+            {/* Chief Name */}
+            <div>
+              <h1 className="font-display text-2xl leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
                 {chief.name}
               </h1>
               {chief.nameAlt && (
-                <span className="font-display text-base text-gold/85 italic">
+                <span className="font-display text-sm text-gold/85 italic">
                   ({chief.nameAlt})
                 </span>
               )}
             </div>
 
-            {/* Concise 1-Line Punchline */}
-            <p className="max-w-2xl text-[0.88rem] leading-[1.65] text-white/85 sm:text-[0.95rem] line-clamp-2">
+            {/* 50% Reduced Punchline */}
+            <p className="max-w-xl text-[0.92rem] leading-relaxed text-white/85 sm:text-[1rem]">
               {CHIEF_PUNCHLINES[chief.slug] || chief.teaser.split(".")[0] + "."}
             </p>
 
-            {/* CTA Buttons & Chevrons */}
-            <div className="flex flex-wrap items-center gap-3 pt-1">
+            {/* Single CTA Button & Chevrons */}
+            <div className="flex items-center gap-3 pt-1">
               <Button asChild className="rounded-none bg-gold px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--ink))] shadow-md hover:bg-gold/90 transition-transform active:scale-95">
                 <Link to="/paramount-chiefs/$slug" params={{ slug: chief.slug }}>
-                  Explore Biography <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" className="rounded-none border-white/30 bg-white/10 px-3.5 py-2 text-[10.5px] uppercase tracking-[0.16em] text-white hover:bg-white/20 hover:text-white">
-                <Link to="/paramount-chiefs">
-                  Full Archive
+                  Biography <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                 </Link>
               </Button>
 
@@ -291,8 +288,8 @@ function ParamountChiefsHeroBanner() {
             </div>
           </div>
 
-          {/* Right: Featured Portrait - Compact 50% length proportion */}
-          <div className="relative mx-auto w-36 sm:w-44 lg:w-48 shrink-0">
+          {/* Right: Featured Portrait */}
+          <div className="relative mx-auto w-40 sm:w-48 lg:w-56 shrink-0">
             <div className="relative aspect-[4/5] overflow-hidden border-2 border-gold/45 bg-[hsl(22_30%_20%)] shadow-2xl">
               <img
                 key={chief.slug}
@@ -306,7 +303,7 @@ function ParamountChiefsHeroBanner() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
 
-              {/* Chief Ordinal Watermark Badge */}
+              {/* Chief Ordinal Badge */}
               <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md border border-gold/40 px-2 py-0.5">
                 <span className="font-display text-sm font-bold text-gold">
                   {String(current + 1).padStart(2, "0")}
@@ -322,8 +319,8 @@ function ParamountChiefsHeroBanner() {
           </div>
         </div>
 
-        {/* Bottom Thumbnail Strip: Visual Gallery of all 7 Chiefs */}
-        <div className="mt-3 border-t border-white/15 pt-2.5">
+        {/* Bottom Thumbnail Strip: Minimal Words, 7 Chiefs Full Shell Spread */}
+        <div className="mt-auto border-t border-white/15 pt-2.5">
           <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:grid-cols-7">
             {PARAMOUNT_CHIEFS.map((item, idx) => {
               const isActive = idx === current;
@@ -351,10 +348,10 @@ function ParamountChiefsHeroBanner() {
                   />
                   <div className="min-w-0 flex-1">
                     <p className={`text-[9px] uppercase font-bold leading-none ${isActive ? "text-gold" : "text-white/60"}`}>
-                      {String(idx + 1).padStart(2, "0")} · {item.reign.split(" ")[0]}
+                      {String(idx + 1).padStart(2, "0")}
                     </p>
-                    <p className={`mt-0.5 font-display text-[11.5px] leading-tight truncate ${isActive ? "text-white font-semibold" : "text-white/85"}`}>
-                      {CHIEF_SHORT_NAMES[item.slug] || item.name.split(" ")[0]}
+                    <p className={`mt-0.5 font-display text-[11px] leading-tight truncate ${isActive ? "text-white font-semibold" : "text-white/85"}`}>
+                      {CHIEF_SHORT_NAMES[item.slug]?.split(" ")[0] || item.name.split(" ")[0]}
                     </p>
                   </div>
                   {/* Active Slide Progress Line */}
@@ -370,6 +367,7 @@ function ParamountChiefsHeroBanner() {
     </section>
   );
 }
+
 
 /**
  * Dynamic Ancestral Wisdom & Paramount Chiefs Quote Rotator.
