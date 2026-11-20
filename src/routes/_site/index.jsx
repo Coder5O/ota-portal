@@ -154,9 +154,9 @@ const CHIEF_SHORT_NAMES = {
 
 /**
  * Paramount Chiefs of the Ovaherero Hero Banner.
- * Showcase hero banner decreased in width by 50% on desktop (max-w-3xl centered),
- * with 25% lightened brown shade (hsl(22 34% 24%)), dynamic 6.5s auto-rotation,
- * compact portraiture, interactive 7-chief thumbnail gallery, and concise highlights.
+ * Full width from the first iteration, with vertical length (height) decreased by 50%
+ * for a sleek, cinematic, compact banner with 25% lightened brown shade,
+ * dynamic 6.5s auto-rotation, prominent portraiture, and concise highlights.
  */
 function ParamountChiefsHeroBanner() {
   const [current, setCurrent] = useState(0);
@@ -176,195 +176,194 @@ function ParamountChiefsHeroBanner() {
   }, [current, goTo, isPaused]);
 
   return (
-    <section className="border-b border-border bg-muted/15 py-5 sm:py-7 lg:py-8" aria-label="Paramount Chiefs Hero Section">
-      <div className="shell flex justify-center">
-        <div
-          className="relative w-full max-w-3xl overflow-hidden border border-gold/40 bg-[hsl(22_34%_24%)] text-white shadow-2xl transition-all"
-          aria-label="Paramount Chiefs of the Ovaherero Hero Banner"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          {/* Dynamic Ambient Background Blur */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <img
-              key={`bg-${chief.slug}`}
-              src={chief.photo}
-              alt=""
-              className="absolute -right-16 -top-16 h-[130%] w-[80%] object-cover opacity-20 blur-3xl transition-opacity duration-1000"
-              onError={(e) => {
-                e.currentTarget.onerror = null;
-                e.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[hsl(22_34%_22%)] via-[hsl(22_34%_24%)]/95 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(22_34%_20%)] via-transparent to-black/25" />
+    <section
+      className="relative overflow-hidden bg-[hsl(22_34%_24%)] text-white border-b border-border/80"
+      aria-label="Paramount Chiefs of the Ovaherero Hero Banner"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Dynamic Ambient Background Blur */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <img
+          key={`bg-${chief.slug}`}
+          src={chief.photo}
+          alt=""
+          className="absolute -right-20 -top-20 h-[140%] w-[65%] object-cover opacity-20 blur-3xl transition-opacity duration-1000"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(22_34%_22%)] via-[hsl(22_34%_24%)]/95 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(22_34%_20%)] via-transparent to-black/25" />
+      </div>
+
+      <div className="relative z-10 shell py-4 sm:py-5 lg:py-6">
+        {/* Top Eyebrow & Quick Succession Link */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/15">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold sm:text-[11px]">
+              Office of the Ombára Otjitambi · Historical Succession
+            </span>
+          </div>
+          <Link
+            to="/paramount-chiefs"
+            className="group inline-flex items-center gap-1.5 text-[10.5px] font-medium uppercase tracking-[0.16em] text-gold/90 transition-colors hover:text-white"
+          >
+            All 7 Paramount Chiefs
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+
+        {/* Hero Main Stage Grid - 50% reduced vertical length, full-width spread */}
+        <div className="grid items-center gap-6 py-3 sm:py-4 lg:grid-cols-[1fr_auto] lg:gap-10">
+          {/* Left: Punchy Text & Actions */}
+          <div className="space-y-2.5 min-w-0">
+            {/* Era, Reign & Ordinal Tag */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="border border-gold/50 bg-gold/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">
+                Chief {String(current + 1).padStart(2, "0")} of {String(total).padStart(2, "0")}
+              </span>
+              <span className="border border-white/25 bg-white/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/90">
+                {chief.reign}
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1 text-[10.5px] uppercase tracking-[0.16em] text-white/70">
+                <Crown className="h-3.5 w-3.5 text-gold shrink-0" />
+                {chief.era}
+              </span>
+              {chief.isDisputed && (
+                <span className="border border-gold/40 bg-gold/15 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-gold">
+                  Contested Succession
+                </span>
+              )}
+            </div>
+
+            {/* Chief Name & Alt */}
+            <div className="flex flex-wrap items-baseline gap-2.5">
+              <h1 className="font-display text-2xl leading-tight tracking-tight text-white sm:text-3xl lg:text-[2.25rem]">
+                {chief.name}
+              </h1>
+              {chief.nameAlt && (
+                <span className="font-display text-base text-gold/85 italic">
+                  ({chief.nameAlt})
+                </span>
+              )}
+            </div>
+
+            {/* Concise 1-Line Punchline */}
+            <p className="max-w-2xl text-[0.88rem] leading-[1.65] text-white/85 sm:text-[0.95rem] line-clamp-2">
+              {CHIEF_PUNCHLINES[chief.slug] || chief.teaser.split(".")[0] + "."}
+            </p>
+
+            {/* CTA Buttons & Chevrons */}
+            <div className="flex flex-wrap items-center gap-3 pt-1">
+              <Button asChild className="rounded-none bg-gold px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--ink))] shadow-md hover:bg-gold/90 transition-transform active:scale-95">
+                <Link to="/paramount-chiefs/$slug" params={{ slug: chief.slug }}>
+                  Explore Biography <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="rounded-none border-white/30 bg-white/10 px-3.5 py-2 text-[10.5px] uppercase tracking-[0.16em] text-white hover:bg-white/20 hover:text-white">
+                <Link to="/paramount-chiefs">
+                  Full Archive
+                </Link>
+              </Button>
+
+              {/* Prev / Next controls */}
+              <div className="flex items-center gap-1.5 sm:ml-auto">
+                <button
+                  type="button"
+                  onClick={() => goTo(current - 1)}
+                  aria-label="Previous Chief"
+                  className="grid h-8 w-8 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goTo(current + 1)}
+                  aria-label="Next Chief"
+                  className="grid h-8 w-8 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div className="relative z-10 p-5 sm:p-6 lg:p-7">
-            {/* Top Eyebrow & Quick Succession Link */}
-            <div className="flex flex-wrap items-center justify-between gap-2 pb-3.5 border-b border-white/15">
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold sm:text-[10.5px]">
-                  Ombára Otjitambi · Historical Succession
+          {/* Right: Featured Portrait - Compact 50% length proportion */}
+          <div className="relative mx-auto w-36 sm:w-44 lg:w-48 shrink-0">
+            <div className="relative aspect-[4/5] overflow-hidden border-2 border-gold/45 bg-[hsl(22_30%_20%)] shadow-2xl">
+              <img
+                key={chief.slug}
+                src={chief.photo}
+                alt={`Portrait of ${chief.name}`}
+                className="h-full w-full object-cover object-top transition-transform duration-700 ease-out hover:scale-105"
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+
+              {/* Chief Ordinal Watermark Badge */}
+              <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md border border-gold/40 px-2 py-0.5">
+                <span className="font-display text-sm font-bold text-gold">
+                  {String(current + 1).padStart(2, "0")}
                 </span>
               </div>
-              <Link
-                to="/paramount-chiefs"
-                className="group inline-flex items-center gap-1 text-[10.5px] font-medium uppercase tracking-[0.16em] text-gold/90 transition-colors hover:text-white"
-              >
-                All 7 Chiefs
-                <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-            </div>
 
-            {/* Hero Main Stage Grid - 50% width balanced layout */}
-            <div className="grid items-center gap-5 py-4 sm:grid-cols-[1fr_auto] sm:gap-6 lg:py-5">
-              {/* Left: Punchy Text & Actions */}
-              <div className="space-y-3 min-w-0">
-                {/* Era, Reign & Ordinal Tag */}
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="border border-gold/50 bg-gold/15 px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.16em] text-gold">
-                    Chief {String(current + 1).padStart(2, "0")} of {String(total).padStart(2, "0")}
-                  </span>
-                  <span className="border border-white/25 bg-white/10 px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.14em] text-white/90">
-                    {chief.reign}
-                  </span>
-                  {chief.isDisputed && (
-                    <span className="border border-gold/40 bg-gold/15 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-wider text-gold">
-                      Contested
-                    </span>
-                  )}
-                </div>
-
-                {/* Chief Name */}
-                <div>
-                  <h1 className="font-display text-xl leading-tight tracking-tight text-white sm:text-2xl lg:text-[1.85rem]">
-                    {chief.name}
-                  </h1>
-                  {chief.nameAlt && (
-                    <p className="mt-0.5 font-display text-sm text-gold/85 italic">
-                      ({chief.nameAlt})
-                    </p>
-                  )}
-                </div>
-
-                {/* Concise 1-Line Punchline */}
-                <p className="text-[0.85rem] leading-[1.6] text-white/85 line-clamp-2 sm:line-clamp-none">
-                  {CHIEF_PUNCHLINES[chief.slug] || chief.teaser.split(".")[0] + "."}
-                </p>
-
-                {/* CTA Buttons & Chevrons */}
-                <div className="flex flex-wrap items-center gap-2 pt-1">
-                  <Button asChild className="rounded-none bg-gold px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-[hsl(var(--ink))] shadow-md hover:bg-gold/90 transition-transform active:scale-95">
-                    <Link to="/paramount-chiefs/$slug" params={{ slug: chief.slug }}>
-                      Biography <ArrowRight className="ml-1 h-3 w-3" />
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline" className="rounded-none border-white/30 bg-white/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] text-white hover:bg-white/20 hover:text-white">
-                    <Link to="/paramount-chiefs">
-                      Full Archive
-                    </Link>
-                  </Button>
-
-                  {/* Prev / Next controls */}
-                  <div className="flex items-center gap-1 sm:ml-auto">
-                    <button
-                      type="button"
-                      onClick={() => goTo(current - 1)}
-                      aria-label="Previous Chief"
-                      className="grid h-7 w-7 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
-                    >
-                      <ChevronLeft className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => goTo(current + 1)}
-                      aria-label="Next Chief"
-                      className="grid h-7 w-7 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
-                    >
-                      <ChevronRight className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
+              {/* Bottom Plate on Portrait */}
+              <div className="absolute bottom-0 inset-x-0 p-2.5 text-white">
+                <p className="text-[8.5px] font-semibold uppercase tracking-[0.2em] text-gold">{chief.reign}</p>
+                <p className="mt-0.5 font-display text-xs leading-tight font-medium truncate drop-shadow-sm">{chief.name}</p>
               </div>
+            </div>
+          </div>
+        </div>
 
-              {/* Right: Featured Portrait - Proportional compact width */}
-              <div className="relative mx-auto w-36 sm:w-44 lg:w-48 shrink-0">
-                <div className="relative aspect-[4/5] overflow-hidden border-2 border-gold/45 bg-[hsl(22_30%_20%)] shadow-2xl">
+        {/* Bottom Thumbnail Strip: Visual Gallery of all 7 Chiefs */}
+        <div className="mt-3 border-t border-white/15 pt-2.5">
+          <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:grid-cols-7">
+            {PARAMOUNT_CHIEFS.map((item, idx) => {
+              const isActive = idx === current;
+              return (
+                <button
+                  key={item.slug}
+                  type="button"
+                  onClick={() => goTo(idx)}
+                  className={`group relative flex items-center gap-2 p-1.5 text-left transition-all border ${
+                    isActive
+                      ? "border-gold bg-gold/20 shadow-md"
+                      : "border-white/15 bg-black/20 hover:border-white/35 hover:bg-black/35"
+                  }`}
+                >
                   <img
-                    key={chief.slug}
-                    src={chief.photo}
-                    alt={`Portrait of ${chief.name}`}
-                    className="h-full w-full object-cover object-top transition-transform duration-700 ease-out hover:scale-105"
-                    onError={(event) => {
-                      event.currentTarget.onerror = null;
-                      event.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
+                    src={item.photo}
+                    alt={item.name}
+                    className={`h-8 w-8 shrink-0 object-cover object-top border transition-all ${
+                      isActive ? "border-gold ring-1 ring-gold scale-105" : "border-white/20 opacity-75 group-hover:opacity-100"
+                    }`}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
-
-                  {/* Chief Ordinal Badge */}
-                  <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md border border-gold/40 px-2 py-0.5">
-                    <span className="font-display text-sm font-bold text-gold">
-                      {String(current + 1).padStart(2, "0")}
-                    </span>
+                  <div className="min-w-0 flex-1">
+                    <p className={`text-[9px] uppercase font-bold leading-none ${isActive ? "text-gold" : "text-white/60"}`}>
+                      {String(idx + 1).padStart(2, "0")} · {item.reign.split(" ")[0]}
+                    </p>
+                    <p className={`mt-0.5 font-display text-[11.5px] leading-tight truncate ${isActive ? "text-white font-semibold" : "text-white/85"}`}>
+                      {CHIEF_SHORT_NAMES[item.slug] || item.name.split(" ")[0]}
+                    </p>
                   </div>
-
-                  {/* Bottom Plate on Portrait */}
-                  <div className="absolute bottom-0 inset-x-0 p-2.5 text-white">
-                    <p className="text-[8.5px] font-semibold uppercase tracking-[0.18em] text-gold">{chief.reign}</p>
-                    <p className="mt-0.5 font-display text-xs leading-tight font-medium truncate drop-shadow-sm">{chief.name}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Thumbnail Strip: Visual Gallery of all 7 Chiefs */}
-            <div className="mt-3.5 border-t border-white/15 pt-3">
-              <p className="mb-2 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/60">
-                Select a Paramount Chief · 1863 to Present
-              </p>
-              <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
-                {PARAMOUNT_CHIEFS.map((item, idx) => {
-                  const isActive = idx === current;
-                  return (
-                    <button
-                      key={item.slug}
-                      type="button"
-                      onClick={() => goTo(idx)}
-                      title={`${item.name} (${item.reign})`}
-                      className={`group relative flex flex-col items-center p-1 text-center transition-all border ${
-                        isActive
-                          ? "border-gold bg-gold/25 shadow-md scale-105 z-10"
-                          : "border-white/15 bg-black/25 hover:border-white/35 hover:bg-black/40"
-                      }`}
-                    >
-                      <img
-                        src={item.photo}
-                        alt={item.name}
-                        className={`h-8 w-8 sm:h-9 sm:w-9 shrink-0 object-cover object-top border transition-all ${
-                          isActive ? "border-gold ring-1 ring-gold" : "border-white/20 opacity-75 group-hover:opacity-100"
-                        }`}
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
-                        }}
-                      />
-                      <span className={`mt-1 block text-[8px] sm:text-[9px] font-semibold uppercase tracking-tight leading-none truncate w-full ${
-                        isActive ? "text-gold" : "text-white/70"
-                      }`}>
-                        {String(idx + 1).padStart(2, "0")} · {CHIEF_SHORT_NAMES[item.slug]?.split(" ")[0] || item.name.split(" ")[0]}
-                      </span>
-                      {/* Active Slide Progress Line */}
-                      {isActive && (
-                        <span className="absolute bottom-0 inset-x-0 h-0.5 bg-gold animate-pulse" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                  {/* Active Slide Progress Line */}
+                  {isActive && (
+                    <span className="absolute bottom-0 inset-x-0 h-0.5 bg-gold animate-pulse" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
