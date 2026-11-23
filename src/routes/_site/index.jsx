@@ -29,7 +29,7 @@ import { dayMonth, fmtDate } from "@/lib/format";
 import { INSTITUTIONS } from "@/lib/institutions";
 
 const HERO_IMAGE = "/images/heritage/ovaherero-women-red-flag.jpg";
-const DETAIL_IMAGE = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
+const DETAIL_IMAGE = "/images/heritage/mutjinde-katjiua.jpg";
 
 /**
  * Build the 4 dynamic hero and milestone slides, resolving admin overrides from SiteConfig.
@@ -895,7 +895,11 @@ const QUICK_LINKS = [
 function HomePage() {
   const { news, events, institutions, welcome, config } = Route.useLoaderData();
   const heroImg = config?.home_hero_image || HERO_IMAGE;
-  const detailImg = config?.home_detail_image || DETAIL_IMAGE;
+  const detailImg =
+    config?.home_detail_image &&
+    !config.home_detail_image.includes("paramount-chief-ceremonial-dress")
+      ? config.home_detail_image
+      : DETAIL_IMAGE;
 
   const slides = useMemo(() => buildHeroAndMilestoneSlides(heroImg, config), [heroImg, config]);
   const [current, setCurrent] = useState(0);
@@ -982,8 +986,8 @@ function HomePage() {
         <div className="relative">
           <Image
             src={detailImg}
-            alt="Detail of Ovaherero ceremonial dress"
-            className="aspect-[4/5] w-full object-cover"
+            alt="Ombara Prof. Mutjinde Katjiua, Paramount Chief of the Ovaherero"
+            className="aspect-[4/5] w-full object-cover object-top"
             fittingType="fill"
           />
           <div className="absolute -bottom-6 -right-4 hidden border border-gold/40 bg-background px-6 py-5 sm:block">
