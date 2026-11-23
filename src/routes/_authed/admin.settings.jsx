@@ -35,10 +35,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-export const DEFAULT_HERO_IMAGE =
-  "https://media.base44.com/images/public/6ae34c9a19c15fe652c019e1/934e2f759_generated_image.png";
-export const DEFAULT_DETAIL_IMAGE =
-  "https://media.base44.com/images/public/6ae34c9a19c15fe652c019e1/a4f4fd11b_generated_image.png";
+export const DEFAULT_HERO_IMAGE = "/images/slides/namibia-acacia.jpg";
+export const DEFAULT_DETAIL_IMAGE = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
 
 export const Route = createFileRoute("/_authed/admin/settings")({
   validateSearch: (search) => ({

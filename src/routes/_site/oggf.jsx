@@ -63,9 +63,9 @@ function OGGFPage() {
         eyebrow="Truth · Justice · Restitution"
         title="Ovaherero Global Genocide Foundation"
         intro="The dedicated institutional body of the Ovaherero Traditional Authority mandated with research, international advocacy, restorative justice, and the return of ancestral remains and sacred artefacts."
-        image="/images/slides/spitzkoppe-sunset.jpg"
+        image="/images/heritage/hosea-kutako-memorial.jpg"
         imageKey="oggf_hero_image"
-        imageAlt="Sacred lands &amp; Ovaherero Genocide Foundation memorial"
+        imageAlt="Hosea Kutako Memorial Shrine & Genocide Memorial, Okahandja"
       >
         <div className="flex flex-wrap items-center gap-3">
           <Button
@@ -89,9 +89,9 @@ function OGGFPage() {
         <div className="shell grid gap-8 py-10 sm:grid-cols-[0.8fr_1.2fr] sm:items-center">
           <div className="overflow-hidden border border-border shadow-sm">
             <img
-              src={config?.oggf_feature_image || "/images/slides/spitzkoppe-sunset.jpg"}
-              alt="Ancestral granite peaks of the Ovaherero homeland"
-              className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
+              src={config?.oggf_feature_image || "/images/heritage/samuel-maharero.jpg"}
+              alt="Ombara Samuel Maharero, supreme commander of the 1904 Anti-Colonial Resistance"
+              className="aspect-[16/10] w-full object-cover object-top transition-transform duration-700 hover:scale-105"
             />
           </div>
           <div>

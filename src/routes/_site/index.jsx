@@ -142,16 +142,6 @@ const CHIEF_PUNCHLINES = {
   "mutjinde-katjiua": "Leading constitutional renewal and diaspora unity.",
 };
 
-const CHIEF_SHORT_NAMES = {
-  "maharero-ka-tjamuaha": "Maharero I",
-  "samuel-maharero": "Samuel Maharero",
-  "hosea-kutako": "Hosea Kutako",
-  "clemens-kapuuo": "Clemens Kapuuo",
-  "kuaima-riruako": "Kuaima Riruako",
-  "vekuii-rukoro": "Vekuii Rukoro",
-  "mutjinde-katjiua": "Mutjinde Katjiua",
-};
-
 /**
  * Paramount Chiefs of the Ovaherero Hero Banner.
  * Full width from the first iteration, with vertical length (height) decreased by 50%
@@ -207,7 +197,7 @@ function ParamountChiefsHeroBanner() {
         <div className="absolute inset-0 bg-gradient-to-t from-[hsl(22_34%_18%)] via-transparent to-black/30" />
       </div>
 
-      <div className="relative z-10 shell flex flex-1 flex-col justify-between py-4 sm:py-5 lg:py-6">
+      <div className="relative z-10 shell flex flex-1 flex-col justify-center py-5 sm:py-6 lg:py-8">
         {/* Top Eyebrow: Minimal Words */}
         <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/15">
           <div className="flex items-center gap-2">
@@ -319,51 +309,6 @@ function ParamountChiefsHeroBanner() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Bottom Thumbnail Strip: Minimal Words, 7 Chiefs Full Shell Spread */}
-        <div className="mt-auto border-t border-white/15 pt-2">
-          <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:grid-cols-7">
-            {PARAMOUNT_CHIEFS.map((item, idx) => {
-              const isActive = idx === current;
-              return (
-                <button
-                  key={item.slug}
-                  type="button"
-                  onClick={() => goTo(idx)}
-                  className={`group relative flex items-center gap-2 p-1.5 text-left transition-all border ${
-                    isActive
-                      ? "border-gold bg-gold/25 shadow-md scale-105 z-10"
-                      : "border-white/15 bg-black/20 hover:border-white/35 hover:bg-black/35"
-                  }`}
-                >
-                  <img
-                    src={item.photo}
-                    alt={item.name}
-                    className={`h-8 w-8 shrink-0 object-cover object-top border transition-all ${
-                      isActive ? "border-gold ring-1 ring-gold" : "border-white/20 opacity-75 group-hover:opacity-100"
-                    }`}
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
-                    }}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className={`text-[9px] uppercase font-bold leading-none ${isActive ? "text-gold" : "text-white/60"}`}>
-                      {String(idx + 1).padStart(2, "0")}
-                    </p>
-                    <p className={`mt-0.5 font-display text-[11px] leading-tight truncate ${isActive ? "text-white font-semibold" : "text-white/85"}`}>
-                      {CHIEF_SHORT_NAMES[item.slug]?.split(" ")[0] || item.name.split(" ")[0]}
-                    </p>
-                  </div>
-                  {/* Active Slide Progress Line */}
-                  {isActive && (
-                    <span className="absolute bottom-0 inset-x-0 h-0.5 bg-gold animate-pulse" />
-                  )}
-                </button>
-              );
-            })}
           </div>
         </div>
       </div>
