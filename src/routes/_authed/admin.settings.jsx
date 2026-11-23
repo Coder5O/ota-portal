@@ -36,7 +36,7 @@ import {
 import { toast } from "sonner";
 
 export const DEFAULT_HERO_IMAGE = "/images/slides/namibia-acacia.jpg";
-export const DEFAULT_DETAIL_IMAGE = "/images/heritage/ovaherero-women-red-flag.jpg";
+export const DEFAULT_DETAIL_IMAGE = "/images/heritage/paramount-chief-community-gathering.jpg";
 
 export const Route = createFileRoute("/_authed/admin/settings")({
   validateSearch: (search) => ({

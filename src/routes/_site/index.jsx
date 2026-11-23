@@ -29,7 +29,7 @@ import { dayMonth, fmtDate } from "@/lib/format";
 import { INSTITUTIONS } from "@/lib/institutions";
 
 const HERO_IMAGE = "/images/heritage/ovaherero-women-red-flag.jpg";
-const DETAIL_IMAGE = "/images/heritage/ovaherero-women-red-flag.jpg";
+const DETAIL_IMAGE = "/images/heritage/paramount-chief-community-gathering.jpg";
 
 /**
  * Build the 4 dynamic hero and milestone slides, resolving admin overrides from SiteConfig.
@@ -897,8 +897,9 @@ function HomePage() {
   const heroImg = config?.home_hero_image || HERO_IMAGE;
   const detailImg =
     config?.home_detail_image &&
-    !config.home_detail_image.includes("paramount-chief-ceremonial-dress") &&
-    !config.home_detail_image.includes("mutjinde-katjiua")
+    !config.home_detail_image.includes("ovaherero-women-red-flag") &&
+    !config.home_detail_image.includes("mutjinde-katjiua") &&
+    !config.home_detail_image.includes("paramount-chief-ceremonial-dress")
       ? config.home_detail_image
       : DETAIL_IMAGE;
 
@@ -987,7 +988,7 @@ function HomePage() {
         <div className="relative">
           <Image
             src={detailImg}
-            alt="Ovaherero community gathered under the Red Flag"
+            alt="Paramount Chief in ceremonial uniform greeting community members"
             className="aspect-[4/5] w-full object-cover object-top"
             fittingType="fill"
           />
