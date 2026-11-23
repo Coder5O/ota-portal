@@ -36,7 +36,7 @@ import {
 import { toast } from "sonner";
 
 export const DEFAULT_HERO_IMAGE = "/images/slides/namibia-acacia.jpg";
-export const DEFAULT_DETAIL_IMAGE = "/images/heritage/mutjinde-katjiua.jpg";
+export const DEFAULT_DETAIL_IMAGE = "/images/heritage/ovaherero-women-red-flag.jpg";
 
 export const Route = createFileRoute("/_authed/admin/settings")({
   validateSearch: (search) => ({
@@ -597,7 +597,7 @@ function SettingsPage() {
             </div>
 
             <ImageUploader
-              label="Paramount Chief Official Portrait (Ombara Prof. Mutjinde Katjiua)"
+              label="Community & Customary Gathering (Ovaherero Women Under Red Flag)"
               value={form.home_detail_image}
               fallback={DEFAULT_DETAIL_IMAGE}
               onChange={(url) => set("home_detail_image", url)}
