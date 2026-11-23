@@ -177,7 +177,7 @@ function ParamountChiefsHeroBanner() {
 
   return (
     <section
-      className="relative flex min-h-[calc(100vh-4.5rem)] sm:min-h-[calc(100vh-6.5rem)] flex-col justify-between overflow-hidden bg-[hsl(22_34%_24%)] text-white border-b border-border/80"
+      className="relative flex min-h-[62vh] sm:min-h-[66vh] lg:min-h-[70vh] max-h-[680px] flex-col justify-between overflow-hidden bg-[hsl(22_34%_24%)] text-white border-b-2 border-gold/40 shadow-lg"
       aria-label="Paramount Chiefs of the Ovaherero Hero Banner"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -207,7 +207,7 @@ function ParamountChiefsHeroBanner() {
         <div className="absolute inset-0 bg-gradient-to-t from-[hsl(22_34%_18%)] via-transparent to-black/30" />
       </div>
 
-      <div className="relative z-10 shell flex flex-1 flex-col justify-between py-5 sm:py-7 lg:py-8 pb-[10vh] sm:pb-[14vh]">
+      <div className="relative z-10 shell flex flex-1 flex-col justify-between py-4 sm:py-5 lg:py-6">
         {/* Top Eyebrow: Minimal Words */}
         <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/15">
           <div className="flex items-center gap-2">
@@ -225,8 +225,8 @@ function ParamountChiefsHeroBanner() {
           </Link>
         </div>
 
-        {/* Hero Main Stage Grid: Prominent Portrait & Minimal Words */}
-        <div className="my-auto grid items-center gap-6 py-4 sm:py-6 lg:grid-cols-[1fr_auto] lg:gap-12">
+        {/* Hero Main Stage Grid: Dominating Portrait Width & Minimal Words */}
+        <div className="my-auto grid items-center gap-6 py-3 sm:py-4 lg:grid-cols-[0.9fr_1.3fr] lg:gap-10">
           {/* Left: Punchy Minimal Text */}
           <div className="space-y-3 min-w-0">
             {/* Chief Number & Reign */}
@@ -254,7 +254,7 @@ function ParamountChiefsHeroBanner() {
             </div>
 
             {/* 50% Reduced Punchline */}
-            <p className="max-w-xl text-[0.92rem] leading-relaxed text-white/85 sm:text-[1rem]">
+            <p className="max-w-md text-[0.92rem] leading-relaxed text-white/85 sm:text-[0.98rem]">
               {CHIEF_PUNCHLINES[chief.slug] || chief.teaser.split(".")[0] + "."}
             </p>
 
@@ -288,39 +288,42 @@ function ParamountChiefsHeroBanner() {
             </div>
           </div>
 
-          {/* Right: Featured Portrait */}
-          <div className="relative mx-auto w-40 sm:w-48 lg:w-56 shrink-0">
-            <div className="relative aspect-[4/5] overflow-hidden border-2 border-gold/45 bg-[hsl(22_30%_20%)] shadow-2xl">
-              <img
-                key={chief.slug}
-                src={chief.photo}
-                alt={`Portrait of ${chief.name}`}
-                className="h-full w-full object-cover object-top transition-transform duration-700 ease-out hover:scale-105"
-                onError={(event) => {
-                  event.currentTarget.onerror = null;
-                  event.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+          {/* Right: Featured Portrait - Increased Dominating Width */}
+          <div className="relative w-full max-w-[480px] sm:max-w-[540px] lg:max-w-[620px] mx-auto lg:ml-auto">
+            <div className="relative aspect-[16/10] overflow-hidden border-2 border-gold/60 bg-[hsl(22_30%_20%)] shadow-2xl p-1 bg-black/40">
+              <div className="relative h-full w-full overflow-hidden border border-gold/30">
+                <img
+                  key={chief.slug}
+                  src={chief.photo}
+                  alt={`Portrait of ${chief.name}`}
+                  className="h-full w-full object-cover object-top transition-transform duration-700 ease-out hover:scale-105"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
 
-              {/* Chief Ordinal Badge */}
-              <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md border border-gold/40 px-2 py-0.5">
-                <span className="font-display text-sm font-bold text-gold">
-                  {String(current + 1).padStart(2, "0")}
-                </span>
-              </div>
+                {/* Chief Ordinal Badge */}
+                <div className="absolute top-2.5 right-2.5 bg-black/70 backdrop-blur-md border border-gold/50 px-2.5 py-0.5">
+                  <span className="font-display text-sm font-bold text-gold">
+                    {String(current + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+                  </span>
+                </div>
 
-              {/* Bottom Plate on Portrait */}
-              <div className="absolute bottom-0 inset-x-0 p-2.5 text-white">
-                <p className="text-[8.5px] font-semibold uppercase tracking-[0.2em] text-gold">{chief.reign}</p>
-                <p className="mt-0.5 font-display text-xs leading-tight font-medium truncate drop-shadow-sm">{chief.name}</p>
+                {/* Bottom Plate on Portrait */}
+                <div className="absolute bottom-0 inset-x-0 p-3 text-white">
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-gold">{chief.reign}</p>
+                  <p className="mt-0.5 font-display text-base sm:text-lg leading-tight font-medium truncate drop-shadow-sm">{chief.name}</p>
+                  <p className="text-[10px] uppercase tracking-wider text-white/70">{chief.title}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Thumbnail Strip: Minimal Words, 7 Chiefs Full Shell Spread */}
-        <div className="mt-auto border-t border-white/15 pt-2.5">
+        <div className="mt-auto border-t border-white/15 pt-2">
           <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:grid-cols-7">
             {PARAMOUNT_CHIEFS.map((item, idx) => {
               const isActive = idx === current;
@@ -331,7 +334,7 @@ function ParamountChiefsHeroBanner() {
                   onClick={() => goTo(idx)}
                   className={`group relative flex items-center gap-2 p-1.5 text-left transition-all border ${
                     isActive
-                      ? "border-gold bg-gold/20 shadow-md"
+                      ? "border-gold bg-gold/25 shadow-md scale-105 z-10"
                       : "border-white/15 bg-black/20 hover:border-white/35 hover:bg-black/35"
                   }`}
                 >
@@ -339,7 +342,7 @@ function ParamountChiefsHeroBanner() {
                     src={item.photo}
                     alt={item.name}
                     className={`h-8 w-8 shrink-0 object-cover object-top border transition-all ${
-                      isActive ? "border-gold ring-1 ring-gold scale-105" : "border-white/20 opacity-75 group-hover:opacity-100"
+                      isActive ? "border-gold ring-1 ring-gold" : "border-white/20 opacity-75 group-hover:opacity-100"
                     }`}
                     onError={(e) => {
                       e.currentTarget.onerror = null;
@@ -981,7 +984,18 @@ function HomePage() {
       {/* ── Paramount Chiefs of the Ovaherero Dynamic Hero Banner ─────────── */}
       <ParamountChiefsHeroBanner />
 
-      <section className="border-b border-border bg-card">
+      {/* ── Visual Separation between Hero Banner and Quick Links ─────────── */}
+      <div className="py-6 sm:py-8 lg:py-10 bg-background flex items-center justify-center">
+        <div className="shell flex items-center justify-between gap-4 w-full">
+          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent flex-1" />
+          <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground/75">
+            Customary Governance &amp; Administration
+          </span>
+          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent flex-1" />
+        </div>
+      </div>
+
+      <section className="border-y border-border bg-card shadow-sm">
         <div className="shell grid divide-y divide-border sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
           {QUICK_LINKS.map((item) => {
             const Icon = item.icon;
