@@ -142,6 +142,277 @@ const CHIEF_PUNCHLINES = {
   "mutjinde-katjiua": "Leading constitutional renewal and diaspora unity.",
 };
 
+export const COMMUNITY_MILESTONES_2026 = [
+  {
+    id: "okahandja-parade",
+    milestoneNumber: "01",
+    date: "24–26 July 2026",
+    location: "Okahandja, Namibia",
+    title: "103rd Okahandja Commemoration & Heroes Parade Inspection",
+    eyebrow: "Historical Convocations",
+    punchline: "Paramount Chief Prof. Mutjinde Katjiua inspected the Otjiserandu parade, inaugurated field marshals, and delivered the national address at Erf 1755 and Kukuri Centre.",
+    credit: "Photograph by Sven-Eric Stender · 26 July 2026",
+    photo: "/images/milestones/01-okahandja-parade.jpg",
+    ctaLabel: "View Commemoration",
+    ctaTo: "/events",
+    statusBadge: "Verified Event Photo",
+  },
+  {
+    id: "hosea-kutako-grave",
+    milestoneNumber: "02",
+    date: "26 July 2026",
+    location: "Heroes Shrine, Okahandja",
+    title: "Solemn Procession at Ombara Hosea Kutako's Grave",
+    eyebrow: "Ancestral Veneration",
+    punchline: "The OTA leadership and community regiments conducted the sacred procession to the graves of departed Paramount Chiefs, renewing the unbroken 1923 Okahandja covenant.",
+    credit: "Photograph by Sven-Eric Stender · 26 July 2026",
+    photo: "/images/milestones/01-okahandja-grave.jpg",
+    ctaLabel: "Kutako Shrine & Legacy",
+    ctaTo: "/paramount-chiefs/hosea-kutako",
+    statusBadge: "Verified Event Photo",
+  },
+  {
+    id: "pretoria-petition",
+    milestoneNumber: "03",
+    date: "2 October 2026",
+    location: "Pretoria, South Africa",
+    title: "Pretoria Union Buildings Petition to President Ramaphosa",
+    eyebrow: "Southern Africa Mobilisation",
+    punchline: "OvaHerero and Nama descendants gathered at the Union Buildings in Pretoria, submitting an official petition to the Presidency and German Embassy demanding reparations and inclusive dialogue.",
+    credit: "Windhoek Observer Article Coverage · 2 October 2026",
+    photo: "/images/milestones/03-pretoria-petition.jpg",
+    ctaLabel: "Genocide Restitution",
+    ctaTo: "/oggf",
+    statusBadge: "Pretoria Delegation",
+  },
+  {
+    id: "botswana-march",
+    milestoneNumber: "04",
+    date: "10 October 2026",
+    location: "Gaborone, Botswana",
+    title: "Gaborone Diplomatic March to German Embassy",
+    eyebrow: "Diaspora Mobilisation",
+    punchline: "Community members marched from Trinity Church across Gaborone to the German Ambassador's residence, delivering a petition calling for a victim-centred reparations process.",
+    credit: "News & All Botswana Accompanying Photo · October 2026",
+    photo: "/images/milestones/05-botswana-petition.jpg",
+    ctaLabel: "Diaspora Chapter",
+    ctaTo: "/diaspora",
+    statusBadge: "Botswana Assembly",
+  },
+  {
+    id: "bundestag-reichstag",
+    milestoneNumber: "05",
+    date: "14 October 2026",
+    location: "Reichstag, Berlin, Germany",
+    title: "Historic Bundestag Motion & Reichstag Delegation",
+    eyebrow: "Parliamentary Mission",
+    punchline: "The German Bundestag debated historic motions on the recognition of the 1904–1908 genocides as the official OvaHerero and Nama delegation convened behind the Reichstag.",
+    credit: "Bernd Sauer-Diete Photography · 14 October 2026",
+    photo: "/images/milestones/06-reichstag-delegation.jpg",
+    ctaLabel: "Reichstag Mission",
+    ctaTo: "/oggf",
+    statusBadge: "Berlin Delegation",
+  },
+  {
+    id: "berlin-press-conference",
+    milestoneNumber: "06",
+    date: "14 October 2026",
+    location: "Publix, Berlin, Germany",
+    title: "Berlin International Media Briefing & Civil Society Accord",
+    eyebrow: "International Advocacy",
+    punchline: "OTA leadership held a high-profile press conference alongside European human rights organizations (GfbV, medico international), demanding the return of stolen ancestral remains.",
+    credit: "Bernd Sauer-Diete Photography · Publix Berlin",
+    photo: "/images/milestones/07-berlin-press-conference.jpg",
+    ctaLabel: "Press Briefings",
+    ctaTo: "/library#publications",
+    statusBadge: "International Briefing",
+  },
+  {
+    id: "katutura-briefing",
+    milestoneNumber: "07",
+    date: "19 October 2026",
+    location: "Katutura, Windhoek",
+    title: "National Press Conference with German Parliamentarian",
+    eyebrow: "Tripartite Mission Accord",
+    punchline: "At OvaHerero House (Komando Hall), Paramount Chief Prof. Mutjinde Katjiua and German MP Charlotte Neuhäuser briefed national media on the landmark Southern Africa and European missions.",
+    credit: "Livestream Record by Onguvi International Media House",
+    photo: "/images/milestones/09-ovaherero-house-briefing.jpg",
+    ctaLabel: "View Briefing Record",
+    ctaTo: "/news",
+    statusBadge: "Official Briefing",
+  },
+];
+
+/**
+ * 2026 Community Milestones & International Mission Hero Banner.
+ * Proportions and interactive caliber mirror the Paramount Chiefs banner,
+ * showcasing verified events, photographs, diplomatic petitions, and reparations milestones from 2026.
+ */
+function Milestones2026HeroBanner() {
+  const [current, setCurrent] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const total = COMMUNITY_MILESTONES_2026.length;
+  const milestone = COMMUNITY_MILESTONES_2026[current];
+
+  const goTo = useCallback(
+    (index) => setCurrent((index + total) % total),
+    [total],
+  );
+
+  useEffect(() => {
+    if (isPaused) return undefined;
+    const timer = setInterval(() => goTo(current + 1), 6500);
+    return () => clearInterval(timer);
+  }, [current, goTo, isPaused]);
+
+  return (
+    <section
+      className="relative flex min-h-[62vh] sm:min-h-[66vh] lg:min-h-[70vh] max-h-[680px] flex-col justify-between overflow-hidden bg-[hsl(350_26%_16%)] text-white border-b-2 border-gold/40 shadow-lg"
+      aria-label="OvaHerero 2026 Community Milestones Hero Banner"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Background Layer: Sunset Landscape + Dark Oxblood/Obsidian Tint + Ambient Glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <img
+          src="/images/slides/spitzkoppe-sunset.jpg"
+          alt="Namibian Landscape"
+          className="absolute inset-0 h-full w-full object-cover object-center opacity-25"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "/images/slides/namibia-acacia.jpg";
+          }}
+        />
+        <img
+          key={`milestone-bg-${milestone.id}`}
+          src={milestone.photo}
+          alt=""
+          className="absolute -right-20 -top-20 h-[140%] w-[65%] object-cover opacity-20 blur-3xl transition-opacity duration-1000"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "/images/heritage/paramount-chief-community-gathering.jpg";
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(350_30%_14%)]/95 via-[hsl(350_26%_16%)]/88 to-[hsl(350_26%_15%)]/75" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(350_30%_12%)] via-transparent to-black/35" />
+      </div>
+
+      <div className="relative z-10 shell flex flex-1 flex-col justify-center py-5 sm:py-6 lg:py-8">
+        {/* Top Eyebrow: Minimal Words & Archive Link */}
+        <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/15">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold sm:text-[11px]">
+              OvaHerero 2026 Milestones · Community &amp; Reparations
+            </span>
+          </div>
+          <Link
+            to="/library"
+            className="group inline-flex items-center gap-1 text-[10.5px] font-medium uppercase tracking-[0.16em] text-gold/90 transition-colors hover:text-white"
+          >
+            Archive &amp; Records
+            <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        </div>
+
+        {/* Hero Main Stage Grid: Proportions matching Chiefs Banner */}
+        <div className="my-auto grid items-center gap-6 py-3 sm:py-4 lg:grid-cols-[0.9fr_1.3fr] lg:gap-10">
+          {/* Left: Headline, Location, Punchy Narrative & CTA */}
+          <div className="space-y-3 min-w-0">
+            {/* Milestone Number & Status Badge */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="border border-gold/50 bg-gold/15 px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.16em] text-gold">
+                Milestone {milestone.milestoneNumber} · {milestone.date}
+              </span>
+              <span className="border border-white/20 bg-white/10 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-wider text-white/90">
+                {milestone.statusBadge}
+              </span>
+            </div>
+
+            {/* Title & Location */}
+            <div>
+              <h1 className="font-display text-2xl leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
+                {milestone.title}
+              </h1>
+              <div className="mt-1 flex items-center gap-1.5 text-gold/85 text-[11.5px] font-medium uppercase tracking-wider">
+                <MapPin className="h-3.5 w-3.5 shrink-0" />
+                <span>{milestone.location}</span>
+              </div>
+            </div>
+
+            {/* Punchy Narrative */}
+            <p className="max-w-md text-[0.92rem] leading-relaxed text-white/85 sm:text-[0.98rem]">
+              {milestone.punchline}
+            </p>
+
+            {/* Single CTA Button & Chevron Navigation */}
+            <div className="flex items-center gap-3 pt-1">
+              <Button asChild className="rounded-none bg-gold px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--ink))] shadow-md hover:bg-gold/90 transition-transform active:scale-95">
+                <Link to={milestone.ctaTo}>
+                  {milestone.ctaLabel} <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                </Link>
+              </Button>
+
+              {/* Prev / Next controls */}
+              <div className="flex items-center gap-1.5 sm:ml-auto">
+                <button
+                  type="button"
+                  onClick={() => goTo(current - 1)}
+                  aria-label="Previous Milestone"
+                  className="grid h-8 w-8 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goTo(current + 1)}
+                  aria-label="Next Milestone"
+                  className="grid h-8 w-8 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Featured Milestone Photo - Matching 16/10 Aspect Ratio & Gold Borders */}
+          <div className="relative w-full max-w-[480px] sm:max-w-[540px] lg:max-w-[620px] mx-auto lg:ml-auto">
+            <div className="relative aspect-[16/10] overflow-hidden border-2 border-gold/60 bg-[hsl(350_24%_14%)] shadow-2xl p-1 bg-black/40">
+              <div className="relative h-full w-full overflow-hidden border border-gold/30">
+                <img
+                  key={milestone.id}
+                  src={milestone.photo}
+                  alt={milestone.title}
+                  className="h-full w-full object-cover object-center transition-transform duration-700 ease-out hover:scale-105"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src = "/images/heritage/paramount-chief-community-gathering.jpg";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
+
+                {/* Milestone Ordinal Badge */}
+                <div className="absolute top-2.5 right-2.5 bg-black/70 backdrop-blur-md border border-gold/50 px-2.5 py-0.5">
+                  <span className="font-display text-sm font-bold text-gold">
+                    {String(current + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+                  </span>
+                </div>
+
+                {/* Bottom Plate on Milestone Image */}
+                <div className="absolute bottom-0 inset-x-0 p-3 text-white">
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-gold">{milestone.date} · {milestone.location}</p>
+                  <p className="mt-0.5 font-display text-base sm:text-lg leading-tight font-medium truncate drop-shadow-sm">{milestone.title}</p>
+                  <p className="text-[10px] uppercase tracking-wider text-white/70 truncate">{milestone.credit}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /**
  * Paramount Chiefs of the Ovaherero Hero Banner.
  * Full width from the first iteration, with vertical length (height) decreased by 50%
@@ -932,7 +1203,23 @@ function HomePage() {
 
   return (
     <>
-      {/* ── Paramount Chiefs of the Ovaherero Dynamic Hero Banner ─────────── */}
+      {/* ── OvaHerero 2026 Community Milestones & Reparations Mission Hero Banner ──── */}
+      <Milestones2026HeroBanner />
+
+      {/* ── Seamless Transitional Divider Between Banners ── */}
+      <div className="bg-[hsl(var(--ink))] py-2.5 border-y border-gold/30">
+        <div className="shell flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.22em] text-gold/85">
+          <div className="flex items-center gap-2">
+            <Crown className="h-3.5 w-3.5 text-gold" />
+            <span>Paramount Chiefs of the Ovaherero · Historical Succession</span>
+          </div>
+          <Link to="/paramount-chiefs" className="text-white/70 hover:text-white transition-colors">
+            1863 – Present Archive &rarr;
+          </Link>
+        </div>
+      </div>
+
+      {/* ── Paramount Chiefs of the Ovaherero Dynamic Hero Banner (Underneath) ─────────── */}
       <ParamountChiefsHeroBanner />
 
       {/* ── Visual Separation between Hero Banner and Quick Links ─────────── */}
