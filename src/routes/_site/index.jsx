@@ -27,6 +27,8 @@ import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
 import { EmptyNote } from "@/components/site/PageParts";
 import { dayMonth, fmtDate } from "@/lib/format";
 import { INSTITUTIONS } from "@/lib/institutions";
+import { CURATED_MILESTONE_NEWS } from "@/lib/curated-milestones-news";
+import { CURATED_CALENDAR_EVENTS } from "@/lib/curated-events";
 
 const HERO_IMAGE = "/images/heritage/ovaherero-women-red-flag.jpg";
 const DETAIL_IMAGE = "/images/heritage/paramount-chief-community-gathering.jpg";
@@ -150,96 +152,40 @@ export const COMMUNITY_MILESTONES_2026 = [
     location: "Okahandja, Namibia",
     title: "103rd Okahandja Commemoration & Heroes Parade Inspection",
     eyebrow: "Historical Convocations",
-    punchline: "Paramount Chief Prof. Mutjinde Katjiua inspected the Otjiserandu parade, inaugurated field marshals, and delivered the national address at Erf 1755 and Kukuri Centre.",
+    punchline: "Paramount Chief Prof. Mutjinde Katjiua inspected the Otjiserandu parade, inaugurated field marshals, and led the sacred procession to ancestral shrines at Erf 1755 and Kukuri Centre.",
     credit: "Photograph by Sven-Eric Stender · 26 July 2026",
     photo: "/images/milestones/01-okahandja-parade.jpg",
-    ctaLabel: "View Commemoration",
-    ctaTo: "/events",
+    ctaLabel: "Read News Report",
+    ctaTo: "/news/okahandja-parade-inspection-2026",
     statusBadge: "Verified Event Photo",
-  },
-  {
-    id: "hosea-kutako-grave",
-    milestoneNumber: "02",
-    date: "26 July 2026",
-    location: "Heroes Shrine, Okahandja",
-    title: "Solemn Procession at Ombara Hosea Kutako's Grave",
-    eyebrow: "Ancestral Veneration",
-    punchline: "The OTA leadership and community regiments conducted the sacred procession to the graves of departed Paramount Chiefs, renewing the unbroken 1923 Okahandja covenant.",
-    credit: "Photograph by Sven-Eric Stender · 26 July 2026",
-    photo: "/images/milestones/01-okahandja-grave.jpg",
-    ctaLabel: "Kutako Shrine & Legacy",
-    ctaTo: "/paramount-chiefs/hosea-kutako",
-    statusBadge: "Verified Event Photo",
-  },
-  {
-    id: "pretoria-petition",
-    milestoneNumber: "03",
-    date: "2 October 2026",
-    location: "Pretoria, South Africa",
-    title: "Pretoria Union Buildings Petition to President Ramaphosa",
-    eyebrow: "Southern Africa Mobilisation",
-    punchline: "OvaHerero and Nama descendants gathered at the Union Buildings in Pretoria, submitting an official petition to the Presidency and German Embassy demanding reparations and inclusive dialogue.",
-    credit: "Windhoek Observer Article Coverage · 2 October 2026",
-    photo: "/images/milestones/03-pretoria-petition.jpg",
-    ctaLabel: "Genocide Restitution",
-    ctaTo: "/oggf",
-    statusBadge: "Pretoria Delegation",
-  },
-  {
-    id: "botswana-march",
-    milestoneNumber: "04",
-    date: "10 October 2026",
-    location: "Gaborone, Botswana",
-    title: "Gaborone Diplomatic March to German Embassy",
-    eyebrow: "Diaspora Mobilisation",
-    punchline: "Community members marched from Trinity Church across Gaborone to the German Ambassador's residence, delivering a petition calling for a victim-centred reparations process.",
-    credit: "News & All Botswana Accompanying Photo · October 2026",
-    photo: "/images/milestones/05-botswana-petition.jpg",
-    ctaLabel: "Diaspora Chapter",
-    ctaTo: "/diaspora",
-    statusBadge: "Botswana Assembly",
   },
   {
     id: "bundestag-reichstag",
-    milestoneNumber: "05",
+    milestoneNumber: "02",
     date: "14 October 2026",
     location: "Reichstag, Berlin, Germany",
-    title: "Historic Bundestag Motion & Reichstag Delegation",
+    title: "Historic Bundestag Motions & Reichstag Delegation",
     eyebrow: "Parliamentary Mission",
     punchline: "The German Bundestag debated historic motions on the recognition of the 1904–1908 genocides as the official OvaHerero and Nama delegation convened behind the Reichstag.",
     credit: "Bernd Sauer-Diete Photography · 14 October 2026",
     photo: "/images/milestones/06-reichstag-delegation.jpg",
-    ctaLabel: "Reichstag Mission",
-    ctaTo: "/oggf",
+    ctaLabel: "Read News Report",
+    ctaTo: "/news/berlin-bundestag-reichstag-motions-2026",
     statusBadge: "Berlin Delegation",
   },
   {
-    id: "berlin-press-conference",
-    milestoneNumber: "06",
-    date: "14 October 2026",
-    location: "Publix, Berlin, Germany",
-    title: "Berlin International Media Briefing & Civil Society Accord",
-    eyebrow: "International Advocacy",
-    punchline: "OTA leadership held a high-profile press conference alongside European human rights organizations (GfbV, medico international), demanding the return of stolen ancestral remains.",
-    credit: "Bernd Sauer-Diete Photography · Publix Berlin",
-    photo: "/images/milestones/07-berlin-press-conference.jpg",
-    ctaLabel: "Press Briefings",
-    ctaTo: "/library#publications",
-    statusBadge: "International Briefing",
-  },
-  {
-    id: "katutura-briefing",
-    milestoneNumber: "07",
-    date: "19 October 2026",
-    location: "Katutura, Windhoek",
-    title: "National Press Conference with German Parliamentarian",
-    eyebrow: "Tripartite Mission Accord",
-    punchline: "At OvaHerero House (Komando Hall), Paramount Chief Prof. Mutjinde Katjiua and German MP Charlotte Neuhäuser briefed national media on the landmark Southern Africa and European missions.",
-    credit: "Livestream Record by Onguvi International Media House",
-    photo: "/images/milestones/09-ovaherero-house-briefing.jpg",
-    ctaLabel: "View Briefing Record",
-    ctaTo: "/news",
-    statusBadge: "Official Briefing",
+    id: "southern-africa-diaspora",
+    milestoneNumber: "03",
+    date: "October 2026",
+    location: "Pretoria & Gaborone",
+    title: "Transnational Diaspora Mobilisation in Southern Africa",
+    eyebrow: "Diaspora Missions",
+    punchline: "Community delegations marched in Gaborone and submitted official petitions at the Union Buildings in Pretoria, demanding victim-centred reparations and direct tripartite dialogue.",
+    credit: "News & All Botswana Accompanying Photo · October 2026",
+    photo: "/images/milestones/05-botswana-petition.jpg",
+    ctaLabel: "Read News Report",
+    ctaTo: "/news/gaborone-botswana-diplomatic-march-2026",
+    statusBadge: "Southern Africa Assembly",
   },
 ];
 
@@ -307,10 +253,10 @@ function Milestones2026HeroBanner() {
             </span>
           </div>
           <Link
-            to="/library"
+            to="/news"
             className="group inline-flex items-center gap-1 text-[10.5px] font-medium uppercase tracking-[0.16em] text-gold/90 transition-colors hover:text-white"
           >
-            Archive &amp; Records
+            All Milestone News &amp; Reports
             <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -1134,7 +1080,13 @@ export const Route = createFileRoute("/_site/")({
       base44.entities.SiteConfig.list({ sort: "-updated_date", limit: 1 }),
     ]);
 
-    const liveInstitutions = institutions.items || [];
+    const liveNews = news?.items || [];
+    const newsList = liveNews.length > 0 ? liveNews : CURATED_MILESTONE_NEWS.slice(0, 3);
+
+    const liveEvents = events?.items || [];
+    const eventsList = liveEvents.length > 0 ? liveEvents : CURATED_CALENDAR_EVENTS.slice(0, 3);
+
+    const liveInstitutions = institutions?.items || [];
     const institutionsList = liveInstitutions.length > 0
       ? liveInstitutions
       : INSTITUTIONS.slice(0, 6).map((inst) => ({
@@ -1146,11 +1098,11 @@ export const Route = createFileRoute("/_site/")({
         }));
 
     return {
-      news: news.items || [],
-      events: events.items || [],
+      news: newsList,
+      events: eventsList,
       institutions: institutionsList,
-      welcome: welcome.items?.[0] || null,
-      config: configRes.items?.[0] || null,
+      welcome: welcome?.items?.[0] || null,
+      config: configRes?.items?.[0] || null,
     };
   },
   component: HomePage,
@@ -1485,14 +1437,14 @@ function HomePage() {
                         </span>
                       </div>
                       <h3 className="mt-2 font-display text-lg leading-snug">
-                        <Link to={`/events/${evt.slug || evt.id}`} className="hover:text-[hsl(var(--primary))]">
+                        <Link to="/events" className="hover:text-[hsl(var(--primary))]">
                           {evt.title}
                         </Link>
                       </h3>
-                      {evt.location ? (
+                      {(evt.location || evt.town || evt.venue) ? (
                         <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-muted-foreground">
                           <MapPin className="h-3 w-3 shrink-0 text-gold" />
-                          {evt.location}
+                          {evt.location || [evt.venue, evt.town].filter(Boolean).join(", ")}
                         </p>
                       ) : null}
                     </div>

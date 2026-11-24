@@ -7,6 +7,7 @@ import { Image } from "@/components/ui/image";
 import { Button } from "@/components/ui/button";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
 import { fmtDate, paragraphs } from "@/lib/format";
+import { CURATED_MILESTONE_NEWS } from "@/lib/curated-milestones-news";
 
 function formatBytes(bytes) {
   if (!bytes || Number.isNaN(Number(bytes)) || Number(bytes) <= 0) return "";
@@ -30,12 +31,17 @@ export const Route = createFileRoute("/_site/news/$postId")({
   loader: async ({ params }) => {
     try {
       const post = await base44.entities.NewsPost.get(params.postId);
-      if (!post || post.status !== "published") throw notFound();
-      return { post };
-    } catch (error) {
-      if (error?.status === 404) throw notFound();
-      throw notFound();
+      if (post && post.status === "published") return { post };
+    } catch {
+      // ignore and check curated list
     }
+
+    const curated = CURATED_MILESTONE_NEWS.find(
+      (item) => item.id === params.postId || item.slug === params.postId
+    );
+    if (curated) return { post: curated };
+
+    throw notFound();
   },
   component: NewsArticle,
 });

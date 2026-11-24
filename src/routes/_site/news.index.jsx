@@ -6,6 +6,7 @@ import { Section, EmptyNote } from "@/components/site/PageParts";
 import { IllustrativeBadge } from "@/components/site/IllustrativeBadge";
 import { Image } from "@/components/ui/image";
 import { fmtDate } from "@/lib/format";
+import { CURATED_MILESTONE_NEWS } from "@/lib/curated-milestones-news";
 
 const CATEGORIES = ["Announcement", "Press Release", "Speech", "Statement", "Culture", "Diaspora", "Notice"];
 
@@ -13,16 +14,41 @@ export const Route = createFileRoute("/_site/news/")({
   head: () => ({
     meta: [
       { title: "News & Media · Ovaherero Traditional Authority" },
-      { name: "description", content: "Press releases, announcements, speeches, statements and official notices of the Ovaherero Traditional Authority." },
+      { name: "description", content: "Press releases, announcements, milestone reports, speeches, statements and official notices of the Ovaherero Traditional Authority." },
     ],
   }),
   validateSearch: (search) => ({ category: typeof search.category === "string" ? search.category : undefined }),
   loaderDeps: ({ search }) => ({ category: search.category }),
   loader: async ({ deps }) => {
-    const query = { status: "published" };
-    if (deps.category) query.category = deps.category;
-    const page = await base44.entities.NewsPost.filter(query, { sort: "-published_date", limit: 40 });
-    return { posts: page.items || [] };
+    let remotePosts = [];
+    try {
+      const query = { status: "published" };
+      if (deps.category) query.category = deps.category;
+      const page = await base44.entities.NewsPost.filter(query, { sort: "-published_date", limit: 40 });
+      remotePosts = page?.items || [];
+    } catch {
+      remotePosts = [];
+    }
+
+    // Filter curated milestone news by category if selected
+    const curatedFiltered = deps.category
+      ? CURATED_MILESTONE_NEWS.filter(
+          (p) => (p.category || "").toLowerCase() === deps.category.toLowerCase()
+        )
+      : CURATED_MILESTONE_NEWS;
+
+    // Combine remote and curated, deduplicating by ID/slug
+    const postMap = new Map();
+    curatedFiltered.forEach((p) => postMap.set(p.id, p));
+    remotePosts.forEach((p) => {
+      if (p && p.id) postMap.set(p.id, p);
+    });
+
+    const posts = Array.from(postMap.values()).sort(
+      (a, b) => new Date(b.published_date || 0) - new Date(a.published_date || 0)
+    );
+
+    return { posts };
   },
   component: NewsPage,
 });

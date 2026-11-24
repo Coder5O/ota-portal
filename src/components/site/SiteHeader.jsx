@@ -58,12 +58,15 @@ const PRIMARY = [
   {
     label: "Events",
     children: [
-      { to: "/events", label: "All Events & Calendar" },
-      { to: "/events?category=conferences", label: "Conferences & Seminars" },
-      { to: "/events?category=meetings", label: "Chiefs Council Meetings" },
-      { to: "/events?category=hero-fest", label: "Hero Fest" },
-      { to: "/events?category=commemorations", label: "Commemorations" },
-      { to: "/events?category=outreach", label: "Community Outreach Programmes" },
+      { to: "/events", label: "Official Calendar (All Convocations)" },
+      { to: "/events?category=meetings", label: "Annual Community Meeting at Toasis" },
+      { to: "/events?category=hero-fest", label: "HereroFest" },
+      { to: "/events?category=commemorations", label: "Herero Day (Okahandja)" },
+      { to: "/events?category=commemorations", label: "Herero Genocide Day (Ohamakari)" },
+      { to: "/events?category=meetings", label: "Chief's Council Meeting" },
+      { to: "/events?category=outreach", label: "Community Outreach" },
+      { to: "/events?category=diaspora", label: "Cultural Day in Botswana" },
+      { to: "/events?category=diaspora", label: "Heritage Day in South Africa" },
     ],
   },
   {

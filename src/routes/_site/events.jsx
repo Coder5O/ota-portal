@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { dayMonth, fmtDateTime } from "@/lib/format";
 import { toast } from "sonner";
+import { CURATED_CALENDAR_EVENTS } from "@/lib/curated-events";
 
 export const Route = createFileRoute("/_site/events")({
   validateSearch: (search) => ({
@@ -22,117 +23,28 @@ export const Route = createFileRoute("/_site/events")({
       {
         name: "description",
         content:
-          "Official calendar of conferences, Chiefs Council meetings, Hero Fest, sacred commemorations, and community outreach programmes.",
+          "Official calendar of Annual Community Meeting at Toasis, HereroFest, Herero Day, Herero Genocide Day, Chief's Council meeting, Community outreach, Cultural Day in Botswana, and Heritage Day in South Africa.",
       },
     ],
   }),
   loader: async () => {
-    const page = await base44.entities.Event.filter({ status: "published" }, { sort: "starts_at", limit: 60 });
-    return { events: page.items || [] };
+    try {
+      const page = await base44.entities.Event.filter({ status: "published" }, { sort: "starts_at", limit: 60 });
+      return { events: page.items || [] };
+    } catch {
+      return { events: [] };
+    }
   },
   component: EventsPage,
 });
 
 const EVENT_CATEGORIES = [
-  { slug: "all", label: "All Events" },
-  { slug: "conferences", label: "Conferences & Seminars" },
-  { slug: "meetings", label: "Chiefs Council Meetings" },
-  { slug: "hero-fest", label: "Hero Fest" },
+  { slug: "all", label: "All Events (8)" },
   { slug: "commemorations", label: "Commemorations" },
-  { slug: "outreach", label: "Community Outreach Programmes" },
-];
-
-const CURATED_EVENTS = [
-  {
-    id: "cur-1",
-    title: "103rd Annual Okahandja Heroes Day & Sacred Commemoration (Red Flag Day)",
-    category: "commemorations",
-    category_label: "Commemorations",
-    starts_at: "2026-08-21T08:00:00Z",
-    ends_at: "2026-08-23T17:00:00Z",
-    venue: "Sacred Shrine & Commemoration Grounds",
-    town: "Okahandja, Namibia",
-    description:
-      "The paramount national pilgrimage commemorating the historic reburial of Ombara Samuel Maharero on 23 August 1923 and honoring all departed Paramount Chiefs and fallen heroes of 1904–1908.",
-    audience: "Open to the public",
-    organising_structure: "Otjiserandu Red Flag Command & Kutako Heritage Council",
-    registration_open: true,
-  },
-  {
-    id: "cur-2",
-    title: "National Chiefs Council Ordinary Assembly & Constitutional Convocation",
-    category: "meetings",
-    category_label: "Chiefs Council Meetings",
-    starts_at: "2026-09-12T09:00:00Z",
-    ends_at: "2026-09-14T16:00:00Z",
-    venue: "OTA Council Chambers",
-    town: "Okahandja, Namibia",
-    description:
-      "Statutory convocation of recognized traditional leaders, regional senior headmen, and council delegates to deliberate on land stewardship, traditional court resolutions, and customary succession.",
-    audience: "Chiefs Council Members & Delegates",
-    organising_structure: "Office of the Paramount Chief & Chiefs Council Secretariat",
-    registration_open: false,
-  },
-  {
-    id: "cur-3",
-    title: "International Conference on Restorative Justice, Reparations & Genocide Law",
-    category: "conferences",
-    category_label: "Conferences & Seminars",
-    starts_at: "2026-10-02T08:30:00Z",
-    ends_at: "2026-10-04T17:30:00Z",
-    venue: "Windhoek International Conference Centre",
-    town: "Windhoek, Namibia",
-    description:
-      "Convening international legal experts, historians, genocide scholars, and diaspora delegates to formulate global litigation strategies and parliamentary advocacy for German state reparations.",
-    audience: "Open to the public",
-    organising_structure: "Ovaherero Global Genocide Foundation (OGGF)",
-    registration_open: true,
-  },
-  {
-    id: "cur-4",
-    title: "Ovaherero Youth Cultural Festival & Hero Fest (Ozongombe zOmbazu)",
-    category: "hero-fest",
-    category_label: "Hero Fest",
-    starts_at: "2026-11-06T10:00:00Z",
-    ends_at: "2026-11-08T18:00:00Z",
-    venue: "Otjinene Cultural Showgrounds",
-    town: "Otjinene, Omaheke",
-    description:
-      "Youth cultural celebration featuring traditional cattle praise poetry (omitandu), customary dance (omuryangate), martial arts exhibitions, and youth leadership symposiums.",
-    audience: "Open to the public",
-    organising_structure: "OYAC (Ovaherero Youth Council) & OWA",
-    registration_open: true,
-  },
-  {
-    id: "cur-5",
-    title: "Diaspora Traditional Outreach & Customary Rights Seminar",
-    category: "outreach",
-    category_label: "Community Outreach Programmes",
-    starts_at: "2026-12-04T09:00:00Z",
-    ends_at: "2026-12-06T15:00:00Z",
-    venue: "Mahalapye Community Centre",
-    town: "Mahalapye, Botswana",
-    description:
-      "High-level OTA delegation outreach to traditional communities across Botswana, issuing customary identification cards, recording clan lineages, and integrating local chapters.",
-    audience: "Open to the public",
-    organising_structure: "OTA Directorate of Diaspora & Community Affairs",
-    registration_open: true,
-  },
-  {
-    id: "cur-6",
-    title: "Ozombaze zOmahiri Commemoration & Sacred Gathering",
-    category: "commemorations",
-    category_label: "Commemorations",
-    starts_at: "2026-07-18T08:30:00Z",
-    ends_at: "2026-07-19T16:00:00Z",
-    venue: "Ozombuzovindimba Historic Monument",
-    town: "Otjozondjupa, Namibia",
-    description:
-      "Solemn memorial gathering commemorating the sacred sites and historic resistance leadership, reaffirming the ancestral holy fire.",
-    audience: "Open to the public",
-    organising_structure: "Cultural Council & Traditional Senate",
-    registration_open: true,
-  },
+  { slug: "meetings", label: "Assemblies & Council Meetings" },
+  { slug: "hero-fest", label: "HereroFest" },
+  { slug: "outreach", label: "Community Outreach" },
+  { slug: "diaspora", label: "Diaspora Days" },
 ];
 
 function EventsPage() {
@@ -144,28 +56,53 @@ function EventsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
+  // Combine database events with curated calendar events, deduplicating by id/slug
   const displayEvents = useMemo(() => {
-    const list = events.length > 0 ? events : CURATED_EVENTS;
+    const map = new Map();
+    CURATED_CALENDAR_EVENTS.forEach((item) => map.set(item.id, item));
+    events.forEach((item) => {
+      if (item && item.id) map.set(item.id, item);
+    });
+    const list = Array.from(map.values()).sort(
+      (a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime()
+    );
+
     if (activeCategory === "all") return list;
     return list.filter((e) => {
       const cat = (e.category || "").toLowerCase();
       const title = (e.title || "").toLowerCase();
-      const org = (e.organising_structure || "").toLowerCase();
 
-      if (activeCategory === "conferences") {
-        return cat.includes("conference") || title.includes("conference") || title.includes("seminar");
+      if (activeCategory === "commemorations") {
+        return (
+          cat === "commemorations" ||
+          title.includes("herero day") ||
+          title.includes("genocide day") ||
+          title.includes("commemoration")
+        );
       }
       if (activeCategory === "meetings") {
-        return cat.includes("meeting") || title.includes("chiefs council") || title.includes("assembly");
+        return (
+          cat === "meetings" ||
+          title.includes("toasis") ||
+          title.includes("chief") ||
+          title.includes("council") ||
+          title.includes("meeting") ||
+          title.includes("assembly")
+        );
       }
       if (activeCategory === "hero-fest") {
-        return cat.includes("hero-fest") || title.includes("fest") || title.includes("hero fest") || title.includes("festival");
-      }
-      if (activeCategory === "commemorations") {
-        return cat.includes("commemoration") || title.includes("commemoration") || title.includes("heroes day");
+        return cat === "hero-fest" || title.includes("hererofest") || title.includes("fest");
       }
       if (activeCategory === "outreach") {
-        return cat.includes("outreach") || title.includes("outreach") || title.includes("community programme");
+        return cat === "outreach" || title.includes("outreach") || title.includes("community programme");
+      }
+      if (activeCategory === "diaspora") {
+        return (
+          cat === "diaspora" ||
+          title.includes("botswana") ||
+          title.includes("south africa") ||
+          title.includes("diaspora")
+        );
       }
       return true;
     });
@@ -199,9 +136,9 @@ function EventsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Events & Official Calendar"
-        title="Assemblies, commemorations & public convocations."
-        intro="The comprehensive official calendar of Conferences & Seminars, Chiefs Council Meetings, Hero Fest, Sacred Commemorations, and Community Outreach Programmes."
+        eyebrow="Events & Official Customary Calendar"
+        title="Customary convocations, commemorations & assemblies."
+        intro="The official calendar of the 8 foundational OTA convocations: Annual Community Meeting at Toasis, HereroFest, Herero Day, Herero Genocide Day, Chief's Council meeting, Community outreach, Cultural Day in Botswana, and Heritage Day in South Africa."
         image="/images/heritage/ovaherero-women-red-flag.jpg"
         imageKey="events_hero_image"
         imageAlt="Ovaherero Traditional Authority Ceremonial Convocations"
@@ -247,7 +184,7 @@ function EventsPage() {
                       {event.is_demo ? <IllustrativeBadge /> : null}
                     </div>
                     <p className="mt-1.5 text-[11.5px] uppercase tracking-[0.12em] text-muted-foreground">
-                      {fmtDateTime(event.starts_at)} · {[event.venue, event.town].filter(Boolean).join(", ") || "Venue to be confirmed"}
+                      {event.date_display ? `${event.date_display} · ` : `${fmtDateTime(event.starts_at)} · `}{[event.venue, event.town].filter(Boolean).join(", ") || "Venue to be confirmed"}
                     </p>
                     {event.description ? (
                       <p className="mt-3 max-w-2xl text-[13px] leading-relaxed text-foreground/70">{event.description}</p>
