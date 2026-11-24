@@ -41,6 +41,7 @@ export const Route = createFileRoute("/_site/institutions/$slug")({
       slug: params.slug,
       name: liveRecord?.name || constitutionalDef?.name || "Traditional Institution",
       native_name: liveRecord?.native_name || constitutionalDef?.native || "",
+      legal_instrument: liveRecord?.legal_instrument || constitutionalDef?.legal_instrument || "",
       summary: liveRecord?.summary || constitutionalDef?.summary || "An institutional structure of the Ovaherero Traditional Authority.",
       mandate: liveRecord?.mandate || constitutionalDef?.mandate || "",
       responsibilities: liveRecord?.responsibilities || constitutionalDef?.responsibilities || [],
@@ -91,7 +92,14 @@ function InstitutionPage() {
         image={heroImage}
         imageAlt={isChiefsOffice ? "Professor Mutjinde Katjiua, Paramount Chief of the Ovaherero" : institution.name}
       >
-        {institution.is_demo ? <IllustrativeBadge className="bg-white/90" /> : null}
+        <div className="flex flex-wrap items-center gap-2">
+          {institution.legal_instrument && (
+            <span className="border border-gold/60 bg-gold/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-gold">
+              Legal Instrument: {institution.legal_instrument}
+            </span>
+          )}
+          {institution.is_demo ? <IllustrativeBadge className="bg-white/90" /> : null}
+        </div>
       </PageHero>
 
       <Section>

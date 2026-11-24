@@ -13,42 +13,81 @@ import { useAuth } from "@/lib/AuthContext";
 import { INSTITUTIONS } from "@/lib/institutions";
 
 const PRIMARY = [
-  { to: "/about", label: "About" },
-  { to: "/constitution", label: "Constitution" },
   {
-    label: "Leadership",
+    label: "About Us",
     children: [
-      { to: "/paramount-chief", label: "Paramount Chief" },
-      { to: "/paramount-chiefs", label: "Paramount Chiefs Succession" },
+      { to: "/about", label: "Overview: About OTA" },
+      { to: "/about#identity", label: "1. Our Identity" },
+      { to: "/about#vision", label: "2. Vision" },
+      { to: "/about#mission", label: "3. Mission" },
+      { to: "/about#core-values", label: "4. Our Core Values" },
+      { to: "/about#strategic-thrust", label: "5. Strategic Thrust" },
+    ],
+  },
+  {
+    label: "Governance",
+    children: [
+      { to: "/paramount-chief", label: "Office of the PC" },
+      { to: "/leadership#commissioners", label: "Commissioners" },
+      { to: "/institutions/chiefs-council", label: "Chiefs Council" },
+      { to: "/institutions/senate", label: "Senate" },
       { to: "/chapters", label: "Chapters" },
-      { to: "/leadership", label: "Traditional Leadership" },
-      { to: "/institutions/office-of-the-paramount-chief", label: "Office of the Paramount Chief" },
+      { to: "/membership", label: "Membership" },
+      { to: "/constitution", label: "OTA Constitution" },
+      { to: "/leadership", label: "Traditional Leadership Register" },
+      { to: "/paramount-chiefs", label: "Paramount Chiefs Succession" },
     ],
   },
   {
     label: "Institutions",
     children: [
       { to: "/institutions", label: "Overview: All Institutions" },
-      ...INSTITUTIONS.slice(0, 9).map((inst) => ({
-        to: `/institutions/${inst.slug}`,
-        label: inst.name,
-      })),
+      { to: "/institutions/women-council", label: "OWA (Women Association) [Constitution]" },
+      { to: "/institutions/youth-council", label: "OYAC (Youth Council) [Constitution]" },
+      { to: "/institutions/red-flag-leadership", label: "Red Flag (Otjiserandu) [Constitution]" },
+      { to: "/institutions/white-flag", label: "White Flag (Otjimbandi) [Constitution]" },
+      { to: "/oggf", label: "OGGF (Genocide Foundation) [Deed of Trust]" },
+      { to: "/institutions/omuyapu", label: "Omuyapu [Deed of Trust]" },
+      { to: "/institutions/omuhe", label: "Omuhe [By-law]" },
+      { to: "/institutions/cultural-council", label: "Cultural Council [Deed of Trust]" },
+      { to: "/institutions/clans-conference", label: "Ovaherero Clans Conference [Deed of Trust]" },
+      { to: "/institutions/kutako-heritage-council", label: "Kutako Heritage Council" },
+      { to: "/institutions/community-foundations", label: "Community Foundations" },
     ],
   },
-  { to: "/news", label: "News & Media" },
-  { to: "/gallery", label: "Gallery" },
-  { to: "/events", label: "Events" },
+  {
+    label: "Events",
+    children: [
+      { to: "/events", label: "All Events & Calendar" },
+      { to: "/events?category=conferences", label: "Conferences & Seminars" },
+      { to: "/events?category=meetings", label: "Chiefs Council Meetings" },
+      { to: "/events?category=hero-fest", label: "Hero Fest" },
+      { to: "/events?category=commemorations", label: "Commemorations" },
+      { to: "/events?category=outreach", label: "Community Outreach Programmes" },
+    ],
+  },
+  {
+    label: "Library",
+    children: [
+      { to: "/library", label: "Digital Library & Repository" },
+      { to: "/library#history", label: "History & Living Heritage" },
+      { to: "/library#publications", label: "Publications & Legal Briefs" },
+      { to: "/library#resolutions", label: "Approved Resolutions & Gazette" },
+      { to: "/gallery", label: "Photo & Video Gallery" },
+      { to: "/news", label: "News & Media Releases" },
+    ],
+  },
   { to: "/contact", label: "Contact" },
 ];
 
 const OTA_SEAL = "/images/branding/ota-seal.jpeg";
 
 const MORE = [
-  { to: "/oggf", label: "Ovaherero Global Genocide Foundation (OGGF)" },
   { to: "/diaspora", label: "Ovaherero Diaspora" },
-  { to: "/culture", label: "Culture & Heritage" },
-  { to: "/projects", label: "Community Projects" },
-  { to: "/communities", label: "Traditional Communities" },
+  { to: "/culture", label: "Culture & Living Heritage" },
+  { to: "/projects", label: "Community Projects & Development" },
+  { to: "/communities", label: "Traditional Communities Register" },
+  { to: "/verify", label: "Document Verification" },
   { to: "/privacy", label: "Privacy & Data Protection" },
 ];
 
@@ -132,7 +171,7 @@ export function SiteHeader({ config }) {
                     {item.label}
                     <ChevronDown className="h-3.5 w-3.5" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-72 border-border bg-card p-1.5">
+                  <DropdownMenuContent align="start" className="w-80 max-h-[82vh] overflow-y-auto border-border bg-card p-1.5 shadow-lg">
                     {item.children.map((child) => (
                       <DropdownMenuItem key={child.to} asChild>
                         <Link

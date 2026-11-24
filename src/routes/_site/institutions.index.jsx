@@ -28,6 +28,7 @@ export const Route = createFileRoute("/_site/institutions/")({
         slug: inst.slug,
         name: live?.name || inst.name,
         native_name: live?.native_name || inst.native,
+        legal_instrument: live?.legal_instrument || inst.legal_instrument || "",
         summary: live?.summary || inst.summary,
         mandate: live?.mandate || "",
         is_demo: live ? Boolean(live.is_demo) : false,
@@ -41,6 +42,7 @@ export const Route = createFileRoute("/_site/institutions/")({
           slug: live.slug,
           name: live.name,
           native_name: live.native_name || "",
+          legal_instrument: live.legal_instrument || "",
           summary: live.summary || "",
           mandate: live.mandate || "",
           is_demo: Boolean(live.is_demo),
@@ -84,7 +86,14 @@ function InstitutionsDirectoryPage() {
                       </span>
                     ) : null}
                   </div>
-                  {inst.is_demo ? <IllustrativeBadge /> : null}
+                  <div className="flex items-center gap-1.5">
+                    {inst.legal_instrument && (
+                      <span className="border border-gold/40 bg-gold/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-gold">
+                        {inst.legal_instrument}
+                      </span>
+                    )}
+                    {inst.is_demo ? <IllustrativeBadge /> : null}
+                  </div>
                 </div>
 
                 <h3 className="mt-3 font-display text-xl leading-snug text-foreground">

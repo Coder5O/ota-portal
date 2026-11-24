@@ -201,6 +201,56 @@ function LeadershipPage() {
         </div>
       </section>
 
+      {/* ── Commissioners Section (Commissioners Portfolio from Governance Diagram) ── */}
+      <section id="commissioners" className="scroll-mt-32 border-b border-border bg-card py-12 lg:py-16">
+        <div className="shell">
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2">
+              <Shield className="h-4 w-4 text-gold" />
+              <p className="eyebrow text-gold">Governance Portfolio</p>
+            </div>
+            <h2 className="mt-2 text-2xl font-display sm:text-3xl text-foreground">
+              Commissioners of the Authority (Ovakomisinare)
+            </h2>
+            <p className="mt-2 text-[13.5px] leading-relaxed text-foreground/75">
+              The Commissioners are statutory executive and thematic officeholders mandated under the Constitution of the Ovaherero Traditional Authority to drive strategic portfolios, conduct customary oversight, manage ancestral land boundaries, and support the Chiefs Council and Senate.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="border border-border bg-background p-5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gold">Portfolio 01</span>
+              <h3 className="mt-2 font-display text-base text-foreground">Constitutional &amp; Legal Affairs</h3>
+              <p className="mt-1 text-[12px] text-muted-foreground">Oversight of customary jurisprudence, court ratifications, and constitutional compliance.</p>
+            </div>
+            <div className="border border-border bg-background p-5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gold">Portfolio 02</span>
+              <h3 className="mt-2 font-display text-base text-foreground">Land, Boundaries &amp; Resettlement</h3>
+              <p className="mt-1 text-[12px] text-muted-foreground">Demarcation of traditional territories, communal grazing rights, and land dispute mediation.</p>
+            </div>
+            <div className="border border-border bg-background p-5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gold">Portfolio 03</span>
+              <h3 className="mt-2 font-display text-base text-foreground">Reparations &amp; Heritage Restitution</h3>
+              <p className="mt-1 text-[12px] text-muted-foreground">Liaison with the Genocide Foundation (OGGF), ancestral remains return, and sacred shrines.</p>
+            </div>
+            <div className="border border-border bg-background p-5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-gold">Portfolio 04</span>
+              <h3 className="mt-2 font-display text-base text-foreground">Diaspora &amp; Community Affairs</h3>
+              <p className="mt-1 text-[12px] text-muted-foreground">Consolidation of chapters in Botswana, South Africa, and international community welfare.</p>
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-4">
+            <Button asChild size="sm" className="rounded-none bg-[hsl(var(--primary))] text-[11px] uppercase tracking-wider">
+              <Link to="/institutions/commissioners">View Commissioners Institutional Profile</Link>
+            </Button>
+            <Button asChild size="sm" variant="outline" className="rounded-none border-border text-[11px] uppercase tracking-wider">
+              <Link to="/constitution">Read Constitutional Mandate</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* ── Traditional Leadership Directory ─────────────────────────────────── */}
       <Section tone="muted">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
