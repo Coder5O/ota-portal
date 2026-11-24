@@ -76,9 +76,9 @@ function AboutPage() {
           </div>
           <div className="relative overflow-hidden border border-border shadow-md">
             <img
-              src={config?.about_feature_image || "/images/heritage/ovaherero-women-red-flag.jpg"}
-              alt="Ovaherero women united under the Red Flag"
-              className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
+              src={config?.about_feature_image || "/images/heritage/paramount-chief-community-gathering-2.jpg"}
+              alt="Paramount Chief greeting community members at a customary gathering"
+              className="aspect-[16/10] w-full object-cover object-center transition-transform duration-700 hover:scale-105"
             />
             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 text-white">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Historic Assembly</p>
