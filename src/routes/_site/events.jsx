@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   CalendarDays,
@@ -31,6 +31,7 @@ import { CURATED_CALENDAR_EVENTS } from "@/lib/curated-events";
 export const Route = createFileRoute("/_site/events")({
   validateSearch: (search) => ({
     category: typeof search?.category === "string" ? search.category : "all",
+    event: typeof search?.event === "string" ? search.event : undefined,
   }),
   staleTime: 60_000,
   gcTime: 300_000,
@@ -144,7 +145,7 @@ function EventsPage() {
   }, [displayEvents, activeCategory]);
 
   // Form State for standalone on-page RSVP
-  const [formEventId, setFormEventId] = useState(displayEvents[0]?.id || "");
+  const [formEventId, setFormEventId] = useState(search?.event || displayEvents[0]?.id || "");
   const [formName, setFormName] = useState("");
   const [formEmail, setFormEmail] = useState("");
   const [formPhone, setFormPhone] = useState("");
@@ -154,6 +155,12 @@ function EventsPage() {
   const [formNotes, setFormNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [confirmedData, setConfirmedData] = useState(null);
+
+  useEffect(() => {
+    if (search?.event) {
+      setFormEventId(search.event);
+    }
+  }, [search?.event]);
 
   // Modal dialog form state
   const [modalForm, setModalForm] = useState({

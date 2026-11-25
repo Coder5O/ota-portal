@@ -34,6 +34,34 @@ const HERO_IMAGE = "/images/heritage/ovaherero-women-red-flag.jpg";
 const DETAIL_IMAGE = "/images/heritage/paramount-chief-community-gathering.jpg";
 
 /**
+ * Authentic verified fallback photos for the 8 foundational calendar convocations.
+ * Used when no custom picture has been uploaded by the admin for an event.
+ */
+export const DEFAULT_EVENT_PHOTOS = {
+  "annual-community-meeting-toasis": "/images/heritage/paramount-chief-community-gathering.jpg",
+  "hererofest-2026": "/images/heritage/ovaherero-women-red-flag.jpg",
+  "herero-day-2026": "/images/milestones/01-okahandja-parade.jpg",
+  "herero-genocide-day-2026": "/images/milestones/06-reichstag-delegation.jpg",
+  "chiefs-council-meeting-2026": "/images/milestones/09-ovaherero-house-briefing.jpg",
+  "community-outreach-2026": "/images/milestones/01-okahandja-grave.jpg",
+  "cultural-day-in-botswana-2026": "/images/milestones/05-botswana-petition.jpg",
+  "heritage-day-in-south-africa-2026": "/images/milestones/03-pretoria-petition.jpg",
+};
+
+/**
+ * Resolves the primary event image, prioritizing admin-uploaded cover photos or SiteConfig overrides.
+ */
+export function getEventImage(evt, config) {
+  if (evt?.cover_image) return evt.cover_image;
+  if (config?.[`event_${evt?.id}_image`]) return config[`event_${evt?.id}_image`];
+  if (config?.[`event_${evt?.slug}_image`]) return config[`event_${evt?.slug}_image`];
+  if (evt?.id && DEFAULT_EVENT_PHOTOS[evt.id]) return DEFAULT_EVENT_PHOTOS[evt.id];
+  if (evt?.slug && DEFAULT_EVENT_PHOTOS[evt.slug]) return DEFAULT_EVENT_PHOTOS[evt.slug];
+  if (config?.events_hero_image) return config.events_hero_image;
+  return "/images/heritage/paramount-chief-community-gathering.jpg";
+}
+
+/**
  * Build the 4 dynamic hero and milestone slides, resolving admin overrides from SiteConfig.
  * Each slide integrates an image with a core governance number and its living story.
  */
@@ -526,6 +554,336 @@ function ParamountChiefsHeroBanner() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Cinematic Events & Customary Convocations Hero Banner.
+ * Positioned ~70% down the site, showcasing different events with pictures uploaded by the admin,
+ * interactive carousel auto-rotation, rich ceremony narrative, attendee registration (RSVP),
+ * and interactive thumbnail navigation strip.
+ */
+export function EventsFeaturedHeroBanner({ events = [], allEvents = [], config = {} }) {
+  const eventItems = useMemo(() => {
+    const list =
+      allEvents && allEvents.length > 0
+        ? allEvents
+        : events && events.length > 0
+        ? events
+        : CURATED_CALENDAR_EVENTS;
+
+    return list.map((evt) => {
+      const photo = getEventImage(evt, config);
+      const isCustomPhoto = Boolean(
+        evt.cover_image || config?.[`event_${evt.id}_image`] || config?.[`event_${evt.slug}_image`]
+      );
+      return {
+        ...evt,
+        resolvedPhoto: photo,
+        isCustomPhoto,
+      };
+    });
+  }, [allEvents, events, config]);
+
+  const [current, setCurrent] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const total = eventItems.length || 1;
+
+  const goTo = useCallback((idx) => {
+    setCurrent(((idx % total) + total) % total);
+  }, [total]);
+
+  useEffect(() => {
+    if (isPaused || total <= 1) return undefined;
+    const timer = setInterval(() => {
+      goTo(current + 1);
+    }, 7000);
+    return () => clearInterval(timer);
+  }, [current, goTo, isPaused, total]);
+
+  const activeEvent = eventItems[current] || eventItems[0] || {};
+  const dm = dayMonth(activeEvent.starts_at);
+  const dateStr =
+    activeEvent.date_display ||
+    (activeEvent.starts_at ? fmtDate(activeEvent.starts_at) : "Convocations 2026");
+  const locationStr = activeEvent.venue
+    ? activeEvent.town
+      ? `${activeEvent.venue}, ${activeEvent.town}`
+      : activeEvent.venue
+    : activeEvent.town || activeEvent.location || "Ovaherero Traditional Assembly Grounds";
+
+  return (
+    <section
+      className="relative flex min-h-[580px] lg:min-h-[640px] flex-col justify-between overflow-hidden bg-[hsl(350_28%_14%)] text-white border-y-2 border-gold/40 shadow-2xl"
+      aria-label="Upcoming Events & Customary Assemblies Hero Banner"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      {/* Background Layer: Atmospheric Image Blur + Warm Gradient Overlays */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <img
+          key={`bg-img-${activeEvent.id || current}`}
+          src={activeEvent.resolvedPhoto}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-center opacity-25 blur-md scale-105 transition-all duration-1000 ease-out"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = "/images/heritage/paramount-chief-community-gathering.jpg";
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(350_30%_12%)]/95 via-[hsl(350_26%_14%)]/90 to-[hsl(350_26%_13%)]/80" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(350_32%_10%)] via-transparent to-black/40" />
+      </div>
+
+      <div className="relative z-10 shell flex flex-1 flex-col justify-between py-8 lg:py-10">
+        {/* Top Eyebrow Bar: Live Indicator + Counter + Full Calendar Link */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/15">
+          <div className="flex items-center gap-2.5">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-gold"></span>
+            </span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold sm:text-[11px]">
+              Tradition in Practice · Convocations &amp; Ceremonies
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-[11px] font-mono text-white/70">
+              <span className="text-gold font-bold">{String(current + 1).padStart(2, "0")}</span>
+              <span className="text-white/40 mx-1">/</span>
+              {String(total).padStart(2, "0")}
+            </span>
+            <Link
+              to="/events"
+              className="group inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.16em] text-gold/90 transition-colors hover:text-white"
+            >
+              Full Calendar &amp; All Convocations
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Hero Main Stage Grid */}
+        <div className="my-auto grid items-center gap-8 py-6 lg:grid-cols-[1.1fr_1.3fr] lg:gap-12">
+          {/* Left: Event Details, Badges, Narrative & Actions */}
+          <div className="space-y-4 min-w-0">
+            {/* Category, Status & Photo Badges */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="border border-gold/50 bg-gold/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">
+                {activeEvent.category_label || "Customary Assembly"}
+              </span>
+              {activeEvent.isCustomPhoto ? (
+                <span className="inline-flex items-center gap-1 border border-emerald-500/40 bg-emerald-500/20 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-emerald-300">
+                  <Sparkles className="h-3 w-3" /> Admin Uploaded Picture
+                </span>
+              ) : (
+                <span className="border border-white/20 bg-white/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-white/90">
+                  Official Convocations
+                </span>
+              )}
+              {activeEvent.registration_open ? (
+                <span className="border border-gold/40 bg-gold/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-gold">
+                  RSVP Open
+                </span>
+              ) : null}
+            </div>
+
+            {/* Event Title */}
+            <h2 className="font-display text-2xl leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
+              {activeEvent.title}
+            </h2>
+
+            {/* Date & Location Pill Tags */}
+            <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-[12px] text-white/90">
+              <div className="flex items-center gap-1.5 text-gold font-medium">
+                <CalendarDays className="h-4 w-4 shrink-0 text-gold" />
+                <span>{dateStr}</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-white/80">
+                <MapPin className="h-4 w-4 shrink-0 text-gold" />
+                <span className="line-clamp-1">{locationStr}</span>
+              </div>
+            </div>
+
+            {/* Description */}
+            <p className="line-clamp-4 text-[0.92rem] leading-relaxed text-white/85 sm:text-[0.98rem] max-w-xl">
+              {activeEvent.description ||
+                "Official gathering and traditional convocation of the Ovaherero Traditional Authority."}
+            </p>
+
+            {/* Organizing Structure & Audience */}
+            {activeEvent.organising_structure || activeEvent.audience ? (
+              <div className="pt-1 text-[11px] text-white/70 space-y-1 border-l-2 border-gold/40 pl-3">
+                {activeEvent.organising_structure ? (
+                  <p>
+                    <span className="text-gold/90 font-semibold uppercase tracking-wider">Convenor:</span>{" "}
+                    {activeEvent.organising_structure}
+                  </p>
+                ) : null}
+                {activeEvent.audience ? (
+                  <p>
+                    <span className="text-white/50 uppercase tracking-wider">Audience:</span>{" "}
+                    {activeEvent.audience}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+
+            {/* Action Buttons & Prev/Next */}
+            <div className="flex flex-wrap items-center gap-3 pt-3">
+              <Button
+                asChild
+                className="rounded-none bg-gold px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--ink))] shadow-lg hover:bg-gold/90 transition-transform active:scale-95"
+              >
+                <Link to="/events" search={{ event: activeEvent.id }}>
+                  RSVP to Attend <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                </Link>
+              </Button>
+
+              <Button
+                asChild
+                variant="outline"
+                className="rounded-none border-white/30 bg-white/5 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-white/15 hover:border-gold"
+              >
+                <Link to="/events">View Full Agenda</Link>
+              </Button>
+
+              {/* Prev / Next controls */}
+              <div className="flex items-center gap-1.5 sm:ml-auto">
+                <button
+                  type="button"
+                  onClick={() => goTo(current - 1)}
+                  aria-label="Previous Event"
+                  className="grid h-9 w-9 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goTo(current + 1)}
+                  aria-label="Next Event"
+                  className="grid h-9 w-9 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Featured Event Picture with Gold Matting & Overlays */}
+          <div className="relative w-full max-w-[540px] lg:max-w-[620px] mx-auto lg:ml-auto">
+            <div className="relative aspect-[16/10] overflow-hidden border-2 border-gold/60 bg-[hsl(350_24%_14%)] shadow-2xl p-1 bg-black/40">
+              <div className="relative h-full w-full overflow-hidden border border-gold/30">
+                <img
+                  key={`slide-img-${activeEvent.id || current}`}
+                  src={activeEvent.resolvedPhoto}
+                  alt={activeEvent.title}
+                  className="h-full w-full object-cover object-center transition-transform duration-700 ease-out hover:scale-105"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src =
+                      "/images/heritage/paramount-chief-community-gathering.jpg";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+
+                {/* Calendar Date Badge Overlay on Top-Left */}
+                <div className="absolute top-3 left-3 flex flex-col items-center justify-center border border-gold/60 bg-black/75 px-3 py-1.5 text-center backdrop-blur-md shadow-lg">
+                  <span className="font-display text-xl sm:text-2xl font-bold leading-none text-gold">
+                    {dm?.day || "—"}
+                  </span>
+                  <span className="mt-0.5 text-[9px] uppercase tracking-wider text-white/90 font-medium">
+                    {dm?.month || "2026"}
+                  </span>
+                </div>
+
+                {/* Admin Upload / Category Badge Overlay on Top-Right */}
+                <div className="absolute top-3 right-3">
+                  {activeEvent.isCustomPhoto ? (
+                    <span className="inline-flex items-center gap-1 border border-emerald-400/60 bg-black/75 px-2.5 py-1 text-[9.5px] font-semibold uppercase tracking-wider text-emerald-300 backdrop-blur-md">
+                      <Sparkles className="h-3 w-3" /> Admin Photo
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 border border-gold/60 bg-black/75 px-2.5 py-1 text-[9.5px] font-semibold uppercase tracking-wider text-gold backdrop-blur-md">
+                      Official Assembly
+                    </span>
+                  )}
+                </div>
+
+                {/* Bottom Plate on Photo */}
+                <div className="absolute bottom-0 inset-x-0 p-3 sm:p-4 text-white">
+                  <p className="text-[9.5px] font-semibold uppercase tracking-[0.2em] text-gold">
+                    {activeEvent.town || "Customary Domain"}
+                  </p>
+                  <p className="mt-0.5 font-display text-base sm:text-lg leading-tight font-medium truncate drop-shadow-md">
+                    {activeEvent.title}
+                  </p>
+                  <p className="text-[10px] text-white/70 line-clamp-1 mt-0.5">
+                    {activeEvent.venue}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Interactive Thumbnail Strip */}
+        <div className="pt-4 border-t border-white/15">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-white/60 mb-2 font-semibold">
+            All Convocations &amp; Ceremonies (Click to Preview):
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+            {eventItems.map((evt, idx) => {
+              const isActive = idx === current;
+              return (
+                <button
+                  key={`thumb-${evt.id || idx}`}
+                  type="button"
+                  onClick={() => goTo(idx)}
+                  className={`group relative flex flex-col items-start p-1.5 text-left transition-all border ${
+                    isActive
+                      ? "border-gold bg-gold/20 shadow-md ring-1 ring-gold"
+                      : "border-white/15 bg-black/40 hover:border-gold/60 hover:bg-white/5"
+                  }`}
+                >
+                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/60">
+                    <img
+                      src={evt.resolvedPhoto}
+                      alt=""
+                      className={`h-full w-full object-cover transition-transform duration-300 ${
+                        isActive
+                          ? "scale-105"
+                          : "group-hover:scale-105 opacity-75 group-hover:opacity-100"
+                      }`}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src =
+                          "/images/heritage/paramount-chief-community-gathering.jpg";
+                      }}
+                    />
+                    {isActive ? (
+                      <div className="absolute inset-0 border-2 border-gold pointer-events-none" />
+                    ) : null}
+                  </div>
+                  <div className="mt-1.5 w-full min-w-0">
+                    <p
+                      className={`truncate text-[10px] font-medium leading-tight ${
+                        isActive ? "text-gold font-bold" : "text-white/80"
+                      }`}
+                    >
+                      {evt.title}
+                    </p>
+                    <p className="text-[8.5px] uppercase tracking-wider text-white/50 truncate mt-0.5">
+                      {evt.date_display || (evt.starts_at ? fmtDate(evt.starts_at) : "")}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -1069,9 +1427,10 @@ export const Route = createFileRoute("/_site/")({
     ],
   }),
   loader: async () => {
-    const [news, events, institutions, welcome, configRes] = await Promise.all([
+    const [news, events, allEventsRes, institutions, welcome, configRes] = await Promise.all([
       base44.entities.NewsPost.filter({ status: "published" }, { sort: "-published_date", limit: 3 }),
       base44.entities.Event.filter({ status: "published" }, { sort: "starts_at", limit: 3 }),
+      base44.entities.Event.filter({ status: "published" }, { sort: "starts_at", limit: 20 }),
       base44.entities.Institution.filter({ status: "published" }, { sort: "sort_order", limit: 6 }),
       base44.entities.ContentBlock.filter(
         { page_slug: "paramount-chief", status: "published" },
@@ -1085,6 +1444,15 @@ export const Route = createFileRoute("/_site/")({
 
     const liveEvents = events?.items || [];
     const eventsList = liveEvents.length > 0 ? liveEvents : CURATED_CALENDAR_EVENTS.slice(0, 3);
+
+    // Build the merged events list for the hero banner (admin DB events + curated fallback)
+    const liveAllEvents = allEventsRes?.items || [];
+    const allEventsMap = new Map();
+    CURATED_CALENDAR_EVENTS.forEach((e) => allEventsMap.set(e.id, e));
+    liveAllEvents.forEach((e) => { if (e?.id) allEventsMap.set(e.id, e); });
+    const allEventsList = Array.from(allEventsMap.values()).sort(
+      (a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime()
+    );
 
     const liveInstitutions = institutions?.items || [];
     const institutionsList = liveInstitutions.length > 0
@@ -1100,6 +1468,7 @@ export const Route = createFileRoute("/_site/")({
     return {
       news: newsList,
       events: eventsList,
+      allEvents: allEventsList,
       institutions: institutionsList,
       welcome: welcome?.items?.[0] || null,
       config: configRes?.items?.[0] || null,
@@ -1116,7 +1485,7 @@ const QUICK_LINKS = [
 ];
 
 function HomePage() {
-  const { news, events, institutions, welcome, config } = Route.useLoaderData();
+  const { news, events, allEvents, institutions, welcome, config } = Route.useLoaderData();
   const heroImg = config?.home_hero_image || HERO_IMAGE;
   const detailImg =
     config?.home_detail_image &&
@@ -1396,6 +1765,9 @@ function HomePage() {
           </div>
         )}
       </section>
+
+      {/* ── Events & Customary Convocations Hero Banner (70% down the site) ───── */}
+      <EventsFeaturedHeroBanner events={events} allEvents={allEvents} config={config} />
 
       {/* ── Upcoming Ceremonies & Assembly Events Section ─────────────────────── */}
       <section className="border-t border-border bg-secondary/40 py-20 lg:py-24">
