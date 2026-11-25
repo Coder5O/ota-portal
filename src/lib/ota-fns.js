@@ -227,12 +227,17 @@ export const registerForEvent = createServerFn({ method: "POST" })
       email: z.string().email().max(160),
       phone: optionalText(40),
       organisation: optionalText(160),
+      community_or_region: optionalText(160),
+      attendee_count: z.number().int().min(1).max(100).default(1).optional(),
+      notes: optionalText(500),
     }),
   )
   .handler(async ({ data, context }) => {
     const service = context.getBase44().asServiceRole;
+    const attendees = Number(data.attendee_count) || 1;
     const record = await service.entities.EventRegistration.create({
       ...data,
+      attendee_count: attendees,
       email: data.email.trim().toLowerCase(),
       name: data.name.trim(),
       created_date: new Date().toISOString(),
@@ -242,9 +247,74 @@ export const registerForEvent = createServerFn({ method: "POST" })
       action: "event.registered",
       target_type: "EventRegistration",
       target_id: record.id,
-      detail: `${data.name} registered for ${data.event_title || data.event_id}`,
+      detail: `${data.name} registered (${attendees} attendee${attendees > 1 ? "s" : ""}) for ${data.event_title || data.event_id}`,
     });
-    return { ok: true, id: record.id };
+    return { ok: true, id: record.id, attendee_count: attendees };
+  });
+
+export const getEventRegistrationsAdmin = createServerFn({ method: "GET" })
+  .middleware([requireUser])
+  .handler(async ({ context }) => {
+    if (context.user.role !== "admin") {
+      throw Object.assign(new Error("Only an authorised administrator may view event registrations."), { status: 403 });
+    }
+    const service = context.getBase44().asServiceRole;
+    let items = [];
+    try {
+      const page = await service.entities.EventRegistration.list({ sort: "-created_date", limit: 500 });
+      items = page?.items || [];
+    } catch {
+      items = [];
+    }
+
+    // Aggregate attendance metrics per event
+    const byEvent = {};
+    let totalAttendees = 0;
+
+    for (const reg of items) {
+      const eId = reg.event_id || "general";
+      const count = Number(reg.attendee_count) || 1;
+      totalAttendees += count;
+
+      if (!byEvent[eId]) {
+        byEvent[eId] = {
+          event_id: eId,
+          event_title: reg.event_title || eId,
+          registrations_count: 0,
+          total_attendees: 0,
+          registrations: [],
+        };
+      }
+      byEvent[eId].registrations_count += 1;
+      byEvent[eId].total_attendees += count;
+      byEvent[eId].registrations.push(reg);
+    }
+
+    return {
+      ok: true,
+      totalRegistrations: items.length,
+      totalAttendees,
+      byEvent,
+      registrations: items,
+    };
+  });
+
+export const deleteEventRegistrationAdmin = createServerFn({ method: "POST" })
+  .middleware([requireUser])
+  .validator(z.object({ id: z.string().min(1).max(100) }))
+  .handler(async ({ data, context }) => {
+    if (context.user.role !== "admin") {
+      throw Object.assign(new Error("Only an authorised administrator may remove an event registration."), { status: 403 });
+    }
+    const service = context.getBase44().asServiceRole;
+    await service.entities.EventRegistration.delete(data.id);
+    await audit(service, {
+      action: "event.registration_deleted",
+      target_type: "EventRegistration",
+      target_id: data.id,
+      detail: `Event registration ${data.id} was deleted by admin ${context.user.email}`,
+    });
+    return { ok: true };
   });
 
 const decisionSchema = z.object({

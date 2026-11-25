@@ -15,6 +15,7 @@ import {
   ImageIcon,
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { getEventRegistrationsAdmin } from "@/lib/ota-fns";
 import { PageHead } from "@/components/admin/AdminShell";
 import { StatusPill } from "@/components/admin/StatusPill";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ function AdminOverview() {
         events,
         applications,
         audits,
+        eventRegsRes,
       ] = await Promise.all([
         base44.entities.MemberApplication.count({ status: "Submitted" }),
         base44.entities.MemberApplication.count({ status: "Under Review" }),
@@ -75,6 +77,7 @@ function AdminOverview() {
         base44.entities.Event.filter({ status: "published" }, { sort: "starts_at", limit: 4 }),
         base44.entities.MemberApplication.list({ sort: "-created_date", limit: 6 }),
         base44.entities.AuditLog.list({ sort: "-created_date", limit: 8 }),
+        getEventRegistrationsAdmin().catch(() => ({ totalAttendees: 0, byEvent: {} })),
       ]);
 
       return {
@@ -94,6 +97,8 @@ function AdminOverview() {
         events,
         applications,
         audits,
+        totalAttendees: eventRegsRes?.totalAttendees || 0,
+        byEvent: eventRegsRes?.byEvent || {},
       };
     },
   });
@@ -274,7 +279,7 @@ function AdminOverview() {
               to="/admin/events"
               className="flex items-center gap-1 text-[11.5px] uppercase tracking-[0.14em] text-[hsl(var(--primary))]"
             >
-              Events <ArrowRight className="h-3 w-3" />
+              Events & Attendee Rosters ({d?.totalAttendees || 0} attending) <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
         </header>
@@ -284,19 +289,29 @@ function AdminOverview() {
               No events published on the calendar.
             </li>
           ) : (
-            (d?.events?.items || []).map((event) => (
-              <li key={event.id} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3">
-                <div>
-                  <p className="text-[13px] font-medium">{event.title}</p>
+            (d?.events?.items || []).map((event) => {
+              const count = d?.byEvent?.[event.id]?.total_attendees || 0;
+              return (
+                <li key={event.id} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-[13px] font-medium">{event.title}</p>
+                      {count > 0 ? (
+                        <span className="border border-gold/60 bg-gold/15 px-1.5 py-0.2 text-[10px] font-bold text-foreground">
+                          {count} attending
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="text-[11.5px] text-muted-foreground">
+                      Organised by {event.organising_structure || "Ovaherero Traditional Authority"}
+                    </p>
+                  </div>
                   <p className="text-[11.5px] text-muted-foreground">
-                    Organised by {event.organising_structure || "Ovaherero Traditional Authority"}
+                    {fmtDate(event.starts_at)} · {event.venue || "Venue to be announced"}
                   </p>
-                </div>
-                <p className="text-[11.5px] text-muted-foreground">
-                  {fmtDate(event.starts_at)} · {event.venue || "Venue to be announced"}
-                </p>
-              </li>
-            ))
+                </li>
+              );
+            })
           )}
         </ul>
       </section>
