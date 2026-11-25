@@ -38,26 +38,36 @@ const ReadInput = z.object({
 const readPublicContent = createServerFn({ method: "POST" })
   .validator(ReadInput)
   .handler(async ({ data, context }) => {
-    const entity = context.getBase44().entities[data.entity];
-
-    if (data.op === "get") {
-      if (!data.id) return { items: [] };
-      try {
-        return { items: [await entity.get(data.id)] };
-      } catch (error) {
-        if (error?.status === 404) return { items: [] };
-        throw error;
-      }
-    }
-
     try {
-      if (data.op === "list") {
-        const page = await entity.list(data.options || {});
-        return { items: page?.items || [] };
-      }
+      const base44 = context?.getBase44?.();
+      const entity = base44?.entities?.[data.entity];
+      if (!entity) return { items: [] };
 
-      const page = await entity.filter(data.filter || {}, data.options || {});
-      return { items: page?.items || [] };
+      const queryPromise = (async () => {
+        if (data.op === "get") {
+          if (!data.id) return { items: [] };
+          try {
+            const doc = await entity.get(data.id);
+            return { items: doc ? [doc] : [] };
+          } catch (error) {
+            if (error?.status === 404) return { items: [] };
+            throw error;
+          }
+        }
+        if (data.op === "list") {
+          const page = await entity.list(data.options || {});
+          return { items: page?.items || [] };
+        }
+        const page = await entity.filter(data.filter || {}, data.options || {});
+        return { items: page?.items || [] };
+      })();
+
+      // Server-side timeout so requests never hang indefinitely
+      const timeoutPromise = new Promise((resolve) =>
+        setTimeout(() => resolve({ items: [] }), 2500)
+      );
+
+      return await Promise.race([queryPromise, timeoutPromise]);
     } catch (error) {
       console.warn(`[publicSiteApi] Error reading ${data.entity} (op: ${data.op}):`, error?.message || error);
       return { items: [] };
@@ -65,12 +75,32 @@ const readPublicContent = createServerFn({ method: "POST" })
   });
 
 const collection = (entity) => ({
-  list: async (options) => readPublicContent({ data: { entity, op: "list", options } }),
-  filter: async (filter, options) =>
-    readPublicContent({ data: { entity, op: "filter", filter, options } }),
+  list: async (options) => {
+    try {
+      const res = await readPublicContent({ data: { entity, op: "list", options } });
+      return { items: res?.items || [] };
+    } catch (err) {
+      console.warn(`[publicSiteApi] Client error in list(${entity}):`, err?.message || err);
+      return { items: [] };
+    }
+  },
+  filter: async (filter, options) => {
+    try {
+      const res = await readPublicContent({ data: { entity, op: "filter", filter, options } });
+      return { items: res?.items || [] };
+    } catch (err) {
+      console.warn(`[publicSiteApi] Client error in filter(${entity}):`, err?.message || err);
+      return { items: [] };
+    }
+  },
   get: async (id) => {
-    const { items } = await readPublicContent({ data: { entity, op: "get", id } });
-    return items[0] || null;
+    try {
+      const res = await readPublicContent({ data: { entity, op: "get", id } });
+      return res?.items?.[0] || null;
+    } catch (err) {
+      console.warn(`[publicSiteApi] Client error in get(${entity}):`, err?.message || err);
+      return null;
+    }
   },
 });
 

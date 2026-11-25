@@ -32,6 +32,8 @@ export const Route = createFileRoute("/_site/events")({
   validateSearch: (search) => ({
     category: typeof search?.category === "string" ? search.category : "all",
   }),
+  staleTime: 60_000,
+  gcTime: 300_000,
   head: () => ({
     meta: [
       { title: "Events & Calendar · Ovaherero Traditional Authority" },
@@ -44,8 +46,11 @@ export const Route = createFileRoute("/_site/events")({
   }),
   loader: async () => {
     try {
-      const page = await base44.entities.Event.filter({ status: "published" }, { sort: "starts_at", limit: 60 });
-      return { events: page.items || [] };
+      // Race timeout prevents sluggishness and ensures instant navigation
+      const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({ items: [] }), 1200));
+      const fetchPromise = base44.entities.Event.filter({ status: "published" }, { sort: "starts_at", limit: 60 }).catch(() => ({ items: [] }));
+      const page = await Promise.race([fetchPromise, timeoutPromise]);
+      return { events: page?.items || [] };
     } catch {
       return { events: [] };
     }

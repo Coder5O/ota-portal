@@ -15,6 +15,7 @@ import { INSTITUTIONS } from "@/lib/institutions";
 const PRIMARY = [
   {
     label: "About Us",
+    to: "/about",
     children: [
       { to: "/about", label: "Overview: About OTA" },
       { to: "/about#identity", label: "1. Our Identity" },
@@ -26,7 +27,9 @@ const PRIMARY = [
   },
   {
     label: "Governance",
+    to: "/leadership",
     children: [
+      { to: "/leadership", label: "Overview: Traditional Leadership" },
       { to: "/paramount-chief", label: "Office of the PC" },
       { to: "/leadership#commissioners", label: "Commissioners" },
       { to: "/institutions/chiefs-council", label: "Chiefs Council" },
@@ -34,12 +37,12 @@ const PRIMARY = [
       { to: "/chapters", label: "Chapters" },
       { to: "/membership", label: "Membership" },
       { to: "/constitution", label: "OTA Constitution" },
-      { to: "/leadership", label: "Traditional Leadership Register" },
       { to: "/paramount-chiefs", label: "Paramount Chiefs Succession" },
     ],
   },
   {
     label: "Institutions",
+    to: "/institutions",
     children: [
       { to: "/institutions", label: "Overview: All Institutions" },
       { to: "/institutions/women-council", label: "OWA (Women Association) [Constitution]" },
@@ -57,8 +60,9 @@ const PRIMARY = [
   },
   {
     label: "Events",
+    to: "/events",
     children: [
-      { to: "/events", label: "Official Calendar (All Convocations)" },
+      { to: "/events", label: "Overview: Official Calendar (All Convocations)" },
       { to: "/events?category=meetings", label: "Annual Community Meeting at Toasis" },
       { to: "/events?category=hero-fest", label: "HereroFest" },
       { to: "/events?category=commemorations", label: "Herero Day (Okahandja)" },
@@ -71,8 +75,9 @@ const PRIMARY = [
   },
   {
     label: "Library",
+    to: "/library",
     children: [
-      { to: "/library", label: "Digital Library & Repository" },
+      { to: "/library", label: "Overview: Digital Library & Repository" },
       { to: "/library#history", label: "History & Living Heritage" },
       { to: "/library#publications", label: "Publications & Legal Briefs" },
       { to: "/library#resolutions", label: "Approved Resolutions & Gazette" },
@@ -166,33 +171,56 @@ export function SiteHeader({ config }) {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-3 xl:flex 2xl:gap-5" aria-label="Main">
+          <nav className="hidden items-center gap-2 xl:flex 2xl:gap-3.5" aria-label="Main">
             {PRIMARY.map((item) =>
               item.children ? (
-                <DropdownMenu key={item.label}>
-                  <DropdownMenuTrigger className="flex items-center gap-1 py-2 text-[13px] font-medium text-foreground/80 transition-colors hover:text-[hsl(var(--primary))]">
+                <div key={item.label} className="flex items-center">
+                  <Link
+                    to={item.to}
+                    className="py-2 text-[13px] font-medium text-foreground/80 transition-colors hover:text-[hsl(var(--primary))] pr-0.5"
+                    activeProps={{ className: "text-[hsl(var(--primary))] font-semibold" }}
+                  >
                     {item.label}
-                    <ChevronDown className="h-3.5 w-3.5" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-80 max-h-[82vh] overflow-y-auto border-border bg-card p-1.5 shadow-lg">
-                    {item.children.map((child) => (
-                      <DropdownMenuItem key={child.to} asChild>
+                  </Link>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label={`Open ${item.label} menu`}
+                        className="grid h-7 w-5 place-items-center rounded text-foreground/50 transition-colors hover:bg-secondary hover:text-[hsl(var(--primary))] focus:outline-none"
+                      >
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-80 max-h-[82vh] overflow-y-auto border-border bg-card p-1.5 shadow-lg">
+                      <div className="border-b border-border/60 px-3 py-1.5 mb-1 bg-muted/30">
                         <Link
-                          to={child.to}
-                          className="cursor-pointer px-3 py-2 text-[13px] text-foreground/85 focus:bg-secondary focus:text-[hsl(var(--primary))]"
+                          to={item.to}
+                          className="text-[11px] font-semibold uppercase tracking-wider text-gold hover:text-[hsl(var(--primary))] flex items-center justify-between"
                         >
-                          {child.label}
+                          <span>{item.label} Hub</span>
+                          <span>Open Overview →</span>
                         </Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      </div>
+                      {item.children.map((child) => (
+                        <DropdownMenuItem key={child.to} asChild>
+                          <Link
+                            to={child.to}
+                            className="cursor-pointer px-3 py-2 text-[13px] text-foreground/85 focus:bg-secondary focus:text-[hsl(var(--primary))]"
+                          >
+                            {child.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               ) : (
                 <Link
                   key={item.to}
                   to={item.to}
                   className="py-2 text-[13px] font-medium text-foreground/80 transition-colors hover:text-[hsl(var(--primary))]"
-                  activeProps={{ className: "text-[hsl(var(--primary))]" }}
+                  activeProps={{ className: "text-[hsl(var(--primary))] font-semibold" }}
                 >
                   {item.label}
                 </Link>
@@ -234,15 +262,30 @@ export function SiteHeader({ config }) {
                   <ul className="space-y-1">
                     {PRIMARY.map((item) =>
                       item.children ? (
-                        <li key={item.label} className="py-2">
-                          <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{item.label}</p>
+                        <li key={item.label} className="py-2 border-b border-border/40 last:border-0">
+                          <div className="flex items-center justify-between py-1">
+                            <Link
+                              to={item.to}
+                              onClick={() => setOpen(false)}
+                              className="font-display text-lg text-foreground hover:text-[hsl(var(--primary))]"
+                            >
+                              {item.label}
+                            </Link>
+                            <Link
+                              to={item.to}
+                              onClick={() => setOpen(false)}
+                              className="text-[11px] uppercase tracking-wider text-gold font-semibold"
+                            >
+                              Open Page →
+                            </Link>
+                          </div>
                           <ul className="mt-1 space-y-0.5 border-l border-border pl-3">
                             {item.children.map((child) => (
                               <li key={child.to}>
                                 <Link
                                   to={child.to}
                                   onClick={() => setOpen(false)}
-                                  className="block py-1.5 text-[14px] text-foreground/85"
+                                  className="block py-1.5 text-[14px] text-foreground/85 hover:text-[hsl(var(--primary))]"
                                 >
                                   {child.label}
                                 </Link>
