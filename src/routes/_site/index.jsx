@@ -1487,22 +1487,6 @@ function HomePage() {
       {/* ── OvaHerero 2026 Community Milestones & Reparations Mission Hero Banner ──── */}
       <Milestones2026HeroBanner />
 
-      {/* ── Seamless Transitional Divider Between Banners ── */}
-      <div className="bg-[hsl(var(--ink))] py-2.5 border-y border-gold/30">
-        <div className="shell flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.22em] text-gold/85">
-          <div className="flex items-center gap-2">
-            <Crown className="h-3.5 w-3.5 text-gold" />
-            <span>Paramount Chiefs of the Ovaherero · Historical Succession</span>
-          </div>
-          <Link to="/paramount-chiefs" className="text-white/70 hover:text-white transition-colors">
-            1863 – Present Archive &rarr;
-          </Link>
-        </div>
-      </div>
-
-      {/* ── Paramount Chiefs of the Ovaherero Dynamic Hero Banner (Underneath) ─────────── */}
-      <ParamountChiefsHeroBanner />
-
       {/* ── Visual Separation between Hero Banner and Quick Links ─────────── */}
       <div className="py-6 sm:py-8 lg:py-10 bg-background flex items-center justify-center">
         <div className="shell flex items-center justify-between gap-4 w-full">
@@ -1725,6 +1709,22 @@ function HomePage() {
           </div>
         )}
       </section>
+
+      {/* ── Seamless Transitional Divider: Paramount Chiefs (50% down the site) ── */}
+      <div className="bg-[hsl(var(--ink))] py-2.5 border-y border-gold/30">
+        <div className="shell flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.22em] text-gold/85">
+          <div className="flex items-center gap-2">
+            <Crown className="h-3.5 w-3.5 text-gold" />
+            <span>Paramount Chiefs of the Ovaherero · Historical Succession</span>
+          </div>
+          <Link to="/paramount-chiefs" className="text-white/70 hover:text-white transition-colors">
+            1863 – Present Archive &rarr;
+          </Link>
+        </div>
+      </div>
+
+      {/* ── Paramount Chiefs of the Ovaherero Dynamic Hero Banner (50% down the site) ─ */}
+      <ParamountChiefsHeroBanner />
 
       {/* ── Events & Customary Convocations Hero Banner (70% down the site) ───── */}
       <EventsFeaturedHeroBanner events={events} allEvents={allEvents} config={config} />
