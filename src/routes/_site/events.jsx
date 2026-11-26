@@ -267,7 +267,7 @@ function EventsPage() {
         eyebrow="Events & Official Customary Calendar"
         title="Customary convocations, commemorations & assemblies."
         intro="The official calendar of the 8 foundational OTA convocations. Traditional communities, registered members, and the general public are invited to register attendance in advance to assist with customary seating and protocol."
-        image="/images/heritage/ovaherero-women-red-flag.jpg"
+        image="/images/heritage/paramount-chief-ceremonial-dress.jpg"
         imageKey="events_hero_image"
         imageAlt="Ovaherero Traditional Authority Ceremonial Convocations"
       >

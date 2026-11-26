@@ -30,7 +30,7 @@ import { INSTITUTIONS } from "@/lib/institutions";
 import { CURATED_MILESTONE_NEWS } from "@/lib/curated-milestones-news";
 import { CURATED_CALENDAR_EVENTS } from "@/lib/curated-events";
 
-const HERO_IMAGE = "/images/heritage/ovaherero-women-red-flag.jpg";
+const HERO_IMAGE = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
 const DETAIL_IMAGE = "/images/heritage/paramount-chief-community-gathering.jpg";
 
 /**
@@ -39,7 +39,7 @@ const DETAIL_IMAGE = "/images/heritage/paramount-chief-community-gathering.jpg";
  */
 export const DEFAULT_EVENT_PHOTOS = {
   "annual-community-meeting-toasis": "/images/heritage/paramount-chief-community-gathering.jpg",
-  "hererofest-2026": "/images/heritage/ovaherero-women-red-flag.jpg",
+  "hererofest-2026": "/images/heritage/paramount-chief-ceremonial-dress.jpg",
   "herero-day-2026": "/images/milestones/01-okahandja-parade.jpg",
   "herero-genocide-day-2026": "/images/milestones/06-reichstag-delegation.jpg",
   "chiefs-council-meeting-2026": "/images/milestones/09-ovaherero-house-briefing.jpg",

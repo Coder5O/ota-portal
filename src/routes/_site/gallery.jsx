@@ -23,10 +23,10 @@ export const Route = createFileRoute("/_site/gallery")({
 const CURATED_GALLERY_ITEMS = [
   {
     id: "gallery-1",
-    media_url: "/images/heritage/ovaherero-women-red-flag.jpg",
+    media_url: "/images/heritage/paramount-chief-community-gathering.jpg",
     media_type: "image",
-    title: "Ovaherero Women Under the Red Flag",
-    caption: "Otjiserandu gathering in traditional dress and ceremonial headwear honouring ancestral remembrance.",
+    title: "Community Assembly with the Paramount Chief",
+    caption: "Paramount Chief Prof. Mutjinde Katjiua convened with traditional community leaders, elders, and delegates in communal consultation.",
     taken_date: "2023-08-26",
     category: "Culture & Assembly",
   },
@@ -148,7 +148,7 @@ function GalleryPage() {
         eyebrow="Photo & video gallery"
         title="Moments from our people, places and gatherings."
         intro="Official photographs and videos from the Ovaherero Traditional Authority, its communities, institutions and commemorations."
-        image="/images/heritage/ovaherero-women-red-flag.jpg"
+        image="/images/heritage/paramount-chief-ceremonial-dress.jpg"
         imageAlt="Ovaherero cultural gathering"
       />
 
