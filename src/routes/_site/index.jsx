@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { motion, useScroll, useSpring, useInView, AnimatePresence } from "framer-motion";
 import useEmblaCarousel from "embla-carousel-react";
+import { ResponsiveContainer, AreaChart, Area } from "recharts";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -110,6 +111,52 @@ function ScrollProgressBar() {
       className="fixed top-0 left-0 right-0 z-[9999] h-[3px] origin-left bg-gradient-to-r from-gold via-amber-400 to-gold pointer-events-none"
       style={{ scaleX }}
     />
+  );
+}
+
+/** Historical and momentum trend data for the 4 operational governance metrics */
+const METRIC_SPARKLINE_DATA = [
+  // Recognised Communities (growth momentum from 14 to 36+)
+  [{ v: 14 }, { v: 18 }, { v: 22 }, { v: 27 }, { v: 31 }, { v: 36 }],
+  // Administrative Organs & Assemblies (expanding from 2 to 8)
+  [{ v: 2 }, { v: 3 }, { v: 4 }, { v: 6 }, { v: 7 }, { v: 8 }],
+  // Genocide Restitution & Sovereign Advocacy (covenant momentum)
+  [{ v: 18 }, { v: 32 }, { v: 54 }, { v: 72 }, { v: 88 }, { v: 104 }],
+  // Customary Constitution & Regional Ratifications (2022 landmark)
+  [{ v: 4 }, { v: 8 }, { v: 12 }, { v: 17 }, { v: 20 }, { v: 22 }],
+];
+
+/** Mini animated sparkline using Recharts with SSR-safe mount guard */
+function MetricSparkline({ data, isActive, id }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  if (!mounted) {
+    return <div className="mt-2.5 h-7 w-full border-b border-gold/15" />;
+  }
+
+  return (
+    <div className="mt-2.5 h-7 w-full opacity-70 group-hover:opacity-100 transition-opacity">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data} margin={{ top: 2, right: 0, left: 0, bottom: 0 }}>
+          <defs>
+            <linearGradient id={`sparkline-grad-${id}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor={isActive ? "#C9A84C" : "hsl(var(--primary))"} stopOpacity={0.4} />
+              <stop offset="95%" stopColor={isActive ? "#C9A84C" : "hsl(var(--primary))"} stopOpacity={0.0} />
+            </linearGradient>
+          </defs>
+          <Area
+            type="monotone"
+            dataKey="v"
+            stroke={isActive ? "#C9A84C" : "hsl(var(--primary))"}
+            strokeWidth={1.8}
+            fill={`url(#sparkline-grad-${id})`}
+            dot={false}
+            isAnimationActive={false}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
 
@@ -1402,12 +1449,203 @@ const CUSTOMARY_REGIONS = [
   },
 ];
 
+/**
+ * Interactive Vector Territory Map of Namibia & Customary Regions.
+ * Features interactive territories, pulsing customary assembly hotspots,
+ * compass rose, and two-way synchronisation with region details.
+ */
+function CustomaryTerritoryMap({ activeId, onSelectRegion }) {
+  const REGION_MAP_DATA = [
+    {
+      id: "kunene",
+      name: "Kunene & Kaokoveld",
+      short: "Kunene",
+      path: "M 50 45 L 180 30 L 195 125 L 140 160 L 40 115 Z",
+      pinX: 115,
+      pinY: 90,
+      symbol: "🔥",
+      hotspot: "Opuwo (Okuruuo)",
+    },
+    {
+      id: "otjozondjupa",
+      name: "Otjozondjupa",
+      short: "Otjozondjupa",
+      path: "M 180 30 L 330 25 L 340 155 L 220 185 L 195 125 Z",
+      pinX: 265,
+      pinY: 100,
+      symbol: "🛡️",
+      hotspot: "Waterberg & Okakarara",
+    },
+    {
+      id: "central",
+      name: "Central & Okahandja",
+      short: "Okahandja",
+      path: "M 140 160 L 220 185 L 240 275 L 130 255 L 95 205 Z",
+      pinX: 185,
+      pinY: 220,
+      symbol: "👑",
+      hotspot: "Sacred Shrine & Seat",
+    },
+    {
+      id: "omaheke",
+      name: "Omaheke Region",
+      short: "Omaheke",
+      path: "M 220 185 L 340 155 L 365 305 L 240 275 Z",
+      pinX: 290,
+      pinY: 235,
+      symbol: "🐂",
+      hotspot: "Toasis & Epukiro",
+    },
+    {
+      id: "diaspora",
+      name: "Global Diaspora",
+      short: "Diaspora",
+      path: "M 365 175 L 510 155 L 525 335 L 375 325 L 365 305 Z",
+      pinX: 440,
+      pinY: 245,
+      symbol: "🌍",
+      hotspot: "Botswana & South Africa",
+    },
+  ];
+
+  return (
+    <div className="relative border border-border bg-gradient-to-br from-card via-background to-secondary/30 p-4 sm:p-5 overflow-hidden shadow-sm">
+      {/* Map Header & Legend */}
+      <div className="flex items-center justify-between border-b border-border/70 pb-2.5 mb-2.5 text-[11px] uppercase tracking-wider">
+        <span className="font-semibold text-gold flex items-center gap-1.5">
+          <Compass className="h-3.5 w-3.5 text-gold animate-spin-slow" />
+          Customary Territory Grid
+        </span>
+        <span className="text-[10px] text-muted-foreground">Click region or pin to explore</span>
+      </div>
+
+      {/* SVG Map Canvas */}
+      <div className="w-full aspect-[16/11]">
+        <svg
+          viewBox="0 0 540 360"
+          className="w-full h-full select-none"
+          role="img"
+          aria-label="Interactive map of Ovaherero customary regions"
+        >
+          <defs>
+            <filter id="gold-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#C9A84C" floodOpacity="0.6" />
+            </filter>
+            <linearGradient id="active-territory-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#C9A84C" stopOpacity="0.35" />
+              <stop offset="100%" stopColor="#8A1C2E" stopOpacity="0.25" />
+            </linearGradient>
+            <pattern id="map-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-border/40" />
+            </pattern>
+          </defs>
+
+          {/* Background grid */}
+          <rect width="100%" height="100%" fill="url(#map-grid)" />
+
+          {/* Compass rose symbol */}
+          <g transform="translate(480, 45)" className="opacity-40">
+            <circle cx="0" cy="0" r="20" fill="none" stroke="currentColor" strokeWidth="0.75" className="text-gold" />
+            <path d="M 0 -18 L 3 -3 L 18 0 L 3 3 L 0 18 L -3 3 L -18 0 L -3 -3 Z" fill="none" stroke="currentColor" strokeWidth="0.75" className="text-gold" />
+            <text x="0" y="-22" textAnchor="middle" fontSize="8.5" fill="currentColor" className="text-gold font-mono font-bold">N</text>
+          </g>
+
+          {/* Territorial Regions */}
+          {REGION_MAP_DATA.map((r) => {
+            const isSelected = r.id === activeId;
+            return (
+              <g
+                key={r.id}
+                onClick={() => onSelectRegion(r.id)}
+                className="cursor-pointer group"
+                tabIndex={0}
+                role="button"
+                aria-label={`Select ${r.name}`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelectRegion(r.id);
+                  }
+                }}
+              >
+                {/* Region boundary polygon */}
+                <path
+                  d={r.path}
+                  fill={isSelected ? "url(#active-territory-grad)" : "currentColor"}
+                  stroke={isSelected ? "#C9A84C" : "currentColor"}
+                  strokeWidth={isSelected ? 2.5 : 1}
+                  filter={isSelected ? "url(#gold-glow)" : undefined}
+                  className={`transition-all duration-300 ${
+                    isSelected
+                      ? "text-gold"
+                      : "text-muted/40 stroke-border hover:fill-gold/15 hover:stroke-gold/50"
+                  }`}
+                />
+
+                {/* Hotspot pin marker */}
+                <g transform={`translate(${r.pinX}, ${r.pinY})`}>
+                  {isSelected && (
+                    <circle
+                      cx="0"
+                      cy="0"
+                      r="12"
+                      fill="#C9A84C"
+                      opacity="0.35"
+                      className="animate-ping"
+                    />
+                  )}
+                  <circle
+                    cx="0"
+                    cy="0"
+                    r={isSelected ? 5.5 : 4}
+                    fill={isSelected ? "#C9A84C" : "currentColor"}
+                    className={isSelected ? "text-gold" : "text-muted-foreground/80 group-hover:text-gold"}
+                    stroke="#ffffff"
+                    strokeWidth="1.5"
+                  />
+                  {/* Pin label */}
+                  <text
+                    x="0"
+                    y={r.pinY > 190 ? 15 : -9}
+                    textAnchor="middle"
+                    className={`text-[9.5px] uppercase tracking-wider font-semibold select-none transition-colors ${
+                      isSelected
+                        ? "fill-gold font-bold"
+                        : "fill-foreground/75 group-hover:fill-gold"
+                    }`}
+                  >
+                    {r.short}
+                  </text>
+                </g>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+
+      {/* Active Territory Strip */}
+      <div className="mt-2.5 flex items-center justify-between border-t border-border/70 pt-2 text-[11px]">
+        <div className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
+          <span className="text-muted-foreground uppercase tracking-wider text-[10px]">Active Domain:</span>
+          <span className="font-semibold text-foreground">
+            {REGION_MAP_DATA.find((r) => r.id === activeId)?.name}
+          </span>
+        </div>
+        <span className="text-[10px] text-gold font-mono font-medium">
+          {REGION_MAP_DATA.find((r) => r.id === activeId)?.hotspot}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function CustomaryRegionsExplorer() {
   const [activeId, setActiveId] = useState("central");
   const activeRegion = CUSTOMARY_REGIONS.find((r) => r.id === activeId) || CUSTOMARY_REGIONS[0];
 
   return (
-    <div className="border border-border bg-card p-7 sm:p-9">
+    <div className="border border-border bg-card p-7 sm:p-9 shadow-sm">
       <div className="flex flex-col justify-between gap-4 border-b border-border pb-5 sm:flex-row sm:items-end">
         <div>
           <div className="flex items-center gap-2">
@@ -1424,6 +1662,7 @@ function CustomaryRegionsExplorer() {
         </span>
       </div>
 
+      {/* Region Filter Buttons */}
       <div className="mt-6 flex flex-wrap gap-2 border-b border-border pb-3">
         {CUSTOMARY_REGIONS.map((region) => (
           <button
@@ -1441,18 +1680,52 @@ function CustomaryRegionsExplorer() {
         ))}
       </div>
 
-      <div className="mt-6">
-        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
-          <div>
-            <h4 className="font-display text-xl text-foreground sm:text-2xl">{activeRegion.name}</h4>
-            <p className="text-[12px] uppercase tracking-wider text-gold font-medium mt-1">
-              {activeRegion.heroDesc}
-            </p>
-            <p className="mt-3.5 text-[13.5px] leading-relaxed text-foreground/75">
-              {activeRegion.description}
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild className="rounded-none bg-gold px-5 text-[11.5px] uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90">
+      {/* Side-by-side Map & Territory Details */}
+      <div className="mt-8 grid gap-8 lg:grid-cols-[1.05fr_1.15fr] lg:items-start">
+        {/* Left: Interactive Vector Map */}
+        <CustomaryTerritoryMap activeId={activeId} onSelectRegion={setActiveId} />
+
+        {/* Right: Active Region Detail Dossier with AnimatePresence */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeRegion.id}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col justify-between h-full space-y-6"
+          >
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
+                <p className="text-[11.5px] uppercase tracking-wider text-gold font-semibold">
+                  {activeRegion.heroDesc}
+                </p>
+              </div>
+              <h4 className="mt-1 font-display text-2xl text-foreground sm:text-3xl">{activeRegion.name}</h4>
+              <p className="mt-3.5 text-[13.5px] leading-relaxed text-foreground/80">
+                {activeRegion.description}
+              </p>
+            </div>
+
+            <div className="border border-border bg-background/90 p-5 shadow-sm">
+              <p className="eyebrow text-gold">Customary Pillars &amp; Institutions</p>
+              <ul className="mt-3 space-y-2.5">
+                {activeRegion.keyFeatures.map((feat) => (
+                  <li key={feat} className="flex items-center gap-2.5 text-[13px] text-foreground/85">
+                    <span className="h-1.5 w-1.5 rounded-full bg-gold shrink-0" />
+                    <span>{feat}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-5 border-t border-border pt-4 text-[11px] text-muted-foreground flex items-center justify-between">
+                <span>Official recognized OTA Customary Assembly jurisdiction</span>
+                <span className="text-gold font-mono text-[10px]">OTA-DOM-{activeRegion.id.toUpperCase()}</span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3 pt-2">
+              <Button asChild className="rounded-none bg-gold px-5 text-[11.5px] uppercase tracking-[0.14em] text-[hsl(var(--ink))] hover:bg-gold/90 shadow-sm">
                 <Link to={activeRegion.ctaTo} search={activeRegion.ctaSearch}>
                   {activeRegion.ctaLabel} <ArrowRight className="ml-2 h-3.5 w-3.5" />
                 </Link>
@@ -1465,23 +1738,8 @@ function CustomaryRegionsExplorer() {
                 </Button>
               )}
             </div>
-          </div>
-
-          <div className="border border-border bg-background/80 p-5">
-            <p className="eyebrow text-gold">Customary Pillars &amp; Institutions</p>
-            <ul className="mt-3 space-y-2.5">
-              {activeRegion.keyFeatures.map((feat) => (
-                <li key={feat} className="flex items-center gap-2.5 text-[13px] text-foreground/80">
-                  <span className="h-1.5 w-1.5 rounded-full bg-gold shrink-0" />
-                  <span>{feat}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-5 border-t border-border pt-4 text-[11px] text-muted-foreground">
-              Official recognized jurisdiction recorded under OTA Customary Assembly frameworks.
-            </div>
-          </div>
-        </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -1545,6 +1803,13 @@ function LiveMetricsStrip({ slides, current, goTo }) {
               <p className="mt-0.5 text-[11px] text-muted-foreground">
                 {m.sub}
               </p>
+
+              {/* Mini Sparkline Growth Trend */}
+              <MetricSparkline
+                data={METRIC_SPARKLINE_DATA[idx % METRIC_SPARKLINE_DATA.length]}
+                isActive={isActive}
+                id={idx}
+              />
 
               {/* Progress bar on active slide */}
               {isActive ? (

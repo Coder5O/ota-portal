@@ -103,6 +103,19 @@
   .rich-text ul {
     @apply mb-4 list-disc space-y-2 pl-6 text-foreground/85;
   }
+
+  .interactive-card {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-gold/5 hover:border-gold/50;
+  }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 24s linear infinite;
 }
 
 @keyframes ota-rise {
