@@ -30,7 +30,7 @@ import { INSTITUTIONS } from "@/lib/institutions";
 import { CURATED_MILESTONE_NEWS } from "@/lib/curated-milestones-news";
 import { CURATED_CALENDAR_EVENTS } from "@/lib/curated-events";
 
-const HERO_IMAGE = "/images/heritage/paramount-chief-ceremonial-dress.jpg";
+const HERO_IMAGE = "/images/heritage/ovaherero-women-red-flag.jpg";
 const DETAIL_IMAGE = "/images/heritage/paramount-chief-community-gathering.jpg";
 
 /**
@@ -39,7 +39,7 @@ const DETAIL_IMAGE = "/images/heritage/paramount-chief-community-gathering.jpg";
  */
 export const DEFAULT_EVENT_PHOTOS = {
   "annual-community-meeting-toasis": "/images/heritage/paramount-chief-community-gathering.jpg",
-  "hererofest-2026": "/images/heritage/paramount-chief-ceremonial-dress.jpg",
+  "hererofest-2026": "/images/heritage/ovaherero-women-red-flag.jpg",
   "herero-day-2026": "/images/milestones/01-okahandja-parade.jpg",
   "herero-genocide-day-2026": "/images/milestones/06-reichstag-delegation.jpg",
   "chiefs-council-meeting-2026": "/images/milestones/09-ovaherero-house-briefing.jpg",
@@ -618,7 +618,7 @@ export function EventsFeaturedHeroBanner({ events = [], allEvents = [], config =
 
   return (
     <section
-      className="relative flex min-h-[580px] lg:min-h-[640px] flex-col justify-between overflow-hidden bg-[hsl(350_28%_14%)] text-white border-y-2 border-gold/40 shadow-2xl"
+      className="relative flex min-h-[62vh] sm:min-h-[66vh] lg:min-h-[70vh] max-h-[680px] flex-col justify-between overflow-hidden bg-[hsl(350_28%_14%)] text-white border-y-2 border-gold/40 shadow-lg"
       aria-label="Upcoming Events & Customary Assemblies Hero Banner"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -639,105 +639,77 @@ export function EventsFeaturedHeroBanner({ events = [], allEvents = [], config =
         <div className="absolute inset-0 bg-gradient-to-t from-[hsl(350_32%_10%)] via-transparent to-black/40" />
       </div>
 
-      <div className="relative z-10 shell flex flex-1 flex-col justify-between py-8 lg:py-10">
+      <div className="relative z-10 shell flex flex-1 flex-col justify-between py-4 sm:py-5 lg:py-6">
         {/* Top Eyebrow Bar: Live Indicator + Counter + Full Calendar Link */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/15">
-          <div className="flex items-center gap-2.5">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-gold"></span>
-            </span>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-gold sm:text-[11px]">
+        <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-white/15">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-gold animate-pulse" />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gold sm:text-[11px]">
               Tradition in Practice · Convocations &amp; Ceremonies
             </span>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-[11px] font-mono text-white/70">
-              <span className="text-gold font-bold">{String(current + 1).padStart(2, "0")}</span>
-              <span className="text-white/40 mx-1">/</span>
-              {String(total).padStart(2, "0")}
-            </span>
-            <Link
-              to="/events"
-              className="group inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.16em] text-gold/90 transition-colors hover:text-white"
-            >
-              Full Calendar &amp; All Convocations
-              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
+          <Link
+            to="/events"
+            className="group inline-flex items-center gap-1 text-[10.5px] font-medium uppercase tracking-[0.16em] text-gold/90 transition-colors hover:text-white"
+          >
+            All Calendar Events &amp; Convocations
+            <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </Link>
         </div>
 
-        {/* Hero Main Stage Grid */}
-        <div className="my-auto grid items-center gap-8 py-6 lg:grid-cols-[1.1fr_1.3fr] lg:gap-12">
+        {/* Hero Main Stage Grid: Proportions matching Milestones and Chiefs Banners */}
+        <div className="my-auto grid items-center gap-6 py-2 sm:py-3 lg:grid-cols-[0.9fr_1.3fr] lg:gap-10">
           {/* Left: Event Details, Badges, Narrative & Actions */}
-          <div className="space-y-4 min-w-0">
+          <div className="space-y-3 min-w-0">
             {/* Category, Status & Photo Badges */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="border border-gold/50 bg-gold/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">
+              <span className="border border-gold/50 bg-gold/15 px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.16em] text-gold">
                 {activeEvent.category_label || "Customary Assembly"}
               </span>
               {activeEvent.isCustomPhoto ? (
-                <span className="inline-flex items-center gap-1 border border-emerald-500/40 bg-emerald-500/20 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-emerald-300">
-                  <Sparkles className="h-3 w-3" /> Admin Uploaded Picture
+                <span className="inline-flex items-center gap-1 border border-emerald-500/40 bg-emerald-500/20 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-wider text-emerald-300">
+                  <Sparkles className="h-3 w-3" /> Admin Photo
                 </span>
               ) : (
-                <span className="border border-white/20 bg-white/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-white/90">
+                <span className="border border-white/20 bg-white/10 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-wider text-white/90">
                   Official Convocations
                 </span>
               )}
               {activeEvent.registration_open ? (
-                <span className="border border-gold/40 bg-gold/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-gold">
+                <span className="border border-gold/40 bg-gold/10 px-1.5 py-0.5 text-[8.5px] font-semibold uppercase tracking-wider text-gold">
                   RSVP Open
                 </span>
               ) : null}
             </div>
 
-            {/* Event Title */}
-            <h2 className="font-display text-2xl leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
-              {activeEvent.title}
-            </h2>
-
-            {/* Date & Location Pill Tags */}
-            <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-[12px] text-white/90">
-              <div className="flex items-center gap-1.5 text-gold font-medium">
-                <CalendarDays className="h-4 w-4 shrink-0 text-gold" />
-                <span>{dateStr}</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-white/80">
-                <MapPin className="h-4 w-4 shrink-0 text-gold" />
-                <span className="line-clamp-1">{locationStr}</span>
+            {/* Event Title & Location */}
+            <div>
+              <h2 className="font-display text-2xl leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
+                {activeEvent.title}
+              </h2>
+              <div className="mt-1 flex items-center gap-3 text-gold/85 text-[11.5px] font-medium uppercase tracking-wider">
+                <span className="inline-flex items-center gap-1">
+                  <CalendarDays className="h-3.5 w-3.5 shrink-0" />
+                  {dateStr}
+                </span>
+                <span className="inline-flex items-center gap-1 line-clamp-1">
+                  <MapPin className="h-3.5 w-3.5 shrink-0" />
+                  {locationStr}
+                </span>
               </div>
             </div>
 
-            {/* Description */}
-            <p className="line-clamp-4 text-[0.92rem] leading-relaxed text-white/85 sm:text-[0.98rem] max-w-xl">
+            {/* Description / Narrative */}
+            <p className="max-w-md line-clamp-2 sm:line-clamp-3 text-[0.92rem] leading-relaxed text-white/85 sm:text-[0.98rem]">
               {activeEvent.description ||
                 "Official gathering and traditional convocation of the Ovaherero Traditional Authority."}
             </p>
 
-            {/* Organizing Structure & Audience */}
-            {activeEvent.organising_structure || activeEvent.audience ? (
-              <div className="pt-1 text-[11px] text-white/70 space-y-1 border-l-2 border-gold/40 pl-3">
-                {activeEvent.organising_structure ? (
-                  <p>
-                    <span className="text-gold/90 font-semibold uppercase tracking-wider">Convenor:</span>{" "}
-                    {activeEvent.organising_structure}
-                  </p>
-                ) : null}
-                {activeEvent.audience ? (
-                  <p>
-                    <span className="text-white/50 uppercase tracking-wider">Audience:</span>{" "}
-                    {activeEvent.audience}
-                  </p>
-                ) : null}
-              </div>
-            ) : null}
-
-            {/* Action Buttons & Prev/Next */}
-            <div className="flex flex-wrap items-center gap-3 pt-3">
+            {/* Single CTA Button & Chevron Navigation matching Banner 1 & 2 */}
+            <div className="flex items-center gap-3 pt-1">
               <Button
                 asChild
-                className="rounded-none bg-gold px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--ink))] shadow-lg hover:bg-gold/90 transition-transform active:scale-95"
+                className="rounded-none bg-gold px-4 py-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--ink))] shadow-md hover:bg-gold/90 transition-transform active:scale-95"
               >
                 <Link to="/events" search={{ event: activeEvent.id }}>
                   RSVP to Attend <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
@@ -747,9 +719,9 @@ export function EventsFeaturedHeroBanner({ events = [], allEvents = [], config =
               <Button
                 asChild
                 variant="outline"
-                className="rounded-none border-white/30 bg-white/5 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-white/15 hover:border-gold"
+                className="rounded-none border-white/30 bg-white/5 px-3 py-2 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white hover:bg-white/15 hover:border-gold"
               >
-                <Link to="/events">View Full Agenda</Link>
+                <Link to="/events">Full Calendar</Link>
               </Button>
 
               {/* Prev / Next controls */}
@@ -758,7 +730,7 @@ export function EventsFeaturedHeroBanner({ events = [], allEvents = [], config =
                   type="button"
                   onClick={() => goTo(current - 1)}
                   aria-label="Previous Event"
-                  className="grid h-9 w-9 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
+                  className="grid h-8 w-8 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
@@ -766,7 +738,7 @@ export function EventsFeaturedHeroBanner({ events = [], allEvents = [], config =
                   type="button"
                   onClick={() => goTo(current + 1)}
                   aria-label="Next Event"
-                  className="grid h-9 w-9 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
+                  className="grid h-8 w-8 place-items-center border border-white/20 bg-white/10 text-white/90 backdrop-blur-sm transition-colors hover:border-gold hover:bg-gold/25 hover:text-white"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
@@ -774,8 +746,8 @@ export function EventsFeaturedHeroBanner({ events = [], allEvents = [], config =
             </div>
           </div>
 
-          {/* Right: Featured Event Picture with Gold Matting & Overlays */}
-          <div className="relative w-full max-w-[540px] lg:max-w-[620px] mx-auto lg:ml-auto">
+          {/* Right: Featured Event Picture - Matching 16/10 Aspect Ratio & Gold Borders */}
+          <div className="relative w-full max-w-[480px] sm:max-w-[540px] lg:max-w-[620px] mx-auto lg:ml-auto">
             <div className="relative aspect-[16/10] overflow-hidden border-2 border-gold/60 bg-[hsl(350_24%_14%)] shadow-2xl p-1 bg-black/40">
               <div className="relative h-full w-full overflow-hidden border border-gold/30">
                 <img
@@ -789,40 +761,34 @@ export function EventsFeaturedHeroBanner({ events = [], allEvents = [], config =
                       "/images/heritage/paramount-chief-community-gathering.jpg";
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
 
-                {/* Calendar Date Badge Overlay on Top-Left */}
-                <div className="absolute top-3 left-3 flex flex-col items-center justify-center border border-gold/60 bg-black/75 px-3 py-1.5 text-center backdrop-blur-md shadow-lg">
-                  <span className="font-display text-xl sm:text-2xl font-bold leading-none text-gold">
+                {/* Calendar Ordinal & Date Badge Overlay */}
+                <div className="absolute top-2.5 right-2.5 bg-black/70 backdrop-blur-md border border-gold/50 px-2.5 py-0.5">
+                  <span className="font-display text-sm font-bold text-gold">
+                    {String(current + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+                  </span>
+                </div>
+
+                {/* Top-Left Date Stamp */}
+                <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 border border-gold/50 bg-black/75 px-2 py-0.5 text-center backdrop-blur-md shadow-md">
+                  <span className="font-display text-sm font-bold text-gold">
                     {dm?.day || "—"}
                   </span>
-                  <span className="mt-0.5 text-[9px] uppercase tracking-wider text-white/90 font-medium">
+                  <span className="text-[8.5px] uppercase tracking-wider text-white/90 font-medium">
                     {dm?.month || "2026"}
                   </span>
                 </div>
 
-                {/* Admin Upload / Category Badge Overlay on Top-Right */}
-                <div className="absolute top-3 right-3">
-                  {activeEvent.isCustomPhoto ? (
-                    <span className="inline-flex items-center gap-1 border border-emerald-400/60 bg-black/75 px-2.5 py-1 text-[9.5px] font-semibold uppercase tracking-wider text-emerald-300 backdrop-blur-md">
-                      <Sparkles className="h-3 w-3" /> Admin Photo
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 border border-gold/60 bg-black/75 px-2.5 py-1 text-[9.5px] font-semibold uppercase tracking-wider text-gold backdrop-blur-md">
-                      Official Assembly
-                    </span>
-                  )}
-                </div>
-
                 {/* Bottom Plate on Photo */}
-                <div className="absolute bottom-0 inset-x-0 p-3 sm:p-4 text-white">
-                  <p className="text-[9.5px] font-semibold uppercase tracking-[0.2em] text-gold">
+                <div className="absolute bottom-0 inset-x-0 p-3 text-white">
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-gold">
                     {activeEvent.town || "Customary Domain"}
                   </p>
-                  <p className="mt-0.5 font-display text-base sm:text-lg leading-tight font-medium truncate drop-shadow-md">
+                  <p className="mt-0.5 font-display text-base sm:text-lg leading-tight font-medium truncate drop-shadow-sm">
                     {activeEvent.title}
                   </p>
-                  <p className="text-[10px] text-white/70 line-clamp-1 mt-0.5">
+                  <p className="text-[10px] uppercase tracking-wider text-white/70 truncate">
                     {activeEvent.venue}
                   </p>
                 </div>
@@ -831,12 +797,9 @@ export function EventsFeaturedHeroBanner({ events = [], allEvents = [], config =
           </div>
         </div>
 
-        {/* Bottom Interactive Thumbnail Strip */}
-        <div className="pt-4 border-t border-white/15">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-white/60 mb-2 font-semibold">
-            All Convocations &amp; Ceremonies (Click to Preview):
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+        {/* Bottom Interactive Thumbnail Strip - Compact & Proportional */}
+        <div className="pt-2 border-t border-white/15">
+          <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
             {eventItems.map((evt, idx) => {
               const isActive = idx === current;
               return (
@@ -844,13 +807,13 @@ export function EventsFeaturedHeroBanner({ events = [], allEvents = [], config =
                   key={`thumb-${evt.id || idx}`}
                   type="button"
                   onClick={() => goTo(idx)}
-                  className={`group relative flex flex-col items-start p-1.5 text-left transition-all border ${
+                  className={`group relative flex items-center gap-1.5 p-1 text-left transition-all border ${
                     isActive
                       ? "border-gold bg-gold/20 shadow-md ring-1 ring-gold"
                       : "border-white/15 bg-black/40 hover:border-gold/60 hover:bg-white/5"
                   }`}
                 >
-                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/60">
+                  <div className="relative h-6 w-9 shrink-0 overflow-hidden bg-black/60 border border-white/10">
                     <img
                       src={evt.resolvedPhoto}
                       alt=""
@@ -865,19 +828,16 @@ export function EventsFeaturedHeroBanner({ events = [], allEvents = [], config =
                           "/images/heritage/paramount-chief-community-gathering.jpg";
                       }}
                     />
-                    {isActive ? (
-                      <div className="absolute inset-0 border-2 border-gold pointer-events-none" />
-                    ) : null}
                   </div>
-                  <div className="mt-1.5 w-full min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p
-                      className={`truncate text-[10px] font-medium leading-tight ${
+                      className={`truncate text-[9.5px] font-medium leading-tight ${
                         isActive ? "text-gold font-bold" : "text-white/80"
                       }`}
                     >
                       {evt.title}
                     </p>
-                    <p className="text-[8.5px] uppercase tracking-wider text-white/50 truncate mt-0.5">
+                    <p className="text-[8px] uppercase tracking-wider text-white/50 truncate">
                       {evt.date_display || (evt.starts_at ? fmtDate(evt.starts_at) : "")}
                     </p>
                   </div>

@@ -41,10 +41,10 @@ const CURATED_GALLERY_ITEMS = [
   },
   {
     id: "gallery-3",
-    media_url: "/images/heritage/paramount-chief-ceremonial-dress.jpg",
+    media_url: "/images/heritage/ovaherero-women-red-flag.jpg",
     media_type: "image",
-    title: "Customary Regalia & Ceremonial Attire",
-    caption: "Traditional military-style ceremonial attire and insignia worn during sacred assemblies and pilgrimages.",
+    title: "Ovaherero Women Under the Red Flag",
+    caption: "Otjiserandu gathering in traditional dress and ceremonial headwear honouring ancestral remembrance.",
     taken_date: "2023-08-25",
     category: "Culture & Assembly",
   },
@@ -148,7 +148,7 @@ function GalleryPage() {
         eyebrow="Photo & video gallery"
         title="Moments from our people, places and gatherings."
         intro="Official photographs and videos from the Ovaherero Traditional Authority, its communities, institutions and commemorations."
-        image="/images/heritage/paramount-chief-ceremonial-dress.jpg"
+        image="/images/heritage/ovaherero-women-red-flag.jpg"
         imageAlt="Ovaherero cultural gathering"
       />
 
