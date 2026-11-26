@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { motion, useScroll, useSpring, useInView, AnimatePresence } from "framer-motion";
+import useEmblaCarousel from "embla-carousel-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -32,6 +34,350 @@ import { CURATED_CALENDAR_EVENTS } from "@/lib/curated-events";
 
 const HERO_IMAGE = "/images/heritage/ovaherero-women-red-flag.jpg";
 const DETAIL_IMAGE = "/images/heritage/paramount-chief-community-gathering.jpg";
+
+/* ── Shared Framer Motion animation variants ────────────────────────────── */
+const fadeUp = {
+  hidden:  { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
+
+const staggerContainer = {
+  hidden:  {},
+  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+};
+
+const cardVariant = {
+  hidden:  { opacity: 0, y: 32 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
+};
+
+const slideInLeft = {
+  hidden:  { opacity: 0, x: -40 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
+};
+
+const slideInRight = {
+  hidden:  { opacity: 0, x: 40 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } },
+};
+
+/** Animated counter that counts up from 0 when it enters the viewport. */
+function AnimatedCounter({ value, duration = 1.6 }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-40px" });
+  const strVal = String(value ?? "");
+  const match = strVal.match(/^(\D*)([\d,]+)(.*)$/);
+  const [display, setDisplay] = useState(() => (match ? `${match[1]}0${match[3]}` : strVal));
+
+  useEffect(() => {
+    if (!isInView) return;
+    if (!match) {
+      setDisplay(strVal);
+      return;
+    }
+    const prefix = match[1] || "";
+    const target = parseInt(match[2].replace(/,/g, ""), 10);
+    const suffix = match[3] || "";
+    if (isNaN(target)) {
+      setDisplay(strVal);
+      return;
+    }
+    const startTime = performance.now();
+    let frameId;
+    function tick(now) {
+      const elapsed = (now - startTime) / 1000;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const cur = Math.round(eased * target);
+      setDisplay(`${prefix}${cur.toLocaleString()}${suffix}`);
+      if (progress < 1) {
+        frameId = requestAnimationFrame(tick);
+      }
+    }
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [isInView, strVal, duration]);
+
+  return <span ref={ref}>{display}</span>;
+}
+
+/** Gold scroll-progress bar pinned to the top of the page. */
+function ScrollProgressBar() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 z-[9999] h-[3px] origin-left bg-gradient-to-r from-gold via-amber-400 to-gold pointer-events-none"
+      style={{ scaleX }}
+    />
+  );
+}
+
+/**
+ * Responsive Communiqués & News Section:
+ * - Desktop (md+): Staggered 3-column animated grid with card lift & gold highlight
+ * - Mobile (<md): Touch-swipeable Embla Carousel with navigation dots and smooth snapping
+ */
+function NewsCarousel({ news = [] }) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    loop: false,
+    skipSnaps: false,
+  });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
+  return (
+    <div className="mt-10">
+      {/* Desktop Grid (md+) */}
+      <motion.div
+        className="hidden md:grid md:grid-cols-3 gap-8"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+      >
+        {news.map((item) => (
+          <motion.article
+            key={item.id}
+            variants={cardVariant}
+            whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            className="flex flex-col justify-between border border-border bg-card p-6 shadow-sm transition-all hover:shadow-md hover:border-gold/50"
+          >
+            <div>
+              <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                <span>{fmtDate(item.published_date)}</span>
+                <span className="text-gold font-semibold">{item.category || "Official"}</span>
+              </div>
+              <h3 className="mt-3 font-display text-xl leading-snug">
+                <Link to={`/news/${item.slug || item.id}`} className="hover:text-[hsl(var(--primary))] transition-colors">
+                  {item.title}
+                </Link>
+              </h3>
+              <p className="mt-3 line-clamp-3 text-[13px] leading-relaxed text-foreground/70">
+                {item.summary || item.body}
+              </p>
+            </div>
+            <div className="mt-6 border-t border-border pt-4">
+              <Link
+                to={`/news/${item.slug || item.id}`}
+                className="group inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-[hsl(var(--primary))]"
+              >
+                Read communiqué
+                <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </motion.article>
+        ))}
+      </motion.div>
+
+      {/* Mobile Swipeable Embla Carousel (<md) */}
+      <div className="md:hidden">
+        <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
+          <div className="flex gap-4">
+            {news.map((item) => (
+              <div
+                key={item.id}
+                className="flex-[0_0_86%] min-w-0 flex flex-col justify-between border border-border bg-card p-6 shadow-sm"
+              >
+                <div>
+                  <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                    <span>{fmtDate(item.published_date)}</span>
+                    <span className="text-gold font-semibold">{item.category || "Official"}</span>
+                  </div>
+                  <h3 className="mt-3 font-display text-lg leading-snug">
+                    <Link to={`/news/${item.slug || item.id}`} className="hover:text-[hsl(var(--primary))]">
+                      {item.title}
+                    </Link>
+                  </h3>
+                  <p className="mt-3 line-clamp-3 text-[13px] leading-relaxed text-foreground/70">
+                    {item.summary || item.body}
+                  </p>
+                </div>
+                <div className="mt-6 border-t border-border pt-4">
+                  <Link
+                    to={`/news/${item.slug || item.id}`}
+                    className="group inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-[hsl(var(--primary))]"
+                  >
+                    Read communiqué
+                    <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Carousel indicators */}
+        <div className="mt-4 flex items-center justify-center gap-1.5">
+          {news.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => emblaApi && emblaApi.scrollTo(i)}
+              className={`h-1.5 rounded-full transition-all ${
+                i === selectedIndex ? "w-6 bg-gold" : "w-1.5 bg-border hover:bg-muted-foreground/40"
+              }`}
+              aria-label={`Go to news slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Responsive Ceremonies & Assembly Events Section:
+ * - Desktop (md+): Staggered 3-column animated grid with calendar badges
+ * - Mobile (<md): Touch-swipeable Embla Carousel with date stamp and venue
+ */
+function EventsCardsCarousel({ events = [] }) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    loop: false,
+    skipSnaps: false,
+  });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
+  return (
+    <div className="mt-10">
+      {/* Desktop Grid (md+) */}
+      <motion.div
+        className="hidden md:grid md:grid-cols-3 gap-6"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+      >
+        {events.map((evt) => {
+          const dm = dayMonth(evt.starts_at);
+          return (
+            <motion.div
+              key={evt.id}
+              variants={cardVariant}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="flex gap-5 border border-border bg-card p-6 shadow-sm transition-all hover:shadow-md hover:border-gold/50"
+            >
+              <div className="flex flex-col items-center justify-center border border-gold/40 bg-gold/10 px-3.5 py-2 text-center h-fit">
+                <span className="font-display text-2xl font-bold leading-none text-[hsl(var(--primary))]">
+                  {dm?.day || "—"}
+                </span>
+                <span className="mt-1 text-[9.5px] uppercase tracking-wider text-muted-foreground font-semibold">
+                  {dm?.month || ""}
+                </span>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="bg-primary/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
+                    Official Gathering
+                  </span>
+                </div>
+                <h3 className="mt-2 font-display text-lg leading-snug">
+                  <Link to="/events" className="hover:text-[hsl(var(--primary))] transition-colors">
+                    {evt.title}
+                  </Link>
+                </h3>
+                {(evt.location || evt.town || evt.venue) ? (
+                  <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-muted-foreground">
+                    <MapPin className="h-3 w-3 shrink-0 text-gold" />
+                    {evt.location || [evt.venue, evt.town].filter(Boolean).join(", ")}
+                  </p>
+                ) : null}
+              </div>
+            </motion.div>
+          );
+        })}
+      </motion.div>
+
+      {/* Mobile Swipeable Embla Carousel (<md) */}
+      <div className="md:hidden">
+        <div className="overflow-hidden cursor-grab active:cursor-grabbing" ref={emblaRef}>
+          <div className="flex gap-4">
+            {events.map((evt) => {
+              const dm = dayMonth(evt.starts_at);
+              return (
+                <div
+                  key={evt.id}
+                  className="flex-[0_0_86%] min-w-0 flex gap-4 border border-border bg-card p-5 shadow-sm"
+                >
+                  <div className="flex flex-col items-center justify-center border border-gold/40 bg-gold/10 px-3 py-2 text-center h-fit">
+                    <span className="font-display text-2xl font-bold leading-none text-[hsl(var(--primary))]">
+                      {dm?.day || "—"}
+                    </span>
+                    <span className="mt-1 text-[9.5px] uppercase tracking-wider text-muted-foreground font-semibold">
+                      {dm?.month || ""}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="bg-primary/10 px-2 py-0.5 text-[8.5px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
+                      Official Gathering
+                    </span>
+                    <h3 className="mt-1.5 font-display text-base leading-snug">
+                      <Link to="/events" className="hover:text-[hsl(var(--primary))]">
+                        {evt.title}
+                      </Link>
+                    </h3>
+                    {(evt.location || evt.town || evt.venue) ? (
+                      <p className="mt-1.5 flex items-center gap-1 text-[11px] text-muted-foreground truncate">
+                        <MapPin className="h-3 w-3 shrink-0 text-gold" />
+                        {evt.location || [evt.venue, evt.town].filter(Boolean).join(", ")}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Carousel indicators */}
+        <div className="mt-4 flex items-center justify-center gap-1.5">
+          {events.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => emblaApi && emblaApi.scrollTo(i)}
+              className={`h-1.5 rounded-full transition-all ${
+                i === selectedIndex ? "w-6 bg-gold" : "w-1.5 bg-border hover:bg-muted-foreground/40"
+              }`}
+              aria-label={`Go to event slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /**
  * Authentic verified fallback photos for the 8 foundational calendar convocations.
@@ -1174,7 +1520,7 @@ function LiveMetricsStrip({ slides, current, goTo }) {
                       isActive ? "text-gold" : "text-[hsl(var(--primary))]"
                     }`}
                   >
-                    {m.number}
+                    <AnimatedCounter value={m.number} />
                   </span>
                   <span
                     className={`inline-block h-2 w-2 rounded-full ${
@@ -1484,11 +1830,17 @@ function HomePage() {
 
   return (
     <>
+      {/* ── Gold scroll-progress bar ───────────────────────────────────────── */}
+      <ScrollProgressBar />
+
       {/* ── OvaHerero 2026 Community Milestones & Reparations Mission Hero Banner ──── */}
       <Milestones2026HeroBanner />
 
       {/* ── Visual Separation between Hero Banner and Quick Links ─────────── */}
-      <div className="py-6 sm:py-8 lg:py-10 bg-background flex items-center justify-center">
+      <motion.div
+        className="py-6 sm:py-8 lg:py-10 bg-background flex items-center justify-center"
+        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+      >
         <div className="shell flex items-center justify-between gap-4 w-full">
           <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent flex-1" />
           <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground/75">
@@ -1496,34 +1848,42 @@ function HomePage() {
           </span>
           <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent flex-1" />
         </div>
-      </div>
+      </motion.div>
 
-      <section className="border-y border-border bg-card shadow-sm">
+      {/* ── Quick Links (staggered fade-up) ───────────────────────────────── */}
+      <motion.section
+        className="border-y border-border bg-card shadow-sm"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+      >
         <div className="shell grid divide-y divide-border sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
           {QUICK_LINKS.map((item) => {
             const Icon = item.icon;
             return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className="group flex items-start gap-4 px-1 py-6 transition-colors hover:bg-secondary/50 lg:px-7"
-              >
-                <Icon className="mt-0.5 h-5 w-5 shrink-0 text-gold" strokeWidth={1.5} />
-                <span>
-                  <span className="block font-display text-lg leading-snug text-foreground group-hover:text-[hsl(var(--primary))]">
-                    {item.label}
+              <motion.div key={item.to} variants={cardVariant}>
+                <Link
+                  to={item.to}
+                  className="group flex items-start gap-4 px-1 py-6 transition-colors hover:bg-secondary/50 lg:px-7"
+                >
+                  <Icon className="mt-0.5 h-5 w-5 shrink-0 text-gold" strokeWidth={1.5} />
+                  <span>
+                    <span className="block font-display text-lg leading-snug text-foreground group-hover:text-[hsl(var(--primary))]">
+                      {item.label}
+                    </span>
+                    <span className="mt-0.5 block text-[11.5px] uppercase tracking-[0.14em] text-muted-foreground">
+                      {item.note}
+                    </span>
                   </span>
-                  <span className="mt-0.5 block text-[11.5px] uppercase tracking-[0.14em] text-muted-foreground">
-                    {item.note}
-                  </span>
-                </span>
-              </Link>
+                </Link>
+              </motion.div>
             );
           })}
         </div>
-      </section>
+      </motion.section>
 
-      {/* ── Dynamic Operational Key Metrics Strip (Synchronized with slideshow) ── */}
+      {/* ── Dynamic Operational Key Metrics Strip (Animated counters) ──────── */}
       <LiveMetricsStrip slides={slides} current={current} goTo={goTo} />
 
       {/* ── Interactive Governance Milestones & Numbers Showcase ──────────────── */}
@@ -1535,9 +1895,15 @@ function HomePage() {
         togglePause={togglePause}
       />
 
-      {/* ── Paramount Chief Message Section ──────────────────────────────────── */}
+      {/* ── Paramount Chief Message Section (slide in from sides) ─────────── */}
       <section className="shell grid gap-12 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:py-28">
-        <div className="relative">
+        <motion.div
+          className="relative"
+          variants={slideInLeft}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+        >
           <Image
             src={detailImg}
             alt="Paramount Chief in ceremonial uniform greeting community members"
@@ -1545,15 +1911,23 @@ function HomePage() {
             fittingType="fill"
           />
           <div className="absolute -bottom-6 -right-4 hidden border border-gold/40 bg-background px-6 py-5 sm:block">
-            <p className="font-display text-3xl leading-none text-[hsl(var(--primary))]">22</p>
+            <p className="font-display text-3xl leading-none text-[hsl(var(--primary))]">
+              <AnimatedCounter value="22" />
+            </p>
             <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
               August 2022
               <br />
               Constitution adopted
             </p>
           </div>
-        </div>
-        <div className="self-center">
+        </motion.div>
+        <motion.div
+          className="self-center"
+          variants={slideInRight}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+        >
           <div className="flex items-center gap-3">
             <p className="eyebrow">{welcome?.heading || "Message from the Office of the Paramount Chief"}</p>
             {welcome?.is_demo ? <IllustrativeBadge /> : null}
@@ -1595,18 +1969,30 @@ function HomePage() {
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ── Dynamic Ancestral Wisdom & Paramount Chiefs Quote Rotator ─────── */}
-      <section className="shell py-12 lg:py-16">
+      <motion.section
+        className="shell py-12 lg:py-16"
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+      >
         <AncestralWisdomRotator />
-      </section>
+      </motion.section>
 
-      {/* ── Organs of the Authority Section ─────────────────────────────────── */}
+      {/* ── Organs of the Authority Section (staggered cards) ───────────── */}
       <section className="bg-secondary/60 py-20 lg:py-24">
         <div className="shell">
-          <div className="flex flex-wrap items-end justify-between gap-6">
+          <motion.div
+            className="flex flex-wrap items-end justify-between gap-6"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+          >
             <div>
               <p className="eyebrow">Institutional structures</p>
               <h2 className="mt-3 text-[2rem] leading-tight sm:text-[2.5rem]">The organs of the Authority</h2>
@@ -1618,50 +2004,75 @@ function HomePage() {
               Leadership directory
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
             </Link>
-          </div>
-          <p className="mt-3 max-w-2xl text-[0.95rem] leading-relaxed text-foreground/70">
+          </motion.div>
+          <motion.p
+            className="mt-3 max-w-2xl text-[0.95rem] leading-relaxed text-foreground/70"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+          >
             Established under the Constitution of the Ovaherero Traditional Authority to administer customary law,
             manage traditional affairs and represent the community.
-          </p>
+          </motion.p>
 
-          <div className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div
+            className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+          >
             {institutions.map((inst) => (
-              <Link
-                key={inst.id}
-                to={`/institutions/${inst.slug}`}
-                className="group bg-card p-7 transition-colors hover:bg-background"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-display text-xl leading-snug group-hover:text-[hsl(var(--primary))]">
-                    {inst.name}
-                  </h3>
-                  {inst.is_demo ? <IllustrativeBadge /> : null}
-                </div>
-                {inst.native_name ? (
-                  <p className="mt-1 text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
-                    {inst.native_name}
+              <motion.div key={inst.id} variants={cardVariant}>
+                <Link
+                  to={`/institutions/${inst.slug}`}
+                  className="group block bg-card p-7 transition-all hover:bg-background hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="font-display text-xl leading-snug group-hover:text-[hsl(var(--primary))]">
+                      {inst.name}
+                    </h3>
+                    {inst.is_demo ? <IllustrativeBadge /> : null}
+                  </div>
+                  {inst.native_name ? (
+                    <p className="mt-1 text-[10.5px] uppercase tracking-[0.18em] text-muted-foreground">
+                      {inst.native_name}
+                    </p>
+                  ) : null}
+                  <p className="mt-3 line-clamp-3 text-[12.5px] leading-relaxed text-foreground/65">
+                    {inst.summary}
                   </p>
-                ) : null}
-                <p className="mt-3 line-clamp-3 text-[12.5px] leading-relaxed text-foreground/65">
-                  {inst.summary}
-                </p>
-                <span className="mt-5 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-[hsl(var(--primary))]">
-                  Learn more <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                </span>
-              </Link>
+                  <span className="mt-5 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-[hsl(var(--primary))]">
+                    Learn more <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ── Interactive Traditional Territories & Customary Regions Navigator ─ */}
-      <section className="shell py-16 lg:py-20">
+      <motion.section
+        className="shell py-16 lg:py-20"
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+      >
         <CustomaryRegionsExplorer />
-      </section>
+      </motion.section>
 
-      {/* ── Communiqués & News Section ───────────────────────────────────────── */}
+      {/* ── Communiqués & News Section (Embla swipe carousel on mobile) ──── */}
       <section className="shell py-20 lg:py-28">
-        <div className="flex flex-wrap items-end justify-between gap-6">
+        <motion.div
+          className="flex flex-wrap items-end justify-between gap-6"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+        >
           <div>
             <p className="eyebrow">Announcements &amp; news</p>
             <h2 className="mt-3 text-[2rem] leading-tight sm:text-[2.5rem]">From the Authority</h2>
@@ -1673,40 +2084,12 @@ function HomePage() {
             All communiqués
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
           </Link>
-        </div>
+        </motion.div>
 
         {news.length === 0 ? (
           <EmptyNote>No public announcements published yet.</EmptyNote>
         ) : (
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
-            {news.map((item) => (
-              <article key={item.id} className="flex flex-col justify-between border border-border bg-card p-6">
-                <div>
-                  <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                    <span>{fmtDate(item.published_date)}</span>
-                    <span className="text-gold">{item.category || "Official"}</span>
-                  </div>
-                  <h3 className="mt-3 font-display text-xl leading-snug">
-                    <Link to={`/news/${item.slug || item.id}`} className="hover:text-[hsl(var(--primary))]">
-                      {item.title}
-                    </Link>
-                  </h3>
-                  <p className="mt-3 line-clamp-3 text-[13px] leading-relaxed text-foreground/70">
-                    {item.summary || item.body}
-                  </p>
-                </div>
-                <div className="mt-6 border-t border-border pt-4">
-                  <Link
-                    to={`/news/${item.slug || item.id}`}
-                    className="group inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-[hsl(var(--primary))]"
-                  >
-                    Read communiqué
-                    <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
+          <NewsCarousel news={news} />
         )}
       </section>
 
@@ -1732,7 +2115,13 @@ function HomePage() {
       {/* ── Upcoming Ceremonies & Assembly Events Section ─────────────────────── */}
       <section className="border-t border-border bg-secondary/40 py-20 lg:py-24">
         <div className="shell">
-          <div className="flex flex-wrap items-end justify-between gap-6">
+          <motion.div
+            className="flex flex-wrap items-end justify-between gap-6"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+          >
             <div>
               <p className="eyebrow">Tradition in practice</p>
               <h2 className="mt-3 text-[2rem] leading-tight sm:text-[2.5rem]">Ceremonies &amp; meetings</h2>
@@ -1744,52 +2133,24 @@ function HomePage() {
               Full calendar
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
             </Link>
-          </div>
+          </motion.div>
 
           {events.length === 0 ? (
             <EmptyNote>No upcoming ceremonies or meetings scheduled.</EmptyNote>
           ) : (
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
-              {events.map((evt) => {
-                const dm = dayMonth(evt.starts_at);
-                return (
-                  <div key={evt.id} className="flex gap-5 border border-border bg-card p-6">
-                    <div className="flex flex-col items-center justify-center border border-gold/40 bg-gold/10 px-3.5 py-2 text-center">
-                      <span className="font-display text-2xl font-bold leading-none text-[hsl(var(--primary))]">
-                        {dm?.day || "—"}
-                      </span>
-                      <span className="mt-1 text-[9.5px] uppercase tracking-wider text-muted-foreground">
-                        {dm?.month || ""}
-                      </span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="bg-primary/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-[hsl(var(--primary))]">
-                          Official Gathering
-                        </span>
-                      </div>
-                      <h3 className="mt-2 font-display text-lg leading-snug">
-                        <Link to="/events" className="hover:text-[hsl(var(--primary))]">
-                          {evt.title}
-                        </Link>
-                      </h3>
-                      {(evt.location || evt.town || evt.venue) ? (
-                        <p className="mt-2 flex items-center gap-1.5 text-[11.5px] text-muted-foreground">
-                          <MapPin className="h-3 w-3 shrink-0 text-gold" />
-                          {evt.location || [evt.venue, evt.town].filter(Boolean).join(", ")}
-                        </p>
-                      ) : null}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <EventsCardsCarousel events={events} />
           )}
         </div>
       </section>
 
       {/* ── Homeland Landscape Showcase Cards ─────────────────────────────────── */}
-      <section className="border-t border-border bg-background py-16 lg:py-20">
+      <motion.section
+        className="border-t border-border bg-background py-16 lg:py-20"
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+      >
         <div className="shell">
           <div className="flex flex-col justify-between gap-4 border-b border-border pb-6 sm:flex-row sm:items-end">
             <div>
@@ -1808,28 +2169,41 @@ function HomePage() {
             </Link>
           </div>
 
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div
+            className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+          >
             {buildHeritageCards(config).map((card, i) => (
-              <div key={i} className="group overflow-hidden border border-border bg-card">
+              <motion.div
+                key={i}
+                variants={cardVariant}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className="group overflow-hidden border border-border bg-card shadow-sm transition-all hover:shadow-md hover:border-gold/40"
+              >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <img
                     src={card.src}
                     alt={card.alt}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute bottom-2 left-2 rounded bg-black/60 px-2 py-0.5 text-[10px] uppercase tracking-wider text-white backdrop-blur-sm">
                     {card.region}
                   </div>
                 </div>
                 <div className="p-4">
-                  <h3 className="font-display text-base text-foreground">{card.title}</h3>
+                  <h3 className="font-display text-base text-foreground group-hover:text-[hsl(var(--primary))] transition-colors">
+                    {card.title}
+                  </h3>
                   <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">{card.desc}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* ── Bottom Call-to-Action Section ────────────────────────────────────── */}
       <section className="bg-[hsl(var(--primary))] text-primary-foreground">
