@@ -42,6 +42,9 @@ function AdminOverview() {
   const overview = useQuery({
     queryKey: ["admin-overview-enhanced"],
     queryFn: async () => {
+      const safeCount = (p) => p.catch(() => 0);
+      const safeList = (p) => p.catch(() => ({ items: [] }));
+
       const [
         submitted,
         review,
@@ -61,22 +64,22 @@ function AdminOverview() {
         audits,
         eventRegsRes,
       ] = await Promise.all([
-        base44.entities.MemberApplication.count({ status: "Submitted" }),
-        base44.entities.MemberApplication.count({ status: "Under Review" }),
-        base44.entities.MemberApplication.count({ status: "More Information Required" }),
-        base44.entities.MemberApplication.count({ status: "Approved" }),
-        base44.entities.MemberApplication.count({ status: "Rejected" }),
-        base44.entities.MemberApplication.count({ status: "Suspended" }),
-        base44.entities.Member.count({ status: "Active" }),
-        base44.entities.Member.count({}),
-        base44.entities.TraditionalCommunity.count({}),
-        base44.entities.Officeholder.count({ status: "published" }),
-        base44.entities.Institution.count({ status: "published" }),
-        base44.entities.TaskItem.count({ status: "Open" }),
-        base44.entities.Meeting.count({}),
-        base44.entities.Event.filter({ status: "published" }, { sort: "starts_at", limit: 4 }),
-        base44.entities.MemberApplication.list({ sort: "-created_date", limit: 6 }),
-        base44.entities.AuditLog.list({ sort: "-created_date", limit: 8 }),
+        safeCount(base44.entities.MemberApplication.count({ status: "Submitted" })),
+        safeCount(base44.entities.MemberApplication.count({ status: "Under Review" })),
+        safeCount(base44.entities.MemberApplication.count({ status: "More Information Required" })),
+        safeCount(base44.entities.MemberApplication.count({ status: "Approved" })),
+        safeCount(base44.entities.MemberApplication.count({ status: "Rejected" })),
+        safeCount(base44.entities.MemberApplication.count({ status: "Suspended" })),
+        safeCount(base44.entities.Member.count({ status: "Active" })),
+        safeCount(base44.entities.Member.count({})),
+        safeCount(base44.entities.TraditionalCommunity.count({})),
+        safeCount(base44.entities.Officeholder.count({ status: "published" })),
+        safeCount(base44.entities.Institution.count({ status: "published" })),
+        safeCount(base44.entities.TaskItem.count({ status: "Open" })),
+        safeCount(base44.entities.Meeting.count({})),
+        safeList(base44.entities.Event.filter({ status: "published" }, { sort: "starts_at", limit: 4 })),
+        safeList(base44.entities.MemberApplication.list({ sort: "-created_date", limit: 6 })),
+        safeList(base44.entities.AuditLog.list({ sort: "-created_date", limit: 8 })),
         getEventRegistrationsAdmin().catch(() => ({ totalAttendees: 0, byEvent: {} })),
       ]);
 

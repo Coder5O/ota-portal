@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
@@ -79,6 +79,10 @@ function SearchPage() {
   const [term, setTerm] = useState(q || "");
   const active = (q || "").trim();
 
+  useEffect(() => {
+    setTerm(q || "");
+  }, [q]);
+
   const results = useQuery({
     queryKey: ["site-search", active],
     enabled: active.length > 1,
@@ -124,11 +128,15 @@ function SearchPage() {
 
       const responses = await Promise.all(
         SOURCES.map(async (source) => {
-          const page = await base44.entities[source.entity].filter(
-            { ...source.query, [source.field]: { $regex: active, $options: "i" } },
-            { limit: 8 },
-          );
-          return (page.items || []).map((row) => ({ ...row, __type: source.type, __source: source }));
+          try {
+            const page = await base44.entities[source.entity].filter(
+              { ...source.query, [source.field]: { $regex: active, $options: "i" } },
+              { limit: 8 },
+            );
+            return (page?.items || []).map((row) => ({ ...row, __type: source.type, __source: source }));
+          } catch {
+            return [];
+          }
         }),
       );
 

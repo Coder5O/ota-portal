@@ -33,7 +33,17 @@ export const Route = createFileRoute("/_site/news/$postId")({
       const post = await base44.entities.NewsPost.get(params.postId);
       if (post && post.status === "published") return { post };
     } catch {
-      // ignore and check curated list
+      // ignore and check by slug or curated list
+    }
+
+    try {
+      const bySlug = await base44.entities.NewsPost.filter(
+        { slug: params.postId, status: "published" },
+        { limit: 1 },
+      );
+      if (bySlug?.items?.[0]) return { post: bySlug.items[0] };
+    } catch {
+      // ignore
     }
 
     const curated = CURATED_MILESTONE_NEWS.find(

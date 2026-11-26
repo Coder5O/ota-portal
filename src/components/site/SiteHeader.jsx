@@ -203,7 +203,7 @@ export function SiteHeader({ config }) {
                         </Link>
                       </div>
                       {item.children.map((child) => (
-                        <DropdownMenuItem key={child.to} asChild>
+                        <DropdownMenuItem key={`${child.to}-${child.label}`} asChild>
                           <Link
                             to={child.to}
                             className="cursor-pointer px-3 py-2 text-[13px] text-foreground/85 focus:bg-secondary focus:text-[hsl(var(--primary))]"
@@ -281,7 +281,7 @@ export function SiteHeader({ config }) {
                           </div>
                           <ul className="mt-1 space-y-0.5 border-l border-border pl-3">
                             {item.children.map((child) => (
-                              <li key={child.to}>
+                              <li key={`${child.to}-${child.label}`}>
                                 <Link
                                   to={child.to}
                                   onClick={() => setOpen(false)}

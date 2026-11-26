@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -535,6 +535,12 @@ function ChaptersPage() {
   const [selectedType, setSelectedType] = useState(searchParams.type || "all");
   const [selectedRegion, setSelectedRegion] = useState(searchParams.region || "All");
   const [viewMode, setViewMode] = useState("grid"); // "grid" | "table"
+
+  useEffect(() => {
+    if (searchParams.region) setSelectedRegion(searchParams.region);
+    if (searchParams.type) setSelectedType(searchParams.type);
+    if (typeof searchParams.q === "string") setSearchTerm(searchParams.q);
+  }, [searchParams.region, searchParams.type, searchParams.q]);
 
   const filteredChapters = useMemo(() => {
     return CHAPTERS_DATA.filter((item) => {

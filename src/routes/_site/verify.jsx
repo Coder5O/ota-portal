@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { BadgeCheck, Search, ShieldAlert, ShieldCheck } from "lucide-react";
 import { verifyMembership } from "@/lib/ota-fns";
@@ -39,6 +39,10 @@ function VerifyPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
   const [num, setNum] = useState(search.m || "");
+
+  useEffect(() => {
+    setNum(search.m || "");
+  }, [search.m]);
 
   const handleVerify = (e) => {
     e.preventDefault();
