@@ -1,4 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   CalendarDays,
@@ -83,6 +85,22 @@ const COMMUNITY_REGIONS = [
   "Global Diaspora / International",
   "Other Community / Constituency",
 ];
+
+/** Ceremonial celebratory confetti burst on successful attendance registration */
+function triggerRsvpCelebration() {
+  if (typeof window === "undefined") return;
+  try {
+    confetti({
+      particleCount: 65,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ["#C9A84C", "#8A1C2E", "#D4AF37", "#FFFFFF"],
+      disableForReducedMotion: true,
+    });
+  } catch {
+    // Ignore in non-browser or reduced-motion environments
+  }
+}
 
 function EventsPage() {
   const { events = [] } = Route.useLoaderData() || {};
@@ -215,6 +233,7 @@ function EventsPage() {
         venue: [targetEvent?.venue, targetEvent?.town].filter(Boolean).join(", "),
         community: formCommunity.trim(),
       });
+      triggerRsvpCelebration();
       toast.success(`Attendance confirmed for ${attendeesNum} person(s)!`);
     } catch {
       toast.error("The attendance registration could not be submitted. Please try again.");
@@ -253,6 +272,7 @@ function EventsPage() {
         attendees: attendeesNum,
         eventTitle: selected.title,
       });
+      triggerRsvpCelebration();
       toast.success(`Attendance confirmed for ${attendeesNum} person(s)!`);
     } catch {
       toast.error("The registration could not be submitted. Please try again.");
@@ -413,71 +433,86 @@ function EventsPage() {
             <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
               {/* Left Column: The Registration Form or Confirmation Receipt */}
               <div className="border border-border bg-card p-6 sm:p-8 shadow-sm">
-                {confirmedData ? (
-                  <div className="space-y-6 py-2">
-                    <div className="flex items-center gap-3 border-b border-border pb-4">
-                      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-600">
-                        <CheckCircle2 className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <h3 className="font-display text-2xl font-bold text-foreground">Attendance Confirmed</h3>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider">
-                          Registration Reference: <span className="font-mono text-gold font-semibold">{confirmedData.id}</span>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3 rounded border border-border/80 bg-secondary/40 p-5 text-sm">
-                      <div className="flex justify-between border-b border-border/60 pb-2">
-                        <span className="text-muted-foreground">Event:</span>
-                        <span className="font-display font-medium text-right text-foreground">{confirmedData.eventTitle}</span>
-                      </div>
-                      <div className="flex justify-between border-b border-border/60 pb-2">
-                        <span className="text-muted-foreground">Date:</span>
-                        <span className="font-medium text-foreground">{confirmedData.dateDisplay}</span>
-                      </div>
-                      <div className="flex justify-between border-b border-border/60 pb-2">
-                        <span className="text-muted-foreground">Venue:</span>
-                        <span className="font-medium text-foreground">{confirmedData.venue}</span>
-                      </div>
-                      <div className="flex justify-between border-b border-border/60 pb-2">
-                        <span className="text-muted-foreground">Headcount Going:</span>
-                        <span className="font-bold text-gold">
-                          {confirmedData.attendees} {confirmedData.attendees === 1 ? "Person" : "People"}
-                        </span>
-                      </div>
-                      <div className="flex justify-between border-b border-border/60 pb-2">
-                        <span className="text-muted-foreground">Lead Attendee:</span>
-                        <span className="font-medium text-foreground">{confirmedData.name}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Contact:</span>
-                        <span className="text-foreground">{confirmedData.phone} · {confirmedData.email}</span>
-                      </div>
-                    </div>
-
-                    <p className="text-xs leading-relaxed text-muted-foreground">
-                      An official confirmation has been logged with the OTA Event Secretariat. Please present your name or confirmation reference upon arrival at the venue gate for accreditation.
-                    </p>
-
-                    <Button
-                      className="w-full rounded-none bg-[hsl(var(--primary))] uppercase tracking-wider"
-                      onClick={() => {
-                        setConfirmedData(null);
-                        setFormName("");
-                        setFormEmail("");
-                        setFormPhone("");
-                        setFormAttendees("1");
-                        setFormCommunity("");
-                        setFormOrg("");
-                        setFormNotes("");
-                      }}
+                <AnimatePresence mode="wait">
+                  {confirmedData ? (
+                    <motion.div
+                      key="confirmed"
+                      initial={{ opacity: 0, scale: 0.95, y: 12 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                      className="space-y-6 py-2"
                     >
-                      Register Another Attendee or Delegation
-                    </Button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleStandaloneSubmit} className="space-y-5">
+                      <div className="flex items-center gap-3 border-b border-border pb-4">
+                        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-600">
+                          <CheckCircle2 className="h-6 w-6" />
+                        </div>
+                        <div>
+                          <h3 className="font-display text-2xl font-bold text-foreground">Attendance Confirmed</h3>
+                          <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                            Registration Reference: <span className="font-mono text-gold font-semibold">{confirmedData.id}</span>
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3 rounded border border-border/80 bg-secondary/40 p-5 text-sm">
+                        <div className="flex justify-between border-b border-border/60 pb-2">
+                          <span className="text-muted-foreground">Event:</span>
+                          <span className="font-display font-medium text-right text-foreground">{confirmedData.eventTitle}</span>
+                        </div>
+                        <div className="flex justify-between border-b border-border/60 pb-2">
+                          <span className="text-muted-foreground">Date:</span>
+                          <span className="font-medium text-foreground">{confirmedData.dateDisplay}</span>
+                        </div>
+                        <div className="flex justify-between border-b border-border/60 pb-2">
+                          <span className="text-muted-foreground">Venue:</span>
+                          <span className="font-medium text-foreground">{confirmedData.venue}</span>
+                        </div>
+                        <div className="flex justify-between border-b border-border/60 pb-2">
+                          <span className="text-muted-foreground">Headcount Going:</span>
+                          <span className="font-bold text-gold">
+                            {confirmedData.attendees} {confirmedData.attendees === 1 ? "Person" : "People"}
+                          </span>
+                        </div>
+                        <div className="flex justify-between border-b border-border/60 pb-2">
+                          <span className="text-muted-foreground">Lead Attendee:</span>
+                          <span className="font-medium text-foreground">{confirmedData.name}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Contact:</span>
+                          <span className="text-foreground">{confirmedData.phone} · {confirmedData.email}</span>
+                        </div>
+                      </div>
+
+                      <p className="text-xs leading-relaxed text-muted-foreground">
+                        An official confirmation has been logged with the OTA Event Secretariat. Please present your name or confirmation reference upon arrival at the venue gate for accreditation.
+                      </p>
+
+                      <Button
+                        className="w-full rounded-none bg-[hsl(var(--primary))] uppercase tracking-wider"
+                        onClick={() => {
+                          setConfirmedData(null);
+                          setFormName("");
+                          setFormEmail("");
+                          setFormPhone("");
+                          setFormAttendees("1");
+                          setFormCommunity("");
+                          setFormOrg("");
+                          setFormNotes("");
+                        }}
+                      >
+                        Register Another Attendee or Delegation
+                      </Button>
+                    </motion.div>
+                  ) : (
+                    <motion.form
+                      key="form"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onSubmit={handleStandaloneSubmit}
+                      className="space-y-5"
+                    >
                     {/* Event Selector */}
                     <div className="space-y-1.5">
                       <Label htmlFor="event-select" className="text-xs font-semibold uppercase tracking-wider text-foreground">
@@ -624,8 +659,9 @@ function EventsPage() {
                     >
                       {submitting ? "Submitting Registration…" : "Confirm Event Attendance"}
                     </Button>
-                  </form>
+                  </motion.form>
                 )}
+                </AnimatePresence>
               </div>
 
               {/* Right Column: Attendance Guidelines & Information Card */}
@@ -690,7 +726,12 @@ function EventsPage() {
             </DialogHeader>
 
             {modalConfirmed ? (
-              <div className="space-y-4 py-2">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-4 py-2"
+              >
                 <div className="flex items-center gap-3 border-b border-border pb-3">
                   <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-600">
                     <CheckCircle2 className="h-5 w-5" />
@@ -708,7 +749,7 @@ function EventsPage() {
                 <Button className="w-full rounded-none bg-[hsl(var(--primary))]" onClick={() => setSelected(null)}>
                   Close
                 </Button>
-              </div>
+              </motion.div>
             ) : (
               <form onSubmit={handleModalSubmit} className="space-y-3.5 pt-1">
                 <div className="grid gap-3 sm:grid-cols-2">

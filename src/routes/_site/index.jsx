@@ -1652,7 +1652,7 @@ function CustomaryRegionsExplorer() {
             <Compass className="h-4 w-4 text-gold" />
             <p className="eyebrow text-gold">Customary Domains</p>
           </div>
-          <h3 className="mt-2 text-2xl font-display sm:text-3xl">Traditional Homeland &amp; Customary Regions</h3>
+          <h3 className="mt-2 fluid-h2 font-display text-foreground">Traditional Homeland &amp; Customary Regions</h3>
           <p className="mt-1 text-[13px] text-muted-foreground">
             Explore the traditional jurisdictions, sacred shrines, and regional councils under OTA governance.
           </p>
@@ -2197,7 +2197,7 @@ function HomePage() {
             <p className="eyebrow">{welcome?.heading || "Message from the Office of the Paramount Chief"}</p>
             {welcome?.is_demo ? <IllustrativeBadge /> : null}
           </div>
-          <h2 className="mt-4 text-[2rem] leading-[1.12] sm:text-[2.6rem]">
+          <h2 className="mt-4 fluid-h2 font-display">
             {welcome?.body
               ? welcome.heading
               : "A house of governance rooted in the dignity of our people."}
@@ -2260,7 +2260,7 @@ function HomePage() {
           >
             <div>
               <p className="eyebrow">Institutional structures</p>
-              <h2 className="mt-3 text-[2rem] leading-tight sm:text-[2.5rem]">The organs of the Authority</h2>
+              <h2 className="mt-3 fluid-h2 font-display">The organs of the Authority</h2>
             </div>
             <Link
               to="/leadership"
@@ -2340,7 +2340,7 @@ function HomePage() {
         >
           <div>
             <p className="eyebrow">Announcements &amp; news</p>
-            <h2 className="mt-3 text-[2rem] leading-tight sm:text-[2.5rem]">From the Authority</h2>
+            <h2 className="mt-3 fluid-h2 font-display">From the Authority</h2>
           </div>
           <Link
             to="/news"
@@ -2389,7 +2389,7 @@ function HomePage() {
           >
             <div>
               <p className="eyebrow">Tradition in practice</p>
-              <h2 className="mt-3 text-[2rem] leading-tight sm:text-[2.5rem]">Ceremonies &amp; meetings</h2>
+              <h2 className="mt-3 fluid-h2 font-display">Ceremonies &amp; meetings</h2>
             </div>
             <Link
               to="/events"
@@ -2420,7 +2420,7 @@ function HomePage() {
           <div className="flex flex-col justify-between gap-4 border-b border-border pb-6 sm:flex-row sm:items-end">
             <div>
               <p className="eyebrow text-gold">Sacred Homeland</p>
-              <h2 className="mt-2 text-2xl font-display sm:text-3xl">The Land of the Ovaherero</h2>
+              <h2 className="mt-2 fluid-h2 font-display">The Land of the Ovaherero</h2>
               <p className="mt-1 text-[13px] text-muted-foreground max-w-xl">
                 Ancient granite peaks, red dunes, and the vast savanna — the territories held in custodianship by our people.
               </p>

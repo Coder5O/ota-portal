@@ -107,6 +107,35 @@
   .interactive-card {
     @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-gold/5 hover:border-gold/50;
   }
+
+  /* Fluid Typography with clamp() for continuous responsiveness across screens */
+  .fluid-display {
+    font-size: clamp(2.15rem, 4.5vw + 0.5rem, 3.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+
+  .fluid-h1 {
+    font-size: clamp(1.85rem, 3.2vw + 0.6rem, 3rem);
+    line-height: 1.14;
+    letter-spacing: -0.015em;
+  }
+
+  .fluid-h2 {
+    font-size: clamp(1.6rem, 2.4vw + 0.5rem, 2.5rem);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+  }
+
+  .fluid-h3 {
+    font-size: clamp(1.2rem, 1.4vw + 0.4rem, 1.75rem);
+    line-height: 1.28;
+  }
+
+  .fluid-body {
+    font-size: clamp(0.925rem, 0.4vw + 0.8rem, 1.05rem);
+    line-height: 1.82;
+  }
 }
 
 @keyframes spin-slow {

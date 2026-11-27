@@ -30,6 +30,52 @@ export function EmptyNote({ children }) {
   );
 }
 
+/** Shimmering skeleton loader grid for news posts, articles, and general cards */
+export function CardGridSkeleton({ count = 3 }) {
+  return (
+    <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="border border-border bg-card p-6 shadow-sm space-y-4 animate-pulse">
+          <div className="flex items-center justify-between">
+            <div className="h-3 w-20 bg-muted rounded" />
+            <div className="h-3 w-16 bg-gold/20 rounded" />
+          </div>
+          <div className="h-6 w-3/4 bg-muted rounded" />
+          <div className="space-y-2">
+            <div className="h-3 w-full bg-muted/70 rounded" />
+            <div className="h-3 w-5/6 bg-muted/70 rounded" />
+          </div>
+          <div className="pt-4 border-t border-border/50 flex justify-between">
+            <div className="h-3 w-24 bg-muted/60 rounded" />
+            <div className="h-3 w-4 bg-muted/60 rounded" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Shimmering skeleton loader grid for calendar events and convocations */
+export function EventGridSkeleton({ count = 3 }) {
+  return (
+    <div className="mt-8 grid gap-6 md:grid-cols-3">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="flex gap-4 border border-border bg-card p-6 shadow-sm animate-pulse">
+          <div className="flex flex-col items-center justify-center border border-border bg-muted/40 px-3.5 py-2 text-center h-fit w-12 shrink-0">
+            <div className="h-6 w-6 bg-muted rounded mb-1" />
+            <div className="h-2 w-7 bg-muted/70 rounded" />
+          </div>
+          <div className="flex-1 space-y-2.5">
+            <div className="h-3 w-24 bg-primary/10 rounded" />
+            <div className="h-5 w-5/6 bg-muted rounded" />
+            <div className="h-3 w-1/2 bg-muted/60 rounded" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function ProseBlocks({ blocks, empty }) {
   if (!blocks || blocks.length === 0) {
     return (
