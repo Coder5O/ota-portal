@@ -2374,6 +2374,9 @@ function HomePage() {
       {/* ── Paramount Chiefs of the Ovaherero Dynamic Hero Banner (50% down the site) ─ */}
       <ParamountChiefsHeroBanner />
 
+      {/* ── 50% viewport spacer between the last two hero banners ───────────────── */}
+      <div className="h-[50vh] bg-background" aria-hidden="true" />
+
       {/* ── Events & Customary Convocations Hero Banner (70% down the site) ───── */}
       <EventsFeaturedHeroBanner events={events} allEvents={allEvents} config={config} />
 
